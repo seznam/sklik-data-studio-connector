@@ -229,15 +229,6 @@ var Schema = function (config) {
         }
       },
       {
-        name: 'cgc_plaType',
-        label: 'Kampaň: Typ PLA',
-        dataType: 'STRING',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
         name: 'cgc_startDate',
         label: 'Kampaň: Spuštění kampaně',
         dataType: 'STRING',

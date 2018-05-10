@@ -2,7 +2,13 @@
 This connector imports Sklik reports, through Sklik API DRAK JSON, into Google Data Studio, a graphical display platform. 
 
 # Version
-Actual version is first stabile version: 1.0.0 
+Actual version: 1.0.1 
+
+# Changelog
+10.5.2018 (1.0.0 -> 1.0.1)
+* [REMOVE] Odstranění sloupečku plaType z kampaní
+* [REMOVE] Odstranění kontrolních dumpů v logu pro periodické zobrazení (testamentAA, testament)
+* [FIX] Oprava bugu v periodickém zobrazení, který při nastavení rozsahu datumu i do budoucna (this year apod.) ukazoval chybná data poslední nenulové položky.
 
 # Setup own data studio connector
 This connector is based on Google Apps Script. 
@@ -13,8 +19,8 @@ Sklik Data studio connector
 Automatické spojení statistických reportů z reklamního systému Sklik do grafické platformy Google Data studio, které je určeno k vizualizaci dat pro lepší přehled a orientaci.
 
 Aktuální verze
-Sklik Data Studio Connector v1.0.0 ID
-AKfycby9gWxFBQ84_yIDPWuJg7JEfY7GWWkpDA-S5fZWao1QybkAjggsAtHzSZl14yEIhZRq
+Sklik Data Studio Connector v1.0.1 ID
+AKfycby4g6dLeh2W4x6J7q58As5-CNzCZckg6wX5woe7Pas
 
 **Připojení konektoru**
 

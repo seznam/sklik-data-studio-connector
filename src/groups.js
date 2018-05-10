@@ -212,12 +212,10 @@ var GroupsClass = function (rRoot) {
                   d = this.toYearWeekFormat(d);
                 }                
               } else {
-                this.Root.Log.addValue('testamet'+stats[i].date);
                 var d = stats[i].date.toString();
                 if(field.group == 'groupsWeekly') {
                   d = this.toYearWeekFormat(d);
                 }
-                this.Root.Log.addValue('testametAA'+d);
               }
               values.push(d);
             } else if (field.group == 'campaigns' && response.report[c].campaign != undefined && response.report[c].campaign[fieldName] != undefined) {
@@ -230,11 +228,6 @@ var GroupsClass = function (rRoot) {
           this.Root.data.push({
             values: values
           });
-          //Takovy trochu hack. Jedna se o konce pole vracene API. Pokud je to posledni polozka, ale ja nejsem na konci pozadovanych datumu, 
-          //tak to necham doiterovat nad posledni polozkou az do konce.
-          if (i >= stats.length - 1 && daysArr.length > 0) {
-            actualDayIsEmpty = true;
-          }
         } while (actualDayIsEmpty);
       }
     }
