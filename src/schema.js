@@ -45,6 +45,7 @@ var Schema = function (config) {
     * bnc - column u bannerů (bn - banners + c - column)
     */
     this.SklikDataSchema = [
+       
       //####################################### Campaigns
       {
         name: 'cpg_name',
@@ -198,7 +199,9 @@ var Schema = function (config) {
         group: 'campaigns',
         formula: 'cgc_exhaustedTotalBudget*0.01',
         semantics: {
-          conceptType: 'METRIC'
+          conceptType: 'METRIC',          
+          semanticType: 'CURRENCY_CZK',
+          semanticGroup: 'CURRENCY'
         }
       },
       {
@@ -289,7 +292,9 @@ var Schema = function (config) {
         group: 'campaigns',
         formula: 'cgc_totalBudget*0.01',
         semantics: {
-          conceptType: 'METRIC'
+          conceptType: 'METRIC',          
+          semanticType: 'CURRENCY_CZK',
+          semanticGroup: 'CURRENCY'
         }
       },
       {
@@ -308,7 +313,10 @@ var Schema = function (config) {
         group: 'campaigns',
         formula: 'cgc_avgCpc*0.01',
         semantics: {
-          conceptType: 'METRIC'
+          conceptType: 'METRIC',          
+          semanticType: 'CURRENCY_CZK',
+          semanticGroup: 'CURRENCY',
+          defaultAggregationType: 'AVG'
         }
       },
       {
@@ -317,7 +325,8 @@ var Schema = function (config) {
         dataType: 'NUMBER',
         group: 'campaigns',
         semantics: {
-          conceptType: 'METRIC'
+          conceptType: 'METRIC',
+          defaultAggregationType: 'AVG'
         }
       },
       {
@@ -336,7 +345,9 @@ var Schema = function (config) {
         formula: "cgc_clickMoney*0.01",
         group: 'campaigns',
         semantics: {
-          conceptType: 'METRIC'
+          conceptType: 'METRIC',          
+          semanticType: 'CURRENCY_CZK',
+          semanticGroup: 'CURRENCY'
         }
       },
       {
@@ -382,7 +393,9 @@ var Schema = function (config) {
         group: 'campaigns',
         formula: 'cgc_impressionMoney*0.01',
         semantics: {
-          conceptType: 'METRIC'
+          conceptType: 'METRIC',          
+          semanticType: 'CURRENCY_CZK',
+          semanticGroup: 'CURRENCY'
         }
       },
       {
@@ -411,7 +424,9 @@ var Schema = function (config) {
         group: 'campaigns',
         formula: 'cgc_totalMoney*0.01',
         semantics: {
-          conceptType: 'METRIC'
+          conceptType: 'METRIC',          
+          semanticType: 'CURRENCY_CZK',
+          semanticGroup: 'CURRENCY'
         }
       },
       {
@@ -483,7 +498,8 @@ var Schema = function (config) {
         dataType: 'NUMBER',
         group: 'campaigns',
         semantics: {
-          conceptType: 'METRIC'
+          conceptType: 'METRIC',
+          defaultAggregationType: 'AVG'
         }
       },
       {
@@ -492,7 +508,8 @@ var Schema = function (config) {
         dataType: 'NUMBER',
         group: 'campaigns',
         semantics: {
-          conceptType: 'METRIC'
+          conceptType: 'METRIC',
+          defaultAggregationType: 'AVG'
         }
       },
       {
@@ -583,7 +600,7 @@ var Schema = function (config) {
         group: 'campaignsMonthly',
         semantics: {
           conceptType: 'DIMENSION',
-          semanticType: 'YEAR_MONTH_DAY',
+          semanticType: 'YEAR_MONTH',
           semanticGroup: 'DATETIME'
         }
       },
@@ -701,7 +718,9 @@ var Schema = function (config) {
         dataType: 'NUMBER',
         group: 'groups',
         semantics: {
-          conceptType: 'METRIC'
+          conceptType: 'METRIC',          
+          semanticType: 'CURRENCY_CZK',
+          semanticGroup: 'CURRENCY'
         }
       }, {
         name: 'goc_name',
@@ -741,7 +760,10 @@ var Schema = function (config) {
         dataType: 'NUMBER',
         group: 'groups',
         semantics: {
-          conceptType: 'METRIC'
+          conceptType: 'METRIC',          
+          semanticType: 'CURRENCY_CZK',
+          semanticGroup: 'CURRENCY',
+          defaultAggregationType: 'AVG'
         }
       }, {
         name: 'goc_avgPos',
@@ -749,7 +771,8 @@ var Schema = function (config) {
         dataType: 'NUMBER',
         group: 'groups',
         semantics: {
-          conceptType: 'METRIC'
+          conceptType: 'METRIC',          
+          defaultAggregationType: 'AVG'
         }
       }, {
         name: 'goc_clickMoney',
@@ -766,7 +789,9 @@ var Schema = function (config) {
         group: 'groups',
         formula: 'goc_clickMoney*0.01',
         semantics: {
-          conceptType: 'METRIC'
+          conceptType: 'METRIC',          
+          semanticType: 'CURRENCY_CZK',
+          semanticGroup: 'CURRENCY'
         }
       },
   
@@ -801,7 +826,9 @@ var Schema = function (config) {
         group: 'groups',
         formula: 'goc_conversionValue*0.01',
         semantics: {
-          conceptType: 'METRIC'
+          conceptType: 'METRIC',          
+          semanticType: 'CURRENCY_CZK',
+          semanticGroup: 'CURRENCY'
         }
       },
       {
@@ -819,7 +846,10 @@ var Schema = function (config) {
         group: 'groups',
         formula: 'goc_impressionMoney*0.01',
         semantics: {
-          conceptType: 'METRIC'
+          conceptType: 'METRIC',          
+          semanticType: 'CURRENCY_CZK',
+          semanticGroup: 'CURRENCY',
+          defaultAggregationType: 'AVG'
         }
       },
       {
@@ -845,7 +875,9 @@ var Schema = function (config) {
         group: 'groups',
         formula: 'goc_totalMoney*0.01',
         semantics: {
-          conceptType: 'METRIC'
+          conceptType: 'METRIC',          
+          semanticType: 'CURRENCY_CZK',
+          semanticGroup: 'CURRENCY'
         }
       },
       {
@@ -910,7 +942,8 @@ var Schema = function (config) {
         dataType: 'NUMBER',
         group: 'groups',
         semantics: {
-          conceptType: 'METRIC'
+          conceptType: 'METRIC',
+          defaultAggregationType: 'AVG'
         }
       }, {
         name: 'goc_pno',
@@ -918,7 +951,8 @@ var Schema = function (config) {
         dataType: 'NUMBER',
         group: 'groups',
         semantics: {
-          conceptType: 'METRIC'
+          conceptType: 'METRIC',
+          defaultAggregationType: 'AVG'
         }
       }, {
         name: 'goc_ish',
@@ -1259,7 +1293,10 @@ var Schema = function (config) {
         dataType: 'NUMBER',
         group: 'ads',
         semantics: {
-          conceptType: 'METRIC'
+          conceptType: 'METRIC',          
+          semanticType: 'CURRENCY_CZK',
+          semanticGroup: 'CURRENCY',
+          defaultAggregationType: 'AVG'
         }
       },
       {
@@ -1268,7 +1305,10 @@ var Schema = function (config) {
         dataType: 'NUMBER',
         group: 'ads',
         semantics: {
-          conceptType: 'METRIC'
+          conceptType: 'METRIC',
+          semanticType: 'NUMBER',
+          semanticGroup: 'NUMERIC',
+          defaultAggregationType: 'AVG'
         }
       },
       {
@@ -1287,7 +1327,10 @@ var Schema = function (config) {
         group: 'ads',
         formula: 'adc_clickMoney*0.01',
         semantics: {
-          conceptType: 'METRIC'
+          conceptType: 'METRIC',          
+          semanticType: 'CURRENCY_CZK',
+          semanticGroup: 'CURRENCY',
+          defaultAggregationType: 'AVG'
         }
       },
       {
@@ -1324,7 +1367,9 @@ var Schema = function (config) {
         group: 'ads',
         formula: 'adc_conversionValue*0.01',
         semantics: {
-          conceptType: 'METRIC'
+          conceptType: 'METRIC',          
+          semanticType: 'CURRENCY_CZK',
+          semanticGroup: 'CURRENCY'
         }
       },
       {
@@ -1343,7 +1388,10 @@ var Schema = function (config) {
         group: 'ads',
         formula: 'adc_impressionMoney*0.01',
         semantics: {
-          conceptType: 'METRIC'
+          conceptType: 'METRIC',          
+          semanticType: 'CURRENCY_CZK',
+          semanticGroup: 'CURRENCY',
+          defaultAggregationType: 'AVG'
         }
       },
       {
@@ -1371,7 +1419,9 @@ var Schema = function (config) {
         group: 'ads',
         formula: 'adc_totalMoney*0.01',
         semantics: {
-          conceptType: 'METRIC'
+          conceptType: 'METRIC',          
+          semanticType: 'CURRENCY_CZK',
+          semanticGroup: 'CURRENCY'
         }
       },
       {
@@ -1443,7 +1493,8 @@ var Schema = function (config) {
         dataType: 'NUMBER',
         group: 'ads',
         semantics: {
-          conceptType: 'METRIC'
+          conceptType: 'METRIC',
+          defaultAggregationType: 'AVG'
         }
       },
       {
@@ -1452,7 +1503,8 @@ var Schema = function (config) {
         dataType: 'NUMBER',
         group: 'ads',
         semantics: {
-          conceptType: 'METRIC'
+          conceptType: 'METRIC',
+          defaultAggregationType: 'AVG'
         }
       },
       {
@@ -1669,7 +1721,10 @@ var Schema = function (config) {
         dataType: 'NUMBER',
         group: 'banners',
         semantics: {
-          conceptType: 'METRIC'
+          conceptType: 'METRIC',          
+          semanticType: 'CURRENCY_CZK',
+          semanticGroup: 'CURRENCY',
+          defaultAggregationType: 'AVG'
         }
       },
       {
@@ -1678,7 +1733,8 @@ var Schema = function (config) {
         dataType: 'NUMBER',
         group: 'banners',
         semantics: {
-          conceptType: 'METRIC'
+          conceptType: 'METRIC',
+          defaultAggregationType: 'AVG'
         }
       },
       {
@@ -1697,7 +1753,10 @@ var Schema = function (config) {
         group: 'banners',
         formula: 'bnc_clickMoney*0.01',
         semantics: {
-          conceptType: 'METRIC'
+          conceptType: 'METRIC',          
+          semanticType: 'CURRENCY_CZK',
+          semanticGroup: 'CURRENCY',
+          defaultAggregationType: 'AVG'
         }
       },
       {
@@ -1734,7 +1793,9 @@ var Schema = function (config) {
         group: 'banners',
         formula: 'bnc_conversionValue*0.01',
         semantics: {
-          conceptType: 'METRIC'
+          conceptType: 'METRIC',          
+          semanticType: 'CURRENCY_CZK',
+          semanticGroup: 'CURRENCY'
         }
       },
       {
@@ -1753,7 +1814,10 @@ var Schema = function (config) {
         group: 'banners',
         formula: 'bnc_impressionMoney*0.01',
         semantics: {
-          conceptType: 'METRIC'
+          conceptType: 'METRIC',          
+          semanticType: 'CURRENCY_CZK',
+          semanticGroup: 'CURRENCY',
+          defaultAggregationType: 'AVG'
         }
       },
       {
@@ -1781,7 +1845,10 @@ var Schema = function (config) {
         group: 'banners',
         formula: 'bnc_totalMoney*0.01',
         semantics: {
-          conceptType: 'METRIC'
+          conceptType: 'METRIC',          
+          semanticType: 'CURRENCY_CZK',
+          semanticGroup: 'CURRENCY',
+          defaultAggregationType: 'AVG'
         }
       },
       {
@@ -1853,8 +1920,9 @@ var Schema = function (config) {
         dataType: 'NUMBER',
         group: 'banners',
         semantics: {
-          conceptType: 'METRIC'
-        }
+          conceptType: 'METRIC',
+          defaultAggregationType: 'AVG'
+        } 
       },
       {
         name: 'bnc_pno',
@@ -1862,7 +1930,8 @@ var Schema = function (config) {
         dataType: 'NUMBER',
         group: 'banners',
         semantics: {
-          conceptType: 'METRIC'
+          conceptType: 'METRIC',
+          defaultAggregationType: 'AVG'
         }
       },
       {

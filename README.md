@@ -5,6 +5,15 @@ This connector imports Sklik reports, through Sklik API DRAK JSON, into Google D
 Actual version: 1.0.1 
 
 # Changelog
+14.6.2018 (1.0.1 -> 1.1.0)
+* [CHANGE] Změna defaultního nastavení některých metrik: 
+Kampaně: PNO (Cost Of Sale(COS)),(Kč) Peníze utracené za prokliky, (Kč) Průměrná cena za klik (Avg CPC), (Kč) Nastaveni budgetu, Celkem utracené peníze, (Kč) Celkvý budget, (Kč) Penize za zobrazení, CTR, Průměrná pozice 
+Inzerát: Průměrné CPC, PNO (Cost Of Sale(COS)), (Kč) Celkem utracené peníze, (Kč) Cena prokliků, (Kč) Cena za zobrazeni, (Kč) Cena konverzí, CTR, Průměrná pozice
+Sestava: Průměrné CPC, PNO (Cost Of Sale(COS)), Celkem utracené peníze, (Kč) Cena za zobrazeni, (Kč) Cena konverzí, (Kč) Cena prokliků, CTR, Maximální CPT, Průměrná pozice
+Bannery: Průměrné CPC, PNO (Cost Of Sale(COS)), (Kč) Cena za zobrazeni, (Kč) Cena prokliků, (Kč) Celkem utracené peníze, (Kč) Cena konverzí, CTR, Průměrná pozice
+* [FIX] Opravena chyba při výpadu časových řad (data pro určité období se zobrazovli jako nulové)
+
+
 10.5.2018 (1.0.0 -> 1.0.1)
 * [REMOVE] Odstranění sloupečku plaType z kampaní
 * [REMOVE] Odstranění kontrolních dumpů v logu pro periodické zobrazení (testamentAA, testament)

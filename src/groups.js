@@ -240,7 +240,7 @@ var GroupsClass = function (rRoot) {
   * @return {Int}
   */
   this.toYearWeekFormat = function(full) {
-    var d = new Date(full.substr(0, 4),(parseInt(full.substr(4,2))-1), full.substr(6,2));
+    var d = new Date(full.substr(0, 4),(parseInt(full.substr(4,2),10)-1), full.substr(6,2));
     var w = this.Root.getWeek(d);
     if(w < 10) {
       return full.substr(0,4)+'0'+w;
