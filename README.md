@@ -28,8 +28,8 @@ Sklik Data studio connector
 Automatické spojení statistických reportů z reklamního systému Sklik do grafické platformy Google Data studio, které je určeno k vizualizaci dat pro lepší přehled a orientaci.
 
 Aktuální verze
-Sklik Data Studio Connector v1.0.1 ID
-AKfycby4g6dLeh2W4x6J7q58As5-CNzCZckg6wX5woe7Pas
+Sklik Data Studio Connector v1.1.0 ID
+AKfycbwjqGTZqS1ifIITFb3daFVNTimnx1WsyQ-VmTfNgtfQ
 
 **Připojení konektoru**
 
