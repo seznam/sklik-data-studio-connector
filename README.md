@@ -29,7 +29,7 @@ Automatické spojení statistických reportů z reklamního systému Sklik do gr
 
 Aktuální verze
 Sklik Data Studio Connector v1.1.0 ID
-AKfycbwjqGTZqS1ifIITFb3daFVNTimnx1WsyQ-VmTfNgtfQ
+AKfycbwsHwMkaa1BjpQ_ARCPjqJKAnNPqW0BXbei1cTWccs9
 
 **Připojení konektoru**
 
