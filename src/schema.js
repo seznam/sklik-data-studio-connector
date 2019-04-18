@@ -27,535 +27,1964 @@ http://www.seznam.cz, or contact: https://napoveda.sklik.cz/casto-kladene-dotazy
  */
 var Schema = function (config) {
   
-    /**
-     * @var {Object}
-     */
-    this.config = config;
-  
-    /**
-    * Význam zkratek
-    * cgc - column u kampaně (cg - campaigns + c - column)
-    * cpg - jedna se o soucas prehledu kampani
-    * cpd - jedna se o soucas dennich prehledu kampani
-    * cpw, cpm, cpq, cpy - týdení, mesicni, kvartální a rocni
-    * goc - column u groups
-    * gos - groups
-    * god - daily of groups
-    * adc - column u ads (ad - ads + c - column)
-    * bnc - column u bannerů (bn - banners + c - column)
-    */
-    this.SklikDataSchema = [
-       
-      //####################################### Campaigns
+  /**
+   * @var {Object}
+   */
+  this.config = config;
+
+  /**
+  * Význam zkratek
+  * cgc - column u kampaně (cg - campaigns + c - column)
+  * cpg - jedna se o soucas prehledu kampani
+  * cpd - jedna se o soucas dennich prehledu kampani
+  * cpw, cpm, cpq, cpy - týdení, mesicni, kvartální a rocni
+  * goc - column u groups
+  * gos - groups
+  * god - daily of groups
+  * adc - column u ads (ad - ads + c - column)
+  * bnc - column u bannerů (bn - banners + c - column)
+  */
+  this.SklikDataSchema = [
+     
+    //####################################### Campaigns
+    {
+      name: 'cpg_name',
+      label: 'Název kampaně',
+      dataType: 'STRING',
+      group: 'campaigns',
+      isDefault: true,
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'cgc_actualClicks',
+      label: 'Kampaň: Prokliky',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'cgc_automaticLocation',
+      label: 'Kampaň: Zapnutí automatické lokace',
+      dataType: 'BOOLEAN',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'cgc_adSelection',
+      label: 'Kampaň: Způsob střídání inzerátů',
+      dataType: 'STRING',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'cgc_context',
+      label: 'Kampaň: Obsahová kampaň',
+      dataType: 'BOOLEAN',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'cgc_contextNetwork',
+      label: 'Kampaň: Obsahová síť',
+      dataType: 'BOOLEAN',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'cgc_createDate',
+      label: 'Kampaň: Datum vytvoření',
+      dataType: 'STRING',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'cgc_deleted',
+      label: 'Kampaň: Smazaná',
+      dataType: 'BOOLEAN',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'cgc_deleteDate',
+      label: 'Kampaň: Datum smazání',
+      dataType: 'STRING',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'cgc_defaultBudgetId',
+      label: 'Kampaň: ID budgetu',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'cgc_deviceDesktop',
+      label: 'Kampaň: Cílení na desktopy',
+      dataType: 'BOOLEAN',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'cgc_deviceTablet',
+      label: 'Kampaň: Cílení na tablety',
+      dataType: 'BOOLEAN',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'cgc_deviceMobil',
+      label: 'Kampaň: Cílení na mobily',
+      dataType: 'BOOLEAN',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'cgc_deviceOther',
+      label: 'Kampaň: Cílení na ostatní multimediální zařízení',
+      dataType: 'BOOLEAN',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'cgc_endDate',
+      label: 'Kampaň: Konec kampaně',
+      dataType: 'STRING',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'cgc_exhaustedTotalBudget',
+      label: 'Kampaň: Vyčerpaný rozpočet',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'cgc_exhaustedTotalBudget_kc',
+      label: 'Kampaň: (Kč) Vyčerpaný rozpočet',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      formula: 'cgc_exhaustedTotalBudget*0.01',
+      semantics: {
+        conceptType: 'METRIC',          
+        semanticType: 'CURRENCY_CZK',
+        semanticGroup: 'CURRENCY'
+      }
+    },
+    {
+      name: 'cgc_fulltext',
+      label: 'Kampaň: Vyhledávací kampaň',
+      dataType: 'BOOLEAN',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'cgc_name',
+      label: 'Kampaň: Název',
+      dataType: 'STRING',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'cgc_paymentMethod',
+      label: 'Kampaň: Způsob zpoplatnění',
+      dataType: 'STRING',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'cgc_startDate',
+      label: 'Kampaň: Začátek kampaně',
+      dataType: 'STRING',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'cgc_status',
+      label: 'Kampaň: Stav',
+      dataType: 'STRING',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'cgc_totalCliks',
+      label: 'Kampaň: Celkový počet prokliků od měřeného data',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'cgc_totalClicksFrom',
+      label: 'Kampaň: Datum začátku měření celkového počtu prokliků',
+      dataType: 'STRING',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'cgc_totalBudget',
+      label: 'Kampaň: Rozpočet',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'cgc_totalBudget_kc',
+      label: 'Kampaň: (Kč) Rozpočet',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      formula: 'cgc_totalBudget*0.01',
+      semantics: {
+        conceptType: 'METRIC',          
+        semanticType: 'CURRENCY_CZK',
+        semanticGroup: 'CURRENCY'
+      }
+    },
+    {
+      name: 'cgc_avgCpc',
+      label: 'Kampaň: CPC Ø',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'cgc_avgCpc_kc',
+      label: 'Kampaň: (Kč) CPC Ø',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      formula: 'cgc_avgCpc*0.01',
+      semantics: {
+        conceptType: 'METRIC',          
+        semanticType: 'CURRENCY_CZK',
+        semanticGroup: 'CURRENCY',
+        defaultAggregationType: 'AVG'
+      }
+    },
+    {
+      name: 'cgc_avgPos',
+      label: 'Kampaň: Pozice Ø',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'METRIC',
+        defaultAggregationType: 'AVG'
+      }
+    },
+    {
+      name: 'cgc_clickMoney',
+      label: 'Kampaň: Cena za prokliky',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'cgc_clickMoney_kc',
+      label: 'Kampaň: (Kč) Cena za prokliky',
+      dataType: 'NUMBER',
+      formula: "cgc_clickMoney*0.01",
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'METRIC',          
+        semanticType: 'CURRENCY_CZK',
+        semanticGroup: 'CURRENCY'
+      }
+    },
+    {
+      name: 'cgc_clicks',
+      label: 'Kampaň: Prokliky',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'cgc_conversions',
+      label: 'Kampaň: Konverze',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'cgc_conversionValue',
+      label: 'Kampaň: Hodnota konverze',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'cgc_impressionMoney',
+      label: 'Kampaň: Cena za zobrazení',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'cgc_impressionMoney_kc',
+      label: 'Kampaň: (Kč) Cena za zobrazení',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      formula: 'cgc_impressionMoney*0.01',
+      semantics: {
+        conceptType: 'METRIC',          
+        semanticType: 'CURRENCY_CZK',
+        semanticGroup: 'CURRENCY'
+      }
+    },
+    {
+      name: 'cgc_impressions',
+      label: 'Kampaň: Zobrazení',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      isDefault: true,
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'cgc_totalMoney',
+      label: 'Kampaň: Cena',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'cgc_totalMoney_kc',
+      label: 'Kampaň: (Kč) Cena',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      formula: 'cgc_totalMoney*0.01',
+      semantics: {
+        conceptType: 'METRIC',          
+        semanticType: 'CURRENCY_CZK',
+        semanticGroup: 'CURRENCY'
+      }
+    },
+    {
+      name: 'cgc_transactions',
+      label: 'Kampaň: Transakce',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'cgc_missImpressions',
+      label: 'Kampaň: Ztracená zobrazení',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'cgc_underLowerThreshold',
+      label: 'Kampaň: Ztracená zobrazení - nízké cpc',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'cgc_exhaustedBudget',
+      label: 'Kampaň: Ztracená zobrazení - rozpočet',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'cgc_stoppedBySchedule',
+      label: 'Kampaň: Ztracená zobrazení - časové plánování',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'cgc_underForestThreshold',
+      label: 'Kampaň: Ztracená zobrazení - nízký rank',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'cgc_exhaustedBudgetShare',
+      label: 'Kampaň: Ztracená zobrazení - sdílený rozpočet',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'cgc_ctr',
+      label: 'Kampaň: CTR',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'METRIC',
+        defaultAggregationType: 'AVG'
+      }
+    },
+    {
+      name: 'cgc_pno',
+      label: 'Kampaň: PNO',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'METRIC',
+        defaultAggregationType: 'AVG'
+      }
+    },
+    {
+      name: 'cgc_ish',
+      label: 'Kampaň: Podíl ztracených zobrazení - vyhledávací síť',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'cgc_ishContext',
+      label: 'Kampaň: Podíl ztracených zobrazení - obsahová síť',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'cgc_ishSum',
+      label: 'Kampaň: Podíl ztracených zobrazení',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'cgc_id',
+      label: 'Kampaň: ID kampaně',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+
+
+    //####################################### Campaigns Daily 
+    {
+      name: 'cpd_days',
+      label: 'Statistiky kampaně (denní)',
+      dataType: 'STRING',
+      group: 'campaignsDaily',
+      semantics: {
+        conceptType: 'DIMENSION',
+        semanticType: 'YEAR_MONTH_DAY',
+        semanticGroup: 'DATETIME'
+      }
+    },
+    {
+      name: 'cpd_campaignsIds',
+      label: 'Campaigns ID',
+      dataType: 'NUMBER',
+      group: 'campaignsDaily',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    //####################################### Campaigns Weekly 
+    {
+      name: 'cpw_days',
+      label: 'Statistiky kampaně (týdenní)',
+      dataType: 'STRING',
+      group: 'campaignsWeekly',
+      semantics: {
+        conceptType: 'DIMENSION',
+        semanticType: 'YEAR_WEEK',
+        semanticGroup: 'DATETIME'
+      }
+    },
+    {
+      name: 'cpw_campaignsIds',
+      label: 'Campaigns ID',
+      dataType: 'NUMBER',
+      group: 'campaignsWeekly',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    //####################################### Campaigns Monthly 
+    {
+      name: 'cpm_days',
+      label: 'Statistiky kampaně (měsíční)',
+      dataType: 'STRING',
+      group: 'campaignsMonthly',
+      semantics: {
+        conceptType: 'DIMENSION',
+        semanticType: 'YEAR_MONTH',
+        semanticGroup: 'DATETIME'
+      }
+    },
+    {
+      name: 'cpm_campaignsIds',
+      label: 'Campaigns ID',
+      dataType: 'NUMBER',
+      group: 'campaignsMonthly',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    //####################################### Campaigns Quarterly 
+    {
+      name: 'cpq_days',
+      label: 'Statistiky kampaně (kvartální)',
+      dataType: 'STRING',
+      group: 'campaignsQuarterly',
+      semantics: {
+        conceptType: 'DIMENSION',
+        semanticType: 'YEAR_MONTH_DAY',
+        semanticGroup: 'DATETIME'
+      }
+    },
+    {
+      name: 'cpq_campaignsIds',
+      label: 'Campaigns ID',
+      dataType: 'NUMBER',
+      group: 'campaignsQuarterly',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    //####################################### Campaigns Yearly 
+    {
+      name: 'cpy_days',
+      label: 'Statistiky kampaně (roční)',
+      dataType: 'STRING',
+      group: 'campaignsYearly',
+      semantics: {
+        conceptType: 'DIMENSION',
+        semanticType: 'YEAR',
+        semanticGroup: 'DATETIME'
+      }
+    },
+    {
+      name: 'cpy_campaignsIds',
+      label: 'Campaigns ID',
+      dataType: 'NUMBER',
+      group: 'campaignsYearly',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    //####################################### Groups columns 
+    {
+      name: 'goc_createDate',
+      label: 'Sestava: Datum vytvoření',
+      dataType: 'STRING',
+      group: 'groups',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    }, {
+      name: 'goc_deleted',
+      label: 'Sestava: Smazaná',
+      dataType: 'BOOLEAN',
+      group: 'groups',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    }, {
+      name: 'goc_deleteDate',
+      label: 'Sestava: Datum smazání',
+      dataType: 'STRING',
+      group: 'groups',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    }, {
+      name: 'goc_id',
+      label: 'Sestava: ID',
+      dataType: 'NUMBER',
+      group: 'groups',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    }, {
+      name: 'goc_maxCpc',
+      label: 'Sestava: Max. CPC',
+      dataType: 'NUMBER',
+      group: 'groups',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    }, {
+      name: 'goc_maxCpcContext',
+      label: 'Sestava: Max. CPC obsah',
+      dataType: 'NUMBER',
+      group: 'groups',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    }, {
+      name: 'goc_maxUserDailyImpressions',
+      label: 'Sestava: Zobrazení jednomu uživateli za den',
+      dataType: 'NUMBER',
+      group: 'groups',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    }, {
+      name: 'goc_maxCpt',
+      label: 'Sestava: Max. CPT',
+      dataType: 'NUMBER',
+      group: 'groups',
+      semantics: {
+        conceptType: 'METRIC',          
+        semanticType: 'CURRENCY_CZK',
+        semanticGroup: 'CURRENCY'
+      }
+    }, {
+      name: 'goc_name',
+      label: 'Sestava: Název',
+      dataType: 'STRING',
+      group: 'groups',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    }, {
+      name: 'goc_sensitivity',
+      label: 'Sestava: Erotická reklama',
+      dataType: 'BOOLEAN',
+      group: 'groups',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    }, {
+      name: 'goc_status',
+      label: 'Sestava: Stav',
+      dataType: 'STRING',
+      group: 'groups',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    }, {
+      name: 'goc_statusId',
+      label: 'Sestava: ID stavu',
+      dataType: 'NUMBER',
+      group: 'groups',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    }, {
+      name: 'goc_avgCpc',
+      label: 'Sestava: CPC Ø',
+      dataType: 'NUMBER',
+      group: 'groups',
+      semantics: {
+        conceptType: 'METRIC',          
+        semanticType: 'CURRENCY_CZK',
+        semanticGroup: 'CURRENCY',
+        defaultAggregationType: 'AVG'
+      }
+    }, {
+      name: 'goc_avgPos',
+      label: 'Sestava: Pozice Ø',
+      dataType: 'NUMBER',
+      group: 'groups',
+      semantics: {
+        conceptType: 'METRIC',          
+        defaultAggregationType: 'AVG'
+      }
+    }, {
+      name: 'goc_clickMoney',
+      label: 'Sestava: Cena za prokliky',
+      dataType: 'NUMBER',
+      group: 'groups',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    }, {
+      name: 'goc_clickMoney_kc',
+      label: 'Sestava: (Kč) Cena za prokliky',
+      dataType: 'NUMBER',
+      group: 'groups',
+      formula: 'goc_clickMoney*0.01',
+      semantics: {
+        conceptType: 'METRIC',          
+        semanticType: 'CURRENCY_CZK',
+        semanticGroup: 'CURRENCY'
+      }
+    },
+
+    {
+      name: 'goc_clicks',
+      label: 'Sestava: Prokliky',
+      dataType: 'NUMBER',
+      group: 'groups',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    }, {
+      name: 'goc_conversions',
+      label: 'Sestava: Konverze',
+      dataType: 'NUMBER',
+      group: 'groups',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    }, {
+      name: 'goc_conversionValue',
+      label: 'Sestava: Hodnota Cena konverze',
+      dataType: 'NUMBER',
+      group: 'groups',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    }, {
+      name: 'goc_conversionValue_kc',
+      label: 'Sestava: (Kč) Hodnota Cena konverze',
+      dataType: 'NUMBER',
+      group: 'groups',
+      formula: 'goc_conversionValue*0.01',
+      semantics: {
+        conceptType: 'METRIC',          
+        semanticType: 'CURRENCY_CZK',
+        semanticGroup: 'CURRENCY'
+      }
+    },
+    {
+      name: 'goc_impressionMoney',
+      label: 'Sestava: Cena za zobrazení',
+      dataType: 'NUMBER',
+      group: 'groups',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    }, {
+      name: 'goc_impressionMoney_kc',
+      label: 'Sestava: (Kč) Cena za zobrazení',
+      dataType: 'NUMBER',
+      group: 'groups',
+      formula: 'goc_impressionMoney*0.01',
+      semantics: {
+        conceptType: 'METRIC',          
+        semanticType: 'CURRENCY_CZK',
+        semanticGroup: 'CURRENCY',
+        defaultAggregationType: 'AVG'
+      }
+    },
+    {
+      name: 'goc_impressions',
+      label: 'Sestava: Zobrazení',
+      dataType: 'NUMBER',
+      group: 'groups',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    }, {
+      name: 'goc_totalMoney',
+      label: 'Sestava: Cena celkem',
+      dataType: 'NUMBER',
+      group: 'groups',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    }, {
+      name: 'goc_totalMoney_kc',
+      label: 'Sestava: (Kč) Cena celkem',
+      dataType: 'NUMBER',
+      group: 'groups',
+      formula: 'goc_totalMoney*0.01',
+      semantics: {
+        conceptType: 'METRIC',          
+        semanticType: 'CURRENCY_CZK',
+        semanticGroup: 'CURRENCY'
+      }
+    },
+    {
+      name: 'goc_transactions',
+      label: 'Sestava: Transakce',
+      dataType: 'NUMBER',
+      group: 'groups',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    }, {
+      name: 'goc_missImpressions',
+      label: 'Sestava: Ztracená zobrazení',
+      dataType: 'NUMBER',
+      group: 'groups',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    }, {
+      name: 'goc_underLowerThreshold',
+      label: 'Sestava: Ztracená zobrazení - nízké cpc',
+      dataType: 'NUMBER',
+      group: 'groups',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    }, {
+      name: 'goc_exhaustedBudget',
+      label: 'Sestava: Ztracená zobrazení - rozpočet',
+      dataType: 'NUMBER',
+      group: 'groups',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    }, {
+      name: 'goc_stoppedBySchedule',
+      label: 'Sestava: Ztracená zobrazení - časové plánování',
+      dataType: 'NUMBER',
+      group: 'groups',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    }, {
+      name: 'goc_underForestThreshold',
+      label: 'Sestava: Ztracená zobrazení - nízký rank',
+      dataType: 'NUMBER',
+      group: 'groups',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    }, {
+      name: 'goc_exhaustedBudgetShare',
+      label: 'Sestavy: Ztracená zobrazení - sdílený rozpočet',
+      dataType: 'NUMBER',
+      group: 'groups',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    }, {
+      name: 'goc_ctr',
+      label: 'Sestava: CTR',
+      dataType: 'NUMBER',
+      group: 'groups',
+      semantics: {
+        conceptType: 'METRIC',
+        defaultAggregationType: 'AVG'
+      }
+    }, {
+      name: 'goc_pno',
+      label: 'Sestava: PNO',
+      dataType: 'NUMBER',
+      group: 'groups',
+      semantics: {
+        conceptType: 'METRIC',
+        defaultAggregationType: 'AVG'
+      }
+    }, {
+      name: 'goc_ish',
+      label: 'Sestava: Podíl ztracených zobrazení - vyhledávací síť',
+      dataType: 'NUMBER',
+      group: 'groups',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    }, {
+      name: 'goc_ishContext',
+      label: 'Sestava: Podíl ztracených zobrazení - obsahová síť',
+      dataType: 'NUMBER',
+      group: 'groups',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    }, {
+      name: 'goc_ishSum',
+      label: 'Sestava: Podíl ztracených zobrazení',
+      dataType: 'NUMBER',
+      group: 'groups',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    //####################################### Ads columns 
+    {
+      name: 'adc_adStatus',
+      label: 'Inzerát: Stav',
+      dataType: 'STRING',
+      group: 'ads',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'adc_adType',
+      label: 'Inzerát: Typ',
+      dataType: 'STRING',
+      group: 'ads',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'adc_clickthruText',
+      label: 'Inzerát: Viditelná URL',
+      dataType: 'STRING',
+      group: 'ads',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'adc_clickthruUrl',
+      label: 'Inzerát: Cílová URL',
+      dataType: 'STRING',
+      group: 'ads',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'adc_createDate',
+      label: 'Inzerát: Datum vytvoření',
+      dataType: 'STRING',
+      group: 'ads',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'adc_creative1',
+      label: 'Inzerát: STA text 1',
+      dataType: 'STRING',
+      group: 'ads',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'adc_creative2',
+      label: 'Inzerát: STA text 2',
+      dataType: 'STRING',
+      group: 'ads',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'adc_creative3',
+      label: 'Inzerát: STA text 3',
+      dataType: 'STRING',
+      group: 'ads',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'adc_deleted',
+      label: 'Inzerát: Smazaný',
+      dataType: 'BOOLEAN',
+      group: 'ads',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'adc_deleteDate',
+      label: 'Inzerát: Datum smazání',
+      dataType: 'STRING',
+      group: 'ads',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'adc_description',
+      label: 'Inzerát: ETA - Popisek',
+      dataType: 'STRING',
+      group: 'ads',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'adc_finalUrl',
+      label: 'Inzerát: ETA - cílová URL',
+      dataType: 'STRING',
+      group: 'ads',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'adc_headline1',
+      label: 'Inzerát: ETA - Titulek 1',
+      dataType: 'STRING',
+      group: 'ads',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'adc_headline2',
+      label: 'Inzerát: ETA - Titulek 2',
+      dataType: 'STRING',
+      group: 'ads',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'adc_id',
+      label: 'Inzerát: ID',
+      dataType: 'NUMBER',
+      group: 'ads',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'adc_path1',
+      label: 'Inzerát: ETA - Cesta 1',
+      dataType: 'STRING',
+      group: 'ads',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'adc_path2',
+      label: 'Inzerát: ETA - Cesta 2',
+      dataType: 'STRING',
+      group: 'ads',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'adc_longLine',
+      label: 'Inzerát: Kombinovaná - Dlouhý titulek',
+      dataType: 'STRING',
+      group: 'ads',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'adc_shortLine',
+      label: 'Inzerát: Kombinovaná - Krátký titulek',
+      dataType: 'STRING',
+      group: 'ads',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+
+    {
+      name: 'adc_companyName',
+      label: 'Inzerát: Kombinovaná - Název firmy',
+      dataType: 'STRING',
+      group: 'ads',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'adc_image.id',
+      label: 'Inzerát: Kombinovaná - ID obdélníkového obrázku',
+      dataType: 'NUMBER',
+      group: 'ads',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'adc_image.url',
+      label: 'Inzerát: Kombinovaná - URL obdélníkového obrázku',
+      dataType: 'STRING',
+      group: 'ads',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'adc_imageLogo.id',
+      label: 'Inzerát: Kombinovaná - ID loga',
+      dataType: 'NUMBER',
+      group: 'ads',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'adc_imageLogo.url',
+      label: 'Inzerát: Kombinovaná - URL na logo',
+      dataType: 'STRING',
+      group: 'ads',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'adc_imageSquare.id',
+      label: 'Inzerát: Kombinovaná - ID čtvercového obrázku',
+      dataType: 'NUMBER',
+      group: 'ads',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'adc_imageSquare.url',
+      label: 'Inzerát: Kombinovaná - URL čtvercového obrázku',
+      dataType: 'STRING',
+      group: 'ads',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'adc_imageLandscapeLogo.id',
+      label: 'Inzerát: Kombinovaná - ID obdélníkového loga',
+      dataType: 'NUMBER',
+      group: 'ads',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'adc_imageLandscapeLogo.url',
+      label: 'Inzerát: Kombinovaná - URL obdélníkového loga',
+      dataType: 'STRING',
+      group: 'ads',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'adc_premiseId',
+      label: 'Inzerát: ID provozovny',
+      dataType: 'NUMBER',
+      group: 'ads',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'adc_premiseModeId',
+      label: 'Inzerát: ID typu zobrazování pobočky',
+      dataType: 'NUMBER',
+      group: 'ads',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'adc_premiseMode',
+      label: 'Inzerát: Typ zobrazování pobočky',
+      dataType: 'STRING',
+      group: 'ads',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'adc_sensitivity',
+      label: 'Inzerát: Erotická reklama',
+      dataType: 'NUMBER',
+      group: 'ads',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'adc_status',
+      label: 'Inzerát: Stav nastavený uživatelem',
+      dataType: 'STRING',
+      group: 'ads',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'adc_trackingTemplate',
+      label: 'Inzerát: Měřicí šablona',
+      dataType: 'STRING',
+      group: 'ads',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'adc_avgCpc',
+      label: 'Inzerát: CPC Ø',
+      dataType: 'NUMBER',
+      group: 'ads',
+      semantics: {
+        conceptType: 'METRIC',          
+        semanticType: 'CURRENCY_CZK',
+        semanticGroup: 'CURRENCY',
+        defaultAggregationType: 'AVG'
+      }
+    },
+    {
+      name: 'adc_avgPos',
+      label: 'Inzerát:  Pozice Ø',
+      dataType: 'NUMBER',
+      group: 'ads',
+      semantics: {
+        conceptType: 'METRIC',
+        semanticType: 'NUMBER',
+        semanticGroup: 'NUMERIC',
+        defaultAggregationType: 'AVG'
+      }
+    },
+    {
+      name: 'adc_clickMoney',
+      label: 'Inzerát: Cena za prokliky',
+      dataType: 'NUMBER',
+      group: 'ads',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'adc_clickMoney_kc',
+      label: 'Inzerát: (Kč) Cena za prokliky',
+      dataType: 'NUMBER',
+      group: 'ads',
+      formula: 'adc_clickMoney*0.01',
+      semantics: {
+        conceptType: 'METRIC',          
+        semanticType: 'CURRENCY_CZK',
+        semanticGroup: 'CURRENCY',
+        defaultAggregationType: 'AVG'
+      }
+    },
+    {
+      name: 'adc_clicks',
+      label: 'Inzerát: Prokliky',
+      dataType: 'NUMBER',
+      group: 'ads',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'adc_conversions',
+      label: 'Inzerát: Konverze',
+      dataType: 'NUMBER',
+      group: 'ads',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'adc_conversionValue',
+      label: 'Inzerát: Hodnota konverze',
+      dataType: 'NUMBER',
+      group: 'ads',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'adc_conversionValue_kc',
+      label: 'Inzerát: (Kč) Hodnota konverze',
+      dataType: 'NUMBER',
+      group: 'ads',
+      formula: 'adc_conversionValue*0.01',
+      semantics: {
+        conceptType: 'METRIC',          
+        semanticType: 'CURRENCY_CZK',
+        semanticGroup: 'CURRENCY'
+      }
+    },
+    {
+      name: 'adc_impressionMoney',
+      label: 'Inzerát: Cena za zobrazení',
+      dataType: 'NUMBER',
+      group: 'ads',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'adc_impressionMoney_kc',
+      label: 'Inzerát: (Kč) Cena za zobrazení',
+      dataType: 'NUMBER',
+      group: 'ads',
+      formula: 'adc_impressionMoney*0.01',
+      semantics: {
+        conceptType: 'METRIC',          
+        semanticType: 'CURRENCY_CZK',
+        semanticGroup: 'CURRENCY',
+        defaultAggregationType: 'AVG'
+      }
+    },
+    {
+      name: 'adc_impressions',
+      label: 'Inzerát: Zobrazení',
+      dataType: 'NUMBER',
+      group: 'ads',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'adc_totalMoney',
+      label: 'Inzerát: Cena',
+      dataType: 'NUMBER',
+      group: 'ads',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'adc_totalMoney_kc',
+      label: 'Inzerát: (Kč) Cena',
+      dataType: 'NUMBER',
+      group: 'ads',
+      formula: 'adc_totalMoney*0.01',
+      semantics: {
+        conceptType: 'METRIC',          
+        semanticType: 'CURRENCY_CZK',
+        semanticGroup: 'CURRENCY'
+      }
+    },
+    {
+      name: 'adc_transactions',
+      label: 'Inzerát: Transakce',
+      dataType: 'NUMBER',
+      group: 'ads',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'adc_missImpressions',
+      label: 'Inzerát: Ztracená zobrazení',
+      dataType: 'NUMBER',
+      group: 'ads',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'adc_underLowerThreshold',
+      label: 'Inzerát:Ztracená zobrazení -  nízké cpc',
+      dataType: 'NUMBER',
+      group: 'ads',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'adc_exhaustedBudget',
+      label: 'Inzerát: Ztracená zobrazení - rozpočet',
+      dataType: 'NUMBER',
+      group: 'ads',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'adc_stoppedBySchedule',
+      label: 'Inzerát: Ztracená zobrazení - časové plánování',
+      dataType: 'NUMBER',
+      group: 'ads',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'adc_underForestThreshold',
+      label: 'Inzerát: Ztracená zobrazení - nízký rank',
+      dataType: 'NUMBER',
+      group: 'ads',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'adc_exhaustedBudgetShare',
+      label: 'Inzerát: Ztracená zobrazení - sdílený rozpočet',
+      dataType: 'NUMBER',
+      group: 'ads',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'adc_ctr',
+      label: 'Inzerát: CTR',
+      dataType: 'NUMBER',
+      group: 'ads',
+      semantics: {
+        conceptType: 'METRIC',
+        defaultAggregationType: 'AVG'
+      }
+    },
+    {
+      name: 'adc_pno',
+      label: 'Inzerát: PNO',
+      dataType: 'NUMBER',
+      group: 'ads',
+      semantics: {
+        conceptType: 'METRIC',
+        defaultAggregationType: 'AVG'
+      }
+    },
+    {
+      name: 'adc_ish',
+      label: 'Inzerát: Podíl ztracených zobrazení - vyhledávací síť',
+      dataType: 'NUMBER',
+      group: 'ads',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'adc_ishContext',
+      label: 'Inzerát: Podíl ztracených zobrazení - obsahová síť',
+      dataType: 'NUMBER',
+      group: 'ads',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'adc_ishSum',
+      label: 'Inzerát: Podíl ztracených zobrazení',
+      dataType: 'NUMBER',
+      group: 'ads',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    //####################################### Banners columns 
+    {
+      name: 'bnc_adStatus',
+      label: 'Banner: Stav inzerátu nastavený systémem',
+      dataType: 'STRING',
+      group: 'banners',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'bnc_adType',
+      label: 'Banner: Typ inzerátu',
+      dataType: 'STRING',
+      group: 'banners',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'bnc_bannerName',
+      label: 'Banner: Název',
+      dataType: 'STRING',
+      group: 'banners',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'bnc_clickthruUrl',
+      label: 'Banner: URL',
+      dataType: 'STRING',
+      group: 'banners',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'bnc_createDate',
+      label: 'Banner: Datum vytvoření sestavy',
+      dataType: 'STRING',
+      group: 'banners',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'bnc_deleted',
+      label: 'Banner: Smazáno',
+      dataType: 'BOOLEAN',
+      group: 'banners',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'bnc_deleteDate',
+      label: 'Banner: Datum smazání',
+      dataType: 'STRING',
+      group: 'banners',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'bnc_description',
+      label: 'Banner: ETA - Popisek',
+      dataType: 'STRING',
+      group: 'banners',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'bnc_mobileFinalUrl',
+      label: 'Banner: Cílová URL pro mobil',
+      dataType: 'STRING',
+      group: 'banners',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'bnc_height',
+      label: 'Banner: Výška',
+      dataType: 'NUMBER',
+      group: 'banners',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'bnc_id',
+      label: 'Banner: ID',
+      dataType: 'NUMBER',
+      group: 'banners',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'bnc_imageType',
+      label: 'Banner: Typ obrázku',
+      dataType: 'STRING',
+      group: 'banners',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'bnc_imageUrl',
+      label: 'Banner: Dočasná url data obrázku',
+      dataType: 'STRING',
+      group: 'banners',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'bnc_width',
+      label: 'Banner: Šířka',
+      dataType: 'NUMBER',
+      group: 'banners',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'bnc_premiseId',
+      label: 'Banner: ID provozovny',
+      dataType: 'NUMBER',
+      group: 'banners',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'bnc_premiseModeId',
+      label: 'Banner: ID typu zobrazování provozovny',
+      dataType: 'NUMBER',
+      group: 'banners',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'bnc_premiseMode',
+      label: 'Banner: Typ zobrazování provozovny',
+      dataType: 'STRING',
+      group: 'banners',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'bnc_sensitivity',
+      label: 'Banner: Erotická reklamat',
+      dataType: 'NUMBER',
+      group: 'banners',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'bnc_status',
+      label: 'Banner: Stav nastavený uživatelem',
+      dataType: 'STRING',
+      group: 'banners',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'bnc_avgCpc',
+      label: 'Banner: CPC Ø',
+      dataType: 'NUMBER',
+      group: 'banners',
+      semantics: {
+        conceptType: 'METRIC',          
+        semanticType: 'CURRENCY_CZK',
+        semanticGroup: 'CURRENCY',
+        defaultAggregationType: 'AVG'
+      }
+    },
+    {
+      name: 'bnc_avgPos',
+      label: 'Banner: Pozice Ø',
+      dataType: 'NUMBER',
+      group: 'banners',
+      semantics: {
+        conceptType: 'METRIC',
+        defaultAggregationType: 'AVG'
+      }
+    },
+    {
+      name: 'bnc_clickMoney',
+      label: 'Banner: Cena za prokliky',
+      dataType: 'NUMBER',
+      group: 'banners',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'bnc_clickMoney_kc',
+      label: 'Banner: (Kč) Cena za prokliky',
+      dataType: 'NUMBER',
+      group: 'banners',
+      formula: 'bnc_clickMoney*0.01',
+      semantics: {
+        conceptType: 'METRIC',          
+        semanticType: 'CURRENCY_CZK',
+        semanticGroup: 'CURRENCY',
+        defaultAggregationType: 'AVG'
+      }
+    },
+    {
+      name: 'bnc_clicks',
+      label: 'Banner: Prokliky',
+      dataType: 'NUMBER',
+      group: 'banners',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'bnc_conversions',
+      label: 'Banner: Konverze',
+      dataType: 'NUMBER',
+      group: 'banners',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'bnc_conversionValue',
+      label: 'Banner: Hodnota konverze',
+      dataType: 'NUMBER',
+      group: 'banners',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'bnc_conversionValue_kc',
+      label: 'Banner: (Kč) Hodnota konverze',
+      dataType: 'NUMBER',
+      group: 'banners',
+      formula: 'bnc_conversionValue*0.01',
+      semantics: {
+        conceptType: 'METRIC',          
+        semanticType: 'CURRENCY_CZK',
+        semanticGroup: 'CURRENCY'
+      }
+    },
+    {
+      name: 'bnc_impressionMoney',
+      label: 'Banner: Cena za zobrazení',
+      dataType: 'NUMBER',
+      group: 'banners',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'bnc_impressionMoney_kc',
+      label: 'Banner: (Kč) Cena za zobrazení',
+      dataType: 'NUMBER',
+      group: 'banners',
+      formula: 'bnc_impressionMoney*0.01',
+      semantics: {
+        conceptType: 'METRIC',          
+        semanticType: 'CURRENCY_CZK',
+        semanticGroup: 'CURRENCY',
+        defaultAggregationType: 'AVG'
+      }
+    },
+    {
+      name: 'bnc_impressions',
+      label: 'Banner: Zobrazení',
+      dataType: 'NUMBER',
+      group: 'banners',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'bnc_totalMoney',
+      label: 'Banner: Cena',
+      dataType: 'NUMBER',
+      group: 'banners',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'bnc_totalMoney_kc',
+      label: 'Banner: (Kč) Cena',
+      dataType: 'NUMBER',
+      group: 'banners',
+      formula: 'bnc_totalMoney*0.01',
+      semantics: {
+        conceptType: 'METRIC',          
+        semanticType: 'CURRENCY_CZK',
+        semanticGroup: 'CURRENCY',
+        defaultAggregationType: 'AVG'
+      }
+    },
+    {
+      name: 'bnc_transactions',
+      label: 'Banner: Transakce',
+      dataType: 'NUMBER',
+      group: 'banners',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'bnc_missImpressions',
+      label: 'Banner: Ztracená zobrazení',
+      dataType: 'NUMBER',
+      group: 'banners',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'bnc_underLowerThreshold',
+      label: 'Banner: Ztracená zobrazení - nízké cpc',
+      dataType: 'NUMBER',
+      group: 'banners',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'bnc_exhaustedBudget',
+      label: 'Banner: Ztracená zobrazení pro - rozpočet',
+      dataType: 'NUMBER',
+      group: 'banners',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'bnc_stoppedBySchedule',
+      label: 'Banner: Ztracená zobrazení - časové plánování',
+      dataType: 'NUMBER',
+      group: 'banners',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'bnc_underForestThreshold',
+      label: 'Banner: Ztracená zobrazení - relevance',
+      dataType: 'NUMBER',
+      group: 'banners',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'bnc_exhaustedBudgetShare',
+      label: 'Banner: Ztracená zobrazení - sdílený rozpočet',
+      dataType: 'NUMBER',
+      group: 'banners',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'bnc_ctr',
+      label: 'Banner: CTR',
+      dataType: 'NUMBER',
+      group: 'banners',
+      semantics: {
+        conceptType: 'METRIC',
+        defaultAggregationType: 'AVG'
+      } 
+    },
+    {
+      name: 'bnc_pno',
+      label: 'Banner: PNO',
+      dataType: 'NUMBER',
+      group: 'banners',
+      semantics: {
+        conceptType: 'METRIC',
+        defaultAggregationType: 'AVG'
+      }
+    },
+    {
+      name: 'bnc_ish',
+      label: 'Banner: Podíl ztracených zobrazení - vyhledávací síť',
+      dataType: 'NUMBER',
+      group: 'banners',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'bnc_ishContext',
+      label: 'Banner: Podíl ztracených zobrazení - obsahová síť',
+      dataType: 'NUMBER',
+      group: 'banners',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'bnc_ishSum',
+      label: 'Banner: Podíl ztracených zobrazení',
+      dataType: 'NUMBER',
+      group: 'banners',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    }
+  ];
+
+  this.getSchema = function () {
+    var schema = this.SklikDataSchema;
+    //Pokud mame v configu vyplnene GroupId pak delam rozpad podle toho
+    if ((this.config.groupsId != undefined && this.config.groupsId != ',' && this.config.groupsId.length > 0)) {
+      var gSchema = this.standardGroupsSchema(schema);
+      gSchema = this.bannersSchemaByGroup(gSchema, this.config.groupsId);
+      return this.adSchemaByGroup(gSchema, this.config.groupsId);
+    } else {
+      //Pokud nemame v configu nani GroupId ani CampaignsId pak delam celkovy rozpad
+      if (this.config.campaignsId == undefined || this.config.campaignsId.length == 0) {
+        var gSchema = this.standardGroupsSchema(schema);
+        gSchema = this.bannersSchemaDefault(gSchema);
+        return this.adSchemaDefault(gSchema);
+        //Pokud mame id v Campaigns pak rozpad dle nich
+      } else {
+        var gSchema = this.extendGroupsSchema(schema, this.config.campaignsId);
+        gSchema = this.bannersSchemaByCampaign(gSchema, this.config.campaignsId);
+        return this.adSchemaByCampaign(gSchema, this.config.campaignsId);
+      }
+    }
+    return schema;
+  }
+
+
+  this.bannersSchemaDefault = function (schema) {
+    var banner = [
       {
-        name: 'cpg_name',
-        label: 'Název kampaně',
+        name: 'bns_bannerName',
+        label: 'Název banneru',
         dataType: 'STRING',
-        group: 'campaigns',
-        isDefault: true,
+        group: 'banners',
         semantics: {
           conceptType: 'DIMENSION'
         }
       },
       {
-        name: 'cgc_actualClicks',
-        label: 'Kampaň: Aktulní kliky',
-        dataType: 'NUMBER',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'cgc_automaticLocation',
-        label: 'Kampaň: Zapnutí automatické lokace',
-        dataType: 'BOOLEAN',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'cgc_adSelection',
-        label: 'Kampaň: Reklamní metody',
+        name: 'bnd_days',
+        label: 'Statistiky bannerů (denní)',
         dataType: 'STRING',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'cgc_context',
-        label: 'Kampaň: Jedná se o kontextovou kampaň',
-        dataType: 'BOOLEAN',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'cgc_contextNetwork',
-        label: 'Kampaň: zaměření na kontextové sítě',
-        dataType: 'BOOLEAN',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'cgc_createDate',
-        label: 'Kampaň: Datum vytvoření kampaně',
-        dataType: 'STRING',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'cgc_deleted',
-        label: 'Kampaň: Samzaná',
-        dataType: 'BOOLEAN',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'cgc_deleteDate',
-        label: 'Kampaň: Datum smazání',
-        dataType: 'STRING',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'cgc_defaultBudgetId',
-        label: 'Kampaň: ID budgetu',
-        dataType: 'NUMBER',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'cgc_deviceDesktop',
-        label: 'Kampaň: Cílení na desktopy',
-        dataType: 'BOOLEAN',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'cgc_deviceTablet',
-        label: 'Kampaň: Cílení na tablety',
-        dataType: 'BOOLEAN',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'cgc_deviceMobil',
-        label: 'Kampaň: Cílení na mobily',
-        dataType: 'BOOLEAN',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'cgc_deviceOther',
-        label: 'Kampaň: Cílení na ostatní platformy',
-        dataType: 'BOOLEAN',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'cgc_endDate',
-        label: 'Kampaň: Datum ukončení',
-        dataType: 'STRING',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'cgc_exhaustedTotalBudget',
-        label: 'Kampaň: Nastaveni budgetu',
-        dataType: 'NUMBER',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'cgc_exhaustedTotalBudget_kc',
-        label: 'Kampaň: (Kč) Nastaveni budgetu',
-        dataType: 'NUMBER',
-        group: 'campaigns',
-        formula: 'cgc_exhaustedTotalBudget*0.01',
-        semantics: {
-          conceptType: 'METRIC',          
-          semanticType: 'CURRENCY_CZK',
-          semanticGroup: 'CURRENCY'
-        }
-      },
-      {
-        name: 'cgc_fulltext',
-        label: 'Kampaň: Fulltextova kampan',
-        dataType: 'BOOLEAN',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'cgc_name',
-        label: 'Kampaň: Název kampaně',
-        dataType: 'STRING',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'cgc_paymentMethod',
-        label: 'Kampaň: Způsob platby',
-        dataType: 'STRING',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'cgc_startDate',
-        label: 'Kampaň: Spuštění kampaně',
-        dataType: 'STRING',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'cgc_status',
-        label: 'Kampaň: Status',
-        dataType: 'STRING',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'cgc_totalCliks',
-        label: 'Kampaň: Všechny kliky',
-        dataType: 'NUMBER',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'cgc_totalClicksFrom',
-        label: 'Kampaň: Datum měření všech kliků',
-        dataType: 'STRING',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'cgc_contextNetworkId',
-        label: 'Kampaň: ID kontextové sítě',
-        dataType: 'NUMBER',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'cgc_totalBudget',
-        label: 'Kampaň: Celkvý budget',
-        dataType: 'NUMBER',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'cgc_totalBudget_kc',
-        label: 'Kampaň: (Kč) Celkvý budget',
-        dataType: 'NUMBER',
-        group: 'campaigns',
-        formula: 'cgc_totalBudget*0.01',
-        semantics: {
-          conceptType: 'METRIC',          
-          semanticType: 'CURRENCY_CZK',
-          semanticGroup: 'CURRENCY'
-        }
-      },
-      {
-        name: 'cgc_avgCpc',
-        label: 'Kampaň: Průměrná cena za klik (Avg CPC)',
-        dataType: 'NUMBER',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'cgc_avgCpc_kc',
-        label: 'Kampaň: (Kč) Průměrná cena za klik (Avg CPC)',
-        dataType: 'NUMBER',
-        group: 'campaigns',
-        formula: 'cgc_avgCpc*0.01',
-        semantics: {
-          conceptType: 'METRIC',          
-          semanticType: 'CURRENCY_CZK',
-          semanticGroup: 'CURRENCY',
-          defaultAggregationType: 'AVG'
-        }
-      },
-      {
-        name: 'cgc_avgPos',
-        label: 'Kampaň: Průměrná pozice ',
-        dataType: 'NUMBER',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'METRIC',
-          defaultAggregationType: 'AVG'
-        }
-      },
-      {
-        name: 'cgc_clickMoney',
-        label: 'Kampaň: Peníze utracené za prokliky',
-        dataType: 'NUMBER',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'cgc_clickMoney_kc',
-        label: 'Kampaň: (Kč) Peníze utracené za prokliky',
-        dataType: 'NUMBER',
-        formula: "cgc_clickMoney*0.01",
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'METRIC',          
-          semanticType: 'CURRENCY_CZK',
-          semanticGroup: 'CURRENCY'
-        }
-      },
-      {
-        name: 'cgc_clicks',
-        label: 'Kampaň: Počet prokliků',
-        dataType: 'NUMBER',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'cgc_conversions',
-        label: 'Kampaň: Konverze',
-        dataType: 'NUMBER',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'cgc_conversionValue',
-        label: 'Kampaň: Hodnota konverze',
-        dataType: 'NUMBER',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'cgc_impressionMoney',
-        label: 'Kampaň: Penize za zobrazení',
-        dataType: 'NUMBER',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'cgc_impressionMoney_kc',
-        label: 'Kampaň: (Kč) Penize za zobrazení',
-        dataType: 'NUMBER',
-        group: 'campaigns',
-        formula: 'cgc_impressionMoney*0.01',
-        semantics: {
-          conceptType: 'METRIC',          
-          semanticType: 'CURRENCY_CZK',
-          semanticGroup: 'CURRENCY'
-        }
-      },
-      {
-        name: 'cgc_impressions',
-        label: 'Kampaň: Počet zobrazení',
-        dataType: 'NUMBER',
-        group: 'campaigns',
-        isDefault: true,
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'cgc_totalMoney',
-        label: 'Kampaň: Celkem utracené peníze',
-        dataType: 'NUMBER',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'cgc_totalMoney_kc',
-        label: 'Kampaň: (Kč) Celkem utracené peníze',
-        dataType: 'NUMBER',
-        group: 'campaigns',
-        formula: 'cgc_totalMoney*0.01',
-        semantics: {
-          conceptType: 'METRIC',          
-          semanticType: 'CURRENCY_CZK',
-          semanticGroup: 'CURRENCY'
-        }
-      },
-      {
-        name: 'cgc_transactions',
-        label: 'Kampaň: Počet transakcí',
-        dataType: 'NUMBER',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'cgc_missImpressions',
-        label: 'Kampaň: Prošvihnuté zobrazení',
-        dataType: 'NUMBER',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'cgc_underLowerThreshold',
-        label: 'Kampaň: Prošvihnuté zobrazení pro nízké cpc',
-        dataType: 'NUMBER',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'cgc_exhaustedBudget',
-        label: 'Kampaň: Prošvihnuté zobrazní pro nízký budget',
-        dataType: 'NUMBER',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'cgc_stoppedBySchedule',
-        label: 'Kampaň: Prošvihnuté zobrazní pro plánované zobrazení',
-        dataType: 'NUMBER',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'cgc_underForestThreshold',
-        label: 'Kampaň: Prošvihnuté zobrazní pro nízkou relevanci',
-        dataType: 'NUMBER',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'cgc_exhaustedBudgetShare',
-        label: 'Kampaň: Prošvihnuté zobrazní vyčerpání sdíleného rozpočtu',
-        dataType: 'NUMBER',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'cgc_ctr',
-        label: 'Kampaň: CTR',
-        dataType: 'NUMBER',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'METRIC',
-          defaultAggregationType: 'AVG'
-        }
-      },
-      {
-        name: 'cgc_pno',
-        label: 'Kampaň: PNO (Cost Of Sale(COS))',
-        dataType: 'NUMBER',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'METRIC',
-          defaultAggregationType: 'AVG'
-        }
-      },
-      {
-        name: 'cgc_ish',
-        label: 'Kampaň: Procentuální prošvihnuté zobrazení ve vyhleávání',
-        dataType: 'NUMBER',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'cgc_ishContext',
-        label: 'Kampaň: Procentuální prošvihnuté zobrazení v kontextu',
-        dataType: 'NUMBER',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'cgc_ishSum',
-        label: 'Kampaň: Procentuální prošvihnuté zobrazení v obou',
-        dataType: 'NUMBER',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'cgc_id',
-        label: 'Kampaň: Id kampaně',
-        dataType: 'NUMBER',
-        group: 'campaigns',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-  
-  
-      //####################################### Campaigns Daily 
-      {
-        name: 'cpd_days',
-        label: 'Statistiky kampaně (denní)',
-        dataType: 'STRING',
-        group: 'campaignsDaily',
+        group: 'bannersDaily',
         semantics: {
           conceptType: 'DIMENSION',
           semanticType: 'YEAR_MONTH_DAY',
@@ -563,20 +1992,19 @@ var Schema = function (config) {
         }
       },
       {
-        name: 'cpd_campaignsIds',
-        label: 'Campaigns Id',
+        name: 'bnd_bannersIds',
+        label: 'Banner ID',
         dataType: 'NUMBER',
-        group: 'campaignsDaily',
+        group: 'bannersDaily',
         semantics: {
           conceptType: 'DIMENSION'
         }
       },
-      //####################################### Campaigns Weekly 
       {
-        name: 'cpw_days',
-        label: 'Statistiky kampaně (týdenní)',
+        name: 'bnw_days',
+        label: 'Statistiky bannerů (týdenní)',
         dataType: 'STRING',
-        group: 'campaignsWeekly',
+        group: 'bannersWeekly',
         semantics: {
           conceptType: 'DIMENSION',
           semanticType: 'YEAR_WEEK',
@@ -584,20 +2012,19 @@ var Schema = function (config) {
         }
       },
       {
-        name: 'cpw_campaignsIds',
-        label: 'Campaigns Id',
+        name: 'bnw_bannersIds',
+        label: 'Banner ID',
         dataType: 'NUMBER',
-        group: 'campaignsWeekly',
+        group: 'bannersWeekly',
         semantics: {
           conceptType: 'DIMENSION'
         }
       },
-      //####################################### Campaigns Monthly 
       {
-        name: 'cpm_days',
-        label: 'Statistiky kampaně (měsíční)',
+        name: 'bnm_days',
+        label: 'Statistiky bannerů (měsíční)',
         dataType: 'STRING',
-        group: 'campaignsMonthly',
+        group: 'bannersMonthly',
         semantics: {
           conceptType: 'DIMENSION',
           semanticType: 'YEAR_MONTH',
@@ -605,41 +2032,38 @@ var Schema = function (config) {
         }
       },
       {
-        name: 'cpm_campaignsIds',
-        label: 'Campaigns Id',
+        name: 'bnm_bannersIds',
+        label: 'Banner ID',
         dataType: 'NUMBER',
-        group: 'campaignsMonthly',
+        group: 'bannersMonthly',
         semantics: {
           conceptType: 'DIMENSION'
         }
-      },
-      //####################################### Campaigns Quarterly 
-      {
-        name: 'cpq_days',
-        label: 'Statistiky kampaně (kvartální)',
+      }, {
+        name: 'bnq_days',
+        label: 'Statistiky bannerů (kvartální)',
         dataType: 'STRING',
-        group: 'campaignsQuarterly',
+        group: 'bannersQuarterly',
         semantics: {
           conceptType: 'DIMENSION',
-          semanticType: 'YEAR_MONTH_DAY',
+          semanticType: 'YEAR_QUARTER',
           semanticGroup: 'DATETIME'
         }
       },
       {
-        name: 'cpq_campaignsIds',
-        label: 'Campaigns Id',
+        name: 'bnq_bannersIds',
+        label: 'Banner ID',
         dataType: 'NUMBER',
-        group: 'campaignsQuarterly',
+        group: 'bannersQuarterly',
         semantics: {
           conceptType: 'DIMENSION'
         }
       },
-      //####################################### Campaigns Yearly 
       {
-        name: 'cpy_days',
-        label: 'Statistiky kampaně (roční)',
+        name: 'bny_days',
+        label: 'Statistiky bannerů (roční)',
         dataType: 'STRING',
-        group: 'campaignsYearly',
+        group: 'bannersYearly',
         semantics: {
           conceptType: 'DIMENSION',
           semanticType: 'YEAR',
@@ -647,1351 +2071,31 @@ var Schema = function (config) {
         }
       },
       {
-        name: 'cpy_campaignsIds',
-        label: 'Campaigns Id',
+        name: 'bny_bannersIds',
+        label: 'Banner ID',
         dataType: 'NUMBER',
-        group: 'campaignsYearly',
+        group: 'bannersYearly',
         semantics: {
           conceptType: 'DIMENSION'
-        }
-      },
-      //####################################### Groups columns 
-      {
-        name: 'goc_createDate',
-        label: 'Sestava: Datum vzniku sestavy',
-        dataType: 'STRING',
-        group: 'groups',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      }, {
-        name: 'goc_deleted',
-        label: 'Sestava: Je smazaná',
-        dataType: 'BOOLEAN',
-        group: 'groups',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      }, {
-        name: 'goc_deleteDate',
-        label: 'Sestava: Datum smazání',
-        dataType: 'STRING',
-        group: 'groups',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      }, {
-        name: 'goc_id',
-        label: 'Sestava: Id',
-        dataType: 'NUMBER',
-        group: 'groups',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      }, {
-        name: 'goc_maxCpc',
-        label: 'Sestava: Maximální CPC',
-        dataType: 'NUMBER',
-        group: 'groups',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      }, {
-        name: 'goc_maxCpcContext',
-        label: 'Sestava: Maximální CPC pro Context',
-        dataType: 'NUMBER',
-        group: 'groups',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      }, {
-        name: 'goc_maxUserDailyImpressions',
-        label: 'Sestava: Zobrazení jednomu uživateli za den',
-        dataType: 'NUMBER',
-        group: 'groups',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      }, {
-        name: 'goc_maxCpt',
-        label: 'Sestava: Maximální CPT',
-        dataType: 'NUMBER',
-        group: 'groups',
-        semantics: {
-          conceptType: 'METRIC',          
-          semanticType: 'CURRENCY_CZK',
-          semanticGroup: 'CURRENCY'
-        }
-      }, {
-        name: 'goc_name',
-        label: 'Sestava: Název',
-        dataType: 'STRING',
-        group: 'groups',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      }, {
-        name: 'goc_sensitivity',
-        label: 'Sestava: Jedna se o erotickou reklamu',
-        dataType: 'BOOLEAN',
-        group: 'groups',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      }, {
-        name: 'goc_status',
-        label: 'Sestava: Status',
-        dataType: 'STRING',
-        group: 'groups',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      }, {
-        name: 'goc_statusId',
-        label: 'Sestava: Id statusu',
-        dataType: 'NUMBER',
-        group: 'groups',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      }, {
-        name: 'goc_avgCpc',
-        label: 'Sestava: Průměrné CPC',
-        dataType: 'NUMBER',
-        group: 'groups',
-        semantics: {
-          conceptType: 'METRIC',          
-          semanticType: 'CURRENCY_CZK',
-          semanticGroup: 'CURRENCY',
-          defaultAggregationType: 'AVG'
-        }
-      }, {
-        name: 'goc_avgPos',
-        label: 'Sestava: Průměrná pozice',
-        dataType: 'NUMBER',
-        group: 'groups',
-        semantics: {
-          conceptType: 'METRIC',          
-          defaultAggregationType: 'AVG'
-        }
-      }, {
-        name: 'goc_clickMoney',
-        label: 'Sestava: Cena prokliků',
-        dataType: 'NUMBER',
-        group: 'groups',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      }, {
-        name: 'goc_clickMoney_kc',
-        label: 'Sestava: (Kč) Cena prokliků',
-        dataType: 'NUMBER',
-        group: 'groups',
-        formula: 'goc_clickMoney*0.01',
-        semantics: {
-          conceptType: 'METRIC',          
-          semanticType: 'CURRENCY_CZK',
-          semanticGroup: 'CURRENCY'
-        }
-      },
-  
-      {
-        name: 'goc_clicks',
-        label: 'Sestava: Počet prokliků',
-        dataType: 'NUMBER',
-        group: 'groups',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      }, {
-        name: 'goc_conversions',
-        label: 'Sestava: Počet konverzí',
-        dataType: 'NUMBER',
-        group: 'groups',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      }, {
-        name: 'goc_conversionValue',
-        label: 'Sestava: Cena konverzí',
-        dataType: 'NUMBER',
-        group: 'groups',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      }, {
-        name: 'goc_conversionValue_kc',
-        label: 'Sestava: (Kč) Cena konverzí',
-        dataType: 'NUMBER',
-        group: 'groups',
-        formula: 'goc_conversionValue*0.01',
-        semantics: {
-          conceptType: 'METRIC',          
-          semanticType: 'CURRENCY_CZK',
-          semanticGroup: 'CURRENCY'
-        }
-      },
-      {
-        name: 'goc_impressionMoney',
-        label: 'Sestava: Cena za zobrazeni',
-        dataType: 'NUMBER',
-        group: 'groups',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      }, {
-        name: 'goc_impressionMoney_kc',
-        label: 'Sestava: (Kč) Cena za zobrazeni',
-        dataType: 'NUMBER',
-        group: 'groups',
-        formula: 'goc_impressionMoney*0.01',
-        semantics: {
-          conceptType: 'METRIC',          
-          semanticType: 'CURRENCY_CZK',
-          semanticGroup: 'CURRENCY',
-          defaultAggregationType: 'AVG'
-        }
-      },
-      {
-        name: 'goc_impressions',
-        label: 'Sestava: Počet zobrazení',
-        dataType: 'NUMBER',
-        group: 'groups',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      }, {
-        name: 'goc_totalMoney',
-        label: 'Sestava: Celkem utracené peníze',
-        dataType: 'NUMBER',
-        group: 'groups',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      }, {
-        name: 'goc_totalMoney_kc',
-        label: 'Sestava: Celkem utracené peníze',
-        dataType: 'NUMBER',
-        group: 'groups',
-        formula: 'goc_totalMoney*0.01',
-        semantics: {
-          conceptType: 'METRIC',          
-          semanticType: 'CURRENCY_CZK',
-          semanticGroup: 'CURRENCY'
-        }
-      },
-      {
-        name: 'goc_transactions',
-        label: 'Sestava: number of transactions',
-        dataType: 'NUMBER',
-        group: 'groups',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      }, {
-        name: 'goc_missImpressions',
-        label: 'Sestava: Nevyužité zobrazení',
-        dataType: 'NUMBER',
-        group: 'groups',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      }, {
-        name: 'goc_underLowerThreshold',
-        label: 'Sestava: Prošvihnuté zobrazení pro nízké cpc',
-        dataType: 'NUMBER',
-        group: 'groups',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      }, {
-        name: 'goc_exhaustedBudget',
-        label: 'Sestava: Prošvihnuté zobrazní pro nízký budget',
-        dataType: 'NUMBER',
-        group: 'groups',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      }, {
-        name: 'goc_stoppedBySchedule',
-        label: 'Sestava: Prošvihnuté zobrazní pro plánované zobrazení',
-        dataType: 'NUMBER',
-        group: 'groups',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      }, {
-        name: 'goc_underForestThreshold',
-        label: 'Sestava: Prošvihnuté zobrazní pro nízkou relevanci',
-        dataType: 'NUMBER',
-        group: 'groups',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      }, {
-        name: 'goc_exhaustedBudgetShare',
-        label: 'Sestavy: Prošvihnuté zobrazní vyčerpání sdíleného rozpočtu',
-        dataType: 'NUMBER',
-        group: 'groups',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      }, {
-        name: 'goc_ctr',
-        label: 'Sestava: CTR',
-        dataType: 'NUMBER',
-        group: 'groups',
-        semantics: {
-          conceptType: 'METRIC',
-          defaultAggregationType: 'AVG'
-        }
-      }, {
-        name: 'goc_pno',
-        label: 'Sestava: PNO (Cost Of Sale(COS))',
-        dataType: 'NUMBER',
-        group: 'groups',
-        semantics: {
-          conceptType: 'METRIC',
-          defaultAggregationType: 'AVG'
-        }
-      }, {
-        name: 'goc_ish',
-        label: 'Sestava: Procentuální prošvihnuté zobrazení ve vyhleávání',
-        dataType: 'NUMBER',
-        group: 'groups',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      }, {
-        name: 'goc_ishContext',
-        label: 'Sestava: Procentuální prošvihnuté zobrazení v kontextu',
-        dataType: 'NUMBER',
-        group: 'groups',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      }, {
-        name: 'goc_ishSum',
-        label: 'Sestava: Procentuální prošvihnuté zobrazení v obou',
-        dataType: 'NUMBER',
-        group: 'groups',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      //####################################### Ads columns 
-      {
-        name: 'adc_adStatus',
-        label: 'Inzerát: Stav inzerátu nastavený systémem',
-        dataType: 'STRING',
-        group: 'ads',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'adc_adType',
-        label: 'Inzerát: Typ inzerátu',
-        dataType: 'STRING',
-        group: 'ads',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'adc_clickthruText',
-        label: 'Inzerát: Text - zobrazený link',
-        dataType: 'STRING',
-        group: 'ads',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'adc_clickthruUrl',
-        label: 'Inzerát: Text - url',
-        dataType: 'STRING',
-        group: 'ads',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'adc_createDate',
-        label: 'Inzerát: Datum vzniku sestavy',
-        dataType: 'STRING',
-        group: 'ads',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'adc_creative1',
-        label: 'Inzerát: Text - text 1',
-        dataType: 'STRING',
-        group: 'ads',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'adc_creative2',
-        label: 'Inzerát: Text - text 2',
-        dataType: 'STRING',
-        group: 'ads',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'adc_creative3',
-        label: 'Inzerát: Text - text 3 ',
-        dataType: 'STRING',
-        group: 'ads',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'adc_deleted',
-        label: 'Inzerát: Je smazaná',
-        dataType: 'BOOLEAN',
-        group: 'ads',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'adc_deleteDate',
-        label: 'Inzerát: Datum smazání',
-        dataType: 'STRING',
-        group: 'ads',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'adc_description',
-        label: 'Inzerát: Eta - Popis',
-        dataType: 'STRING',
-        group: 'ads',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'adc_finalUrl',
-        label: 'Inzerát: Eta - url',
-        dataType: 'STRING',
-        group: 'ads',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'adc_headline1',
-        label: 'Inzerát: Eta - popis 1',
-        dataType: 'STRING',
-        group: 'ads',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'adc_headline2',
-        label: 'Inzerát: Eta - popis 2',
-        dataType: 'STRING',
-        group: 'ads',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'adc_id',
-        label: 'Inzerát: Id',
-        dataType: 'NUMBER',
-        group: 'ads',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'adc_path1',
-        label: 'Inzerát: Eta - cesta u url 1',
-        dataType: 'STRING',
-        group: 'ads',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'adc_path2',
-        label: 'Inzerát: Eta - cesta u url 2',
-        dataType: 'STRING',
-        group: 'ads',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'adc_longLine',
-        label: 'Inzerát: Kombinovaná - Dlouhý titulek',
-        dataType: 'STRING',
-        group: 'ads',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'adc_shortLine',
-        label: 'Inzerát: Kombinovaná - Krátký titulek',
-        dataType: 'STRING',
-        group: 'ads',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-  
-      {
-        name: 'adc_companyName',
-        label: 'Inzerát: Kombinovaná - Název firmy',
-        dataType: 'STRING',
-        group: 'ads',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'adc_image.id',
-        label: 'Inzerát: Kombinovaná - ID obdélníku',
-        dataType: 'NUMBER',
-        group: 'ads',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'adc_image.url',
-        label: 'Inzerát: Kombinovaná - Url na obdélník',
-        dataType: 'STRING',
-        group: 'ads',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'adc_imageLogo.id',
-        label: 'Inzerát: Kombinovaná - ID loga',
-        dataType: 'NUMBER',
-        group: 'ads',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'adc_imageLogo.url',
-        label: 'Inzerát: Kombinovaná - Url na logo',
-        dataType: 'STRING',
-        group: 'ads',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'adc_imageSquare.id',
-        label: 'Inzerát: Kombinovaná - ID čtverce',
-        dataType: 'NUMBER',
-        group: 'ads',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'adc_imageSquare.url',
-        label: 'Inzerát: Kombinovaná - Url na čtverec',
-        dataType: 'STRING',
-        group: 'ads',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'adc_imageLandscapeLogo.id',
-        label: 'Inzerát: Kombinovaná - ID obdelníkového loga',
-        dataType: 'NUMBER',
-        group: 'ads',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'adc_imageLandscapeLogo.url',
-        label: 'Inzerát: Kombinovaná - Url na obdelníkové logo',
-        dataType: 'STRING',
-        group: 'ads',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'adc_premiseId',
-        label: 'Inzerát: Id provozovny',
-        dataType: 'NUMBER',
-        group: 'ads',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'adc_premiseModeId',
-        label: 'Inzerát: Typ zobrazování provozovny',
-        dataType: 'NUMBER',
-        group: 'ads',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'adc_premiseMode',
-        label: 'Inzerát: Typ zobrazování provozovny',
-        dataType: 'STRING',
-        group: 'ads',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'adc_sensitivity',
-        label: 'Inzerát: Citlivost',
-        dataType: 'NUMBER',
-        group: 'ads',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'adc_status',
-        label: 'Inzerát: Stav nastavený uživatelem',
-        dataType: 'STRING',
-        group: 'ads',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'adc_trackingTemplate',
-        label: 'Inzerát: Traking template',
-        dataType: 'STRING',
-        group: 'ads',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'adc_avgCpc',
-        label: 'Inzerát: Průměrné CPC',
-        dataType: 'NUMBER',
-        group: 'ads',
-        semantics: {
-          conceptType: 'METRIC',          
-          semanticType: 'CURRENCY_CZK',
-          semanticGroup: 'CURRENCY',
-          defaultAggregationType: 'AVG'
-        }
-      },
-      {
-        name: 'adc_avgPos',
-        label: 'Inzerát: Průměrná pozice',
-        dataType: 'NUMBER',
-        group: 'ads',
-        semantics: {
-          conceptType: 'METRIC',
-          semanticType: 'NUMBER',
-          semanticGroup: 'NUMERIC',
-          defaultAggregationType: 'AVG'
-        }
-      },
-      {
-        name: 'adc_clickMoney',
-        label: 'Inzerát: Cena prokliků',
-        dataType: 'NUMBER',
-        group: 'ads',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'adc_clickMoney_kc',
-        label: 'Inzerát: (Kč) Cena prokliků',
-        dataType: 'NUMBER',
-        group: 'ads',
-        formula: 'adc_clickMoney*0.01',
-        semantics: {
-          conceptType: 'METRIC',          
-          semanticType: 'CURRENCY_CZK',
-          semanticGroup: 'CURRENCY',
-          defaultAggregationType: 'AVG'
-        }
-      },
-      {
-        name: 'adc_clicks',
-        label: 'Inzerát: Počet prokliků',
-        dataType: 'NUMBER',
-        group: 'ads',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'adc_conversions',
-        label: 'Inzerát: Počet konverzí',
-        dataType: 'NUMBER',
-        group: 'ads',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'adc_conversionValue',
-        label: 'Inzerát: Cena konverzí',
-        dataType: 'NUMBER',
-        group: 'ads',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'adc_conversionValue_kc',
-        label: 'Inzerát: (Kč) Cena konverzí',
-        dataType: 'NUMBER',
-        group: 'ads',
-        formula: 'adc_conversionValue*0.01',
-        semantics: {
-          conceptType: 'METRIC',          
-          semanticType: 'CURRENCY_CZK',
-          semanticGroup: 'CURRENCY'
-        }
-      },
-      {
-        name: 'adc_impressionMoney',
-        label: 'Inzerát: Cena za zobrazeni',
-        dataType: 'NUMBER',
-        group: 'ads',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'adc_impressionMoney_kc',
-        label: 'Inzerát: (Kč) Cena za zobrazeni',
-        dataType: 'NUMBER',
-        group: 'ads',
-        formula: 'adc_impressionMoney*0.01',
-        semantics: {
-          conceptType: 'METRIC',          
-          semanticType: 'CURRENCY_CZK',
-          semanticGroup: 'CURRENCY',
-          defaultAggregationType: 'AVG'
-        }
-      },
-      {
-        name: 'adc_impressions',
-        label: 'Inzerát: Počet zobrazení',
-        dataType: 'NUMBER',
-        group: 'ads',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'adc_totalMoney',
-        label: 'Inzerát: Celkem utracené peníze',
-        dataType: 'NUMBER',
-        group: 'ads',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'adc_totalMoney_kc',
-        label: 'Inzerát: (Kč) Celkem utracené peníze',
-        dataType: 'NUMBER',
-        group: 'ads',
-        formula: 'adc_totalMoney*0.01',
-        semantics: {
-          conceptType: 'METRIC',          
-          semanticType: 'CURRENCY_CZK',
-          semanticGroup: 'CURRENCY'
-        }
-      },
-      {
-        name: 'adc_transactions',
-        label: 'Inzerát: number of transactions',
-        dataType: 'NUMBER',
-        group: 'ads',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'adc_missImpressions',
-        label: 'Inzerát: Nevyužité zobrazení',
-        dataType: 'NUMBER',
-        group: 'ads',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'adc_underLowerThreshold',
-        label: 'Inzerát: Prošvihnuté zobrazení pro nízké cpc',
-        dataType: 'NUMBER',
-        group: 'ads',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'adc_exhaustedBudget',
-        label: 'Inzerát: Prošvihnuté zobrazní pro nízký budget',
-        dataType: 'NUMBER',
-        group: 'ads',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'adc_stoppedBySchedule',
-        label: 'Inzerát: Prošvihnuté zobrazní pro plánované zobrazení',
-        dataType: 'NUMBER',
-        group: 'ads',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'adc_underForestThreshold',
-        label: 'Inzerát: Prošvihnuté zobrazní pro nízkou relevanci',
-        dataType: 'NUMBER',
-        group: 'ads',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'adc_exhaustedBudgetShare',
-        label: 'Inzerát: Prošvihnuté zobrazní vyčerpání sdíleného rozpočtu',
-        dataType: 'NUMBER',
-        group: 'ads',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'adc_ctr',
-        label: 'Inzerát: CTR',
-        dataType: 'NUMBER',
-        group: 'ads',
-        semantics: {
-          conceptType: 'METRIC',
-          defaultAggregationType: 'AVG'
-        }
-      },
-      {
-        name: 'adc_pno',
-        label: 'Inzerát: PNO (Cost Of Sale(COS))',
-        dataType: 'NUMBER',
-        group: 'ads',
-        semantics: {
-          conceptType: 'METRIC',
-          defaultAggregationType: 'AVG'
-        }
-      },
-      {
-        name: 'adc_ish',
-        label: 'Inzerát: Procentuální prošvihnuté zobrazení ve vyhleávání',
-        dataType: 'NUMBER',
-        group: 'ads',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'adc_ishContext',
-        label: 'Inzerát: Procentuální prošvihnuté zobrazení v kontextu',
-        dataType: 'NUMBER',
-        group: 'ads',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'adc_ishSum',
-        label: 'Inzerát: Procentuální prošvihnuté zobrazení v obou',
-        dataType: 'NUMBER',
-        group: 'ads',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      //####################################### Banners columns 
-      {
-        name: 'bnc_adStatus',
-        label: 'Banner: Stav inzerátu nastavený systémem',
-        dataType: 'STRING',
-        group: 'banners',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'bnc_adType',
-        label: 'Banner: Typ inzerátu',
-        dataType: 'STRING',
-        group: 'banners',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'bnc_bannerName',
-        label: 'Banner: Název banneru',
-        dataType: 'STRING',
-        group: 'banners',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'bnc_clickthruUrl',
-        label: 'Banner: Url',
-        dataType: 'STRING',
-        group: 'banners',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'bnc_createDate',
-        label: 'Banner: Datum vzniku sestavy',
-        dataType: 'STRING',
-        group: 'banners',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'bnc_creative1',
-        label: 'Banner: Text - text 1',
-        dataType: 'STRING',
-        group: 'banners',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'bnc_deleted',
-        label: 'Banner: Je smazaná',
-        dataType: 'BOOLEAN',
-        group: 'banners',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'bnc_deleteDate',
-        label: 'Banner: Datum smazání',
-        dataType: 'STRING',
-        group: 'banners',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'bnc_description',
-        label: 'Banner: Eta - Popis',
-        dataType: 'STRING',
-        group: 'banners',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'bnc_mobileFinalUrl',
-        label: 'Banner: Mobile final url',
-        dataType: 'STRING',
-        group: 'banners',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'bnc_height',
-        label: 'Banner: Výška',
-        dataType: 'NUMBER',
-        group: 'banners',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'bnc_id',
-        label: 'Banner: Id',
-        dataType: 'NUMBER',
-        group: 'banners',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'bnc_imageType',
-        label: 'Banner: Typ obrázku',
-        dataType: 'STRING',
-        group: 'banners',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'bnc_imageUrl',
-        label: 'Banner: Dočasná url data obrázku',
-        dataType: 'STRING',
-        group: 'banners',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'bnc_width',
-        label: 'Banner: Šířka',
-        dataType: 'NUMBER',
-        group: 'banners',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'bnc_premiseId',
-        label: 'Banner: Id provozovny',
-        dataType: 'NUMBER',
-        group: 'banners',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'bnc_premiseModeId',
-        label: 'Banner: Typ zobrazování provozovny',
-        dataType: 'NUMBER',
-        group: 'banners',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'bnc_premiseMode',
-        label: 'Banner: Typ zobrazování provozovny',
-        dataType: 'STRING',
-        group: 'banners',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'bnc_sensitivity',
-        label: 'Banner: Citlivost',
-        dataType: 'NUMBER',
-        group: 'banners',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'bnc_status',
-        label: 'Banner: Stav nastavený uživatelem',
-        dataType: 'STRING',
-        group: 'banners',
-        semantics: {
-          conceptType: 'DIMENSION'
-        }
-      },
-      {
-        name: 'bnc_avgCpc',
-        label: 'Banner: Průměrné CPC',
-        dataType: 'NUMBER',
-        group: 'banners',
-        semantics: {
-          conceptType: 'METRIC',          
-          semanticType: 'CURRENCY_CZK',
-          semanticGroup: 'CURRENCY',
-          defaultAggregationType: 'AVG'
-        }
-      },
-      {
-        name: 'bnc_avgPos',
-        label: 'Banner: Průměrná pozice',
-        dataType: 'NUMBER',
-        group: 'banners',
-        semantics: {
-          conceptType: 'METRIC',
-          defaultAggregationType: 'AVG'
-        }
-      },
-      {
-        name: 'bnc_clickMoney',
-        label: 'Banner: Cena prokliků',
-        dataType: 'NUMBER',
-        group: 'banners',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'bnc_clickMoney_kc',
-        label: 'Banner: (Kč) Cena prokliků',
-        dataType: 'NUMBER',
-        group: 'banners',
-        formula: 'bnc_clickMoney*0.01',
-        semantics: {
-          conceptType: 'METRIC',          
-          semanticType: 'CURRENCY_CZK',
-          semanticGroup: 'CURRENCY',
-          defaultAggregationType: 'AVG'
-        }
-      },
-      {
-        name: 'bnc_clicks',
-        label: 'Banner: Počet prokliků',
-        dataType: 'NUMBER',
-        group: 'banners',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'bnc_conversions',
-        label: 'Banner: Počet konverzí',
-        dataType: 'NUMBER',
-        group: 'banners',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'bnc_conversionValue',
-        label: 'Banner: Cena konverzí',
-        dataType: 'NUMBER',
-        group: 'banners',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'bnc_conversionValue_kc',
-        label: 'Banner: (Kč) Cena konverzí',
-        dataType: 'NUMBER',
-        group: 'banners',
-        formula: 'bnc_conversionValue*0.01',
-        semantics: {
-          conceptType: 'METRIC',          
-          semanticType: 'CURRENCY_CZK',
-          semanticGroup: 'CURRENCY'
-        }
-      },
-      {
-        name: 'bnc_impressionMoney',
-        label: 'Banner: Cena za zobrazeni',
-        dataType: 'NUMBER',
-        group: 'banners',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'bnc_impressionMoney_kc',
-        label: 'Banner: (Kč) Cena za zobrazeni',
-        dataType: 'NUMBER',
-        group: 'banners',
-        formula: 'bnc_impressionMoney*0.01',
-        semantics: {
-          conceptType: 'METRIC',          
-          semanticType: 'CURRENCY_CZK',
-          semanticGroup: 'CURRENCY',
-          defaultAggregationType: 'AVG'
-        }
-      },
-      {
-        name: 'bnc_impressions',
-        label: 'Banner: Počet zobrazení',
-        dataType: 'NUMBER',
-        group: 'banners',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'bnc_totalMoney',
-        label: 'Banner: Celkem utracené peníze',
-        dataType: 'NUMBER',
-        group: 'banners',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'bnc_totalMoney_kc',
-        label: 'Banner: (Kč) Celkem utracené peníze',
-        dataType: 'NUMBER',
-        group: 'banners',
-        formula: 'bnc_totalMoney*0.01',
-        semantics: {
-          conceptType: 'METRIC',          
-          semanticType: 'CURRENCY_CZK',
-          semanticGroup: 'CURRENCY',
-          defaultAggregationType: 'AVG'
-        }
-      },
-      {
-        name: 'bnc_transactions',
-        label: 'Banner: number of transactions',
-        dataType: 'NUMBER',
-        group: 'banners',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'bnc_missImpressions',
-        label: 'Banner: Nevyužité zobrazení',
-        dataType: 'NUMBER',
-        group: 'banners',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'bnc_underLowerThreshold',
-        label: 'Banner: Prošvihnuté zobrazení pro nízké cpc',
-        dataType: 'NUMBER',
-        group: 'banners',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'bnc_exhaustedBudget',
-        label: 'Banner: Prošvihnuté zobrazní pro nízký budget',
-        dataType: 'NUMBER',
-        group: 'banners',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'bnc_stoppedBySchedule',
-        label: 'Banner: Prošvihnuté zobrazní pro plánované zobrazení',
-        dataType: 'NUMBER',
-        group: 'banners',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'bnc_underForestThreshold',
-        label: 'Banner: Prošvihnuté zobrazní pro nízkou relevanci',
-        dataType: 'NUMBER',
-        group: 'banners',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'bnc_exhaustedBudgetShare',
-        label: 'Banner: Prošvihnuté zobrazní vyčerpání sdíleného rozpočtu',
-        dataType: 'NUMBER',
-        group: 'banners',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'bnc_ctr',
-        label: 'Banner: CTR',
-        dataType: 'NUMBER',
-        group: 'banners',
-        semantics: {
-          conceptType: 'METRIC',
-          defaultAggregationType: 'AVG'
-        } 
-      },
-      {
-        name: 'bnc_pno',
-        label: 'Banner: PNO (Cost Of Sale(COS))',
-        dataType: 'NUMBER',
-        group: 'banners',
-        semantics: {
-          conceptType: 'METRIC',
-          defaultAggregationType: 'AVG'
-        }
-      },
-      {
-        name: 'bnc_ish',
-        label: 'Banner: Procentuální prošvihnuté zobrazení ve vyhleávání',
-        dataType: 'NUMBER',
-        group: 'banners',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'bnc_ishContext',
-        label: 'Banner: Procentuální prošvihnuté zobrazení v kontextu',
-        dataType: 'NUMBER',
-        group: 'banners',
-        semantics: {
-          conceptType: 'METRIC'
-        }
-      },
-      {
-        name: 'bnc_ishSum',
-        label: 'Banner: Procentuální prošvihnuté zobrazení v obou',
-        dataType: 'NUMBER',
-        group: 'banners',
-        semantics: {
-          conceptType: 'METRIC'
         }
       }
+
     ];
-  
-    this.getSchema = function () {
-      var schema = this.SklikDataSchema;
-      //Pokud mame v configu vyplnene GroupId pak delam rozpad podle toho
-      if ((this.config.groupsId != undefined && this.config.groupsId != ',' && this.config.groupsId.length > 0)) {
-        var gSchema = this.standardGroupsSchema(schema);
-        gSchema = this.bannersSchemaByGroup(gSchema, this.config.groupsId);
-        return this.adSchemaByGroup(gSchema, this.config.groupsId);
-      } else {
-        //Pokud nemame v configu nani GroupId ani CampaignsId pak delam celkovy rozpad
-        if (this.config.campaignsId == undefined || this.config.campaignsId.length == 0) {
-          var gSchema = this.standardGroupsSchema(schema);
-          gSchema = this.bannersSchemaDefault(gSchema);
-          return this.adSchemaDefault(gSchema);
-          //Pokud mame id v Campaigns pak rozpad dle nich
-        } else {
-          var gSchema = this.extendGroupsSchema(schema, this.config.campaignsId);
-          gSchema = this.bannersSchemaByCampaign(gSchema, this.config.campaignsId);
-          return this.adSchemaByCampaign(gSchema, this.config.campaignsId);
-        }
-      }
-      return schema;
-    }
-  
-  
-    this.bannersSchemaDefault = function (schema) {
-      var banner = [
+    return schema.concat(banner);
+  }
+
+
+
+  this.bannersSchemaByGroup = function (schema, ids) {
+    var idsArr = ids.split(',');
+    var id;
+    var banner;
+    while (idsArr.length > 0) {
+      id = idsArr.pop();
+      banner = [
         {
-          name: 'bns_bannerName',
-          label: 'Název inzerátu',
+          name: 'bns_bannerName_' + id,
+          label: 'Název bannerů pro sestavu ' + id,
           dataType: 'STRING',
           group: 'banners',
           semantics: {
@@ -1999,8 +2103,8 @@ var Schema = function (config) {
           }
         },
         {
-          name: 'bnd_days',
-          label: 'Statistiky bannerů (denní)',
+          name: 'bnd_days_' + id,
+          label: 'Statistiky bannerů (denní) pro sestavu ' + id,
           dataType: 'STRING',
           group: 'bannersDaily',
           semantics: {
@@ -2010,8 +2114,8 @@ var Schema = function (config) {
           }
         },
         {
-          name: 'bnd_bannersIds',
-          label: 'Banner Id',
+          name: 'bnd_bannersIds_' + id,
+          label: 'Banner ID pro sestavu ' + id,
           dataType: 'NUMBER',
           group: 'bannersDaily',
           semantics: {
@@ -2019,8 +2123,8 @@ var Schema = function (config) {
           }
         },
         {
-          name: 'bnw_days',
-          label: 'Statistiky bannerů (týdenní)',
+          name: 'bnw_days_' + id,
+          label: 'Statistiky bannerů (týdenní) pro sestavu ' + id,
           dataType: 'STRING',
           group: 'bannersWeekly',
           semantics: {
@@ -2030,8 +2134,8 @@ var Schema = function (config) {
           }
         },
         {
-          name: 'bnw_bannersIds',
-          label: 'Banner Id',
+          name: 'bnw_bannersIds_' + id,
+          label: 'Banner ID pro sestavu ' + id,
           dataType: 'NUMBER',
           group: 'bannersWeekly',
           semantics: {
@@ -2039,8 +2143,8 @@ var Schema = function (config) {
           }
         },
         {
-          name: 'bnm_days',
-          label: 'Statistiky bannerů (měsíční)',
+          name: 'bnm_days_' + id,
+          label: 'Statistiky bannerů (měsíční) pro sestavu ' + id,
           dataType: 'STRING',
           group: 'bannersMonthly',
           semantics: {
@@ -2050,16 +2154,16 @@ var Schema = function (config) {
           }
         },
         {
-          name: 'bnm_bannersIds',
-          label: 'Banner Id',
+          name: 'bnm_bannersIds_' + id,
+          label: 'Banner ID pro sestavu ' + id,
           dataType: 'NUMBER',
           group: 'bannersMonthly',
           semantics: {
             conceptType: 'DIMENSION'
           }
         }, {
-          name: 'bnq_days',
-          label: 'Statistiky bannerů (kvartální)',
+          name: 'bnq_days_' + id,
+          label: 'Statistiky bannerů (kvartální) pro sestavu ' + id,
           dataType: 'STRING',
           group: 'bannersQuarterly',
           semantics: {
@@ -2069,8 +2173,8 @@ var Schema = function (config) {
           }
         },
         {
-          name: 'bnq_bannersIds',
-          label: 'Banner Id',
+          name: 'bnq_bannersIds_' + id,
+          label: 'Banner ID pro sestavu ' + id,
           dataType: 'NUMBER',
           group: 'bannersQuarterly',
           semantics: {
@@ -2078,8 +2182,8 @@ var Schema = function (config) {
           }
         },
         {
-          name: 'bny_days',
-          label: 'Statistiky bannerů (roční)',
+          name: 'bny_days_' + id,
+          label: 'Statistiky bannerů (roční) pro sestavu ' + id,
           dataType: 'STRING',
           group: 'bannersYearly',
           semantics: {
@@ -2089,273 +2193,273 @@ var Schema = function (config) {
           }
         },
         {
-          name: 'bny_bannersIds',
-          label: 'Banner Id',
+          name: 'bny_bannersIds_' + id,
+          label: 'Banner ID pro sestavu ' + id,
           dataType: 'NUMBER',
           group: 'bannersYearly',
           semantics: {
             conceptType: 'DIMENSION'
           }
         }
-  
+
       ];
-      return schema.concat(banner);
+      schema = schema.concat(banner);
     }
-  
-  
-  
-    this.bannersSchemaByGroup = function (schema, ids) {
-      var idsArr = ids.split(',');
-      var id;
-      var banner;
-      while (idsArr.length > 0) {
-        id = idsArr.pop();
-        banner = [
-          {
-            name: 'bns_bannerName_' + id,
-            label: 'Název bannerů pro sestavu ' + id,
-            dataType: 'STRING',
-            group: 'banners',
-            semantics: {
-              conceptType: 'DIMENSION'
-            }
-          },
-          {
-            name: 'bnd_days_' + id,
-            label: 'Statistiky bannerů (denní) pro sestavu ' + id,
-            dataType: 'STRING',
-            group: 'bannersDaily',
-            semantics: {
-              conceptType: 'DIMENSION',
-              semanticType: 'YEAR_MONTH_DAY',
-              semanticGroup: 'DATETIME'
-            }
-          },
-          {
-            name: 'bnd_bannersIds_' + id,
-            label: 'Banner Id pro sestavu ' + id,
-            dataType: 'NUMBER',
-            group: 'bannersDaily',
-            semantics: {
-              conceptType: 'DIMENSION'
-            }
-          },
-          {
-            name: 'bnw_days_' + id,
-            label: 'Statistiky bannerů (týdenní) pro sestavu ' + id,
-            dataType: 'STRING',
-            group: 'bannersWeekly',
-            semantics: {
-              conceptType: 'DIMENSION',
-              semanticType: 'YEAR_WEEK',
-              semanticGroup: 'DATETIME'
-            }
-          },
-          {
-            name: 'bnw_bannersIds_' + id,
-            label: 'Banner Id pro sestavu ' + id,
-            dataType: 'NUMBER',
-            group: 'bannersWeekly',
-            semantics: {
-              conceptType: 'DIMENSION'
-            }
-          },
-          {
-            name: 'bnm_days_' + id,
-            label: 'Statistiky bannerů (měsíční) pro sestavu ' + id,
-            dataType: 'STRING',
-            group: 'bannersMonthly',
-            semantics: {
-              conceptType: 'DIMENSION',
-              semanticType: 'YEAR_MONTH',
-              semanticGroup: 'DATETIME'
-            }
-          },
-          {
-            name: 'bnm_bannersIds_' + id,
-            label: 'Banner Id pro sestavu ' + id,
-            dataType: 'NUMBER',
-            group: 'bannersMonthly',
-            semantics: {
-              conceptType: 'DIMENSION'
-            }
-          }, {
-            name: 'bnq_days_' + id,
-            label: 'Statistiky bannerů (kvartální) pro sestavu ' + id,
-            dataType: 'STRING',
-            group: 'bannersQuarterly',
-            semantics: {
-              conceptType: 'DIMENSION',
-              semanticType: 'YEAR_QUARTER',
-              semanticGroup: 'DATETIME'
-            }
-          },
-          {
-            name: 'bnq_bannersIds_' + id,
-            label: 'Banner Id pro sestavu ' + id,
-            dataType: 'NUMBER',
-            group: 'bannersQuarterly',
-            semantics: {
-              conceptType: 'DIMENSION'
-            }
-          },
-          {
-            name: 'bny_days_' + id,
-            label: 'Statistiky bannerů (roční) pro sestavu ' + id,
-            dataType: 'STRING',
-            group: 'bannersYearly',
-            semantics: {
-              conceptType: 'DIMENSION',
-              semanticType: 'YEAR',
-              semanticGroup: 'DATETIME'
-            }
-          },
-          {
-            name: 'bny_bannersIds_' + id,
-            label: 'Banner Id pro sestavu ' + id,
-            dataType: 'NUMBER',
-            group: 'bannersYearly',
-            semantics: {
-              conceptType: 'DIMENSION'
-            }
-          }
-  
-        ];
-        schema = schema.concat(banner);
-      }
-      return schema;
-  
-    }
-  
-    this.bannersSchemaByCampaign = function (schema, ids) {
-      var idsArr = ids.split(',');
-      var id;
-      var banner;
-      while (idsArr.length > 0) {
-        id = idsArr.pop();
-        banner = [
-          {
-            name: 'bns_bannerName_' + id,
-            label: 'Název bannerů pro kampan ' + id,
-            dataType: 'STRING',
-            group: 'banners',
-            semantics: {
-              conceptType: 'DIMENSION'
-            }
-          },
-          {
-            name: 'bnd_days_' + id,
-            label: 'Statistiky bannerů (denní) pro kampan ' + id,
-            dataType: 'STRING',
-            group: 'bannersDaily',
-            semantics: {
-              conceptType: 'DIMENSION',
-              semanticType: 'YEAR_MONTH_DAY',
-              semanticGroup: 'DATETIME'
-            }
-          },
-          {
-            name: 'bnd_bannersIds_' + id,
-            label: 'Banner Id pro kampan ' + id,
-            dataType: 'NUMBER',
-            group: 'bannersDaily',
-            semantics: {
-              conceptType: 'DIMENSION'
-            }
-          },
-          {
-            name: 'bnw_days_' + id,
-            label: 'Statistiky bannerů (týdenní) pro kampan ' + id,
-            dataType: 'STRING',
-            group: 'bannersWeekly',
-            semantics: {
-              conceptType: 'DIMENSION',
-              semanticType: 'YEAR_WEEK',
-              semanticGroup: 'DATETIME'
-            }
-          },
-          {
-            name: 'bnw_bannersIds_' + id,
-            label: 'Banner Id pro kampan ' + id,
-            dataType: 'NUMBER',
-            group: 'bannersWeekly',
-            semantics: {
-              conceptType: 'DIMENSION'
-            }
-          },
-          {
-            name: 'bnm_days_' + id,
-            label: 'Statistiky bannerů (měsíční) pro kampan ' + id,
-            dataType: 'STRING',
-            group: 'bannersMonthly',
-            semantics: {
-              conceptType: 'DIMENSION',
-              semanticType: 'YEAR_MONTH',
-              semanticGroup: 'DATETIME'
-            }
-          },
-          {
-            name: 'bnm_bannersIds_' + id,
-            label: 'Banner Id pro kampan ' + id,
-            dataType: 'NUMBER',
-            group: 'bannersMonthly',
-            semantics: {
-              conceptType: 'DIMENSION'
-            }
-          }, {
-            name: 'bnq_days_' + id,
-            label: 'Statistiky bannerů (kvartální) pro kampan ' + id,
-            dataType: 'STRING',
-            group: 'bannersQuarterly',
-            semantics: {
-              conceptType: 'DIMENSION',
-              semanticType: 'YEAR_QUARTER',
-              semanticGroup: 'DATETIME'
-            }
-          },
-          {
-            name: 'bnq_bannersIds_' + id,
-            label: 'Banner Id pro kampan ' + id,
-            dataType: 'NUMBER',
-            group: 'bannersQuarterly',
-            semantics: {
-              conceptType: 'DIMENSION'
-            }
-          },
-          {
-            name: 'bny_days_' + id,
-            label: 'Statistiky bannerů (roční) pro kampan ' + id,
-            dataType: 'STRING',
-            group: 'bannersYearly',
-            semantics: {
-              conceptType: 'DIMENSION',
-              semanticType: 'YEAR',
-              semanticGroup: 'DATETIME'
-            }
-          },
-          {
-            name: 'bny_bannersIds_' + id,
-            label: 'Banner Id pro kampan ' + id,
-            dataType: 'NUMBER',
-            group: 'bannersYearly',
-            semantics: {
-              conceptType: 'DIMENSION'
-            }
-          }
-  
-        ];
-        schema = schema.concat(banner);
-      }
-      return schema;
-  
-    }
-  
-  
-    this.adSchemaDefault = function (schema) {
-      var ad = [
+    return schema;
+
+  }
+
+  this.bannersSchemaByCampaign = function (schema, ids) {
+    var idsArr = ids.split(',');
+    var id;
+    var banner;
+    while (idsArr.length > 0) {
+      id = idsArr.pop();
+      banner = [
         {
-          name: 'ads_headline1',
-          label: 'Název inzerátu',
+          name: 'bns_bannerName_' + id,
+          label: 'Název bannerů pro kampaň ' + id,
+          dataType: 'STRING',
+          group: 'banners',
+          semantics: {
+            conceptType: 'DIMENSION'
+          }
+        },
+        {
+          name: 'bnd_days_' + id,
+          label: 'Statistiky bannerů (denní) pro kampaň ' + id,
+          dataType: 'STRING',
+          group: 'bannersDaily',
+          semantics: {
+            conceptType: 'DIMENSION',
+            semanticType: 'YEAR_MONTH_DAY',
+            semanticGroup: 'DATETIME'
+          }
+        },
+        {
+          name: 'bnd_bannersIds_' + id,
+          label: 'Banner Id pro kampaň ' + id,
+          dataType: 'NUMBER',
+          group: 'bannersDaily',
+          semantics: {
+            conceptType: 'DIMENSION'
+          }
+        },
+        {
+          name: 'bnw_days_' + id,
+          label: 'Statistiky bannerů (týdenní) pro kampaň ' + id,
+          dataType: 'STRING',
+          group: 'bannersWeekly',
+          semantics: {
+            conceptType: 'DIMENSION',
+            semanticType: 'YEAR_WEEK',
+            semanticGroup: 'DATETIME'
+          }
+        },
+        {
+          name: 'bnw_bannersIds_' + id,
+          label: 'Banner ID pro kampaň ' + id,
+          dataType: 'NUMBER',
+          group: 'bannersWeekly',
+          semantics: {
+            conceptType: 'DIMENSION'
+          }
+        },
+        {
+          name: 'bnm_days_' + id,
+          label: 'Statistiky bannerů (měsíční) pro kampaň ' + id,
+          dataType: 'STRING',
+          group: 'bannersMonthly',
+          semantics: {
+            conceptType: 'DIMENSION',
+            semanticType: 'YEAR_MONTH',
+            semanticGroup: 'DATETIME'
+          }
+        },
+        {
+          name: 'bnm_bannersIds_' + id,
+          label: 'Banner ID pro kampaň ' + id,
+          dataType: 'NUMBER',
+          group: 'bannersMonthly',
+          semantics: {
+            conceptType: 'DIMENSION'
+          }
+        }, {
+          name: 'bnq_days_' + id,
+          label: 'Statistiky bannerů (kvartální) pro kampaň ' + id,
+          dataType: 'STRING',
+          group: 'bannersQuarterly',
+          semantics: {
+            conceptType: 'DIMENSION',
+            semanticType: 'YEAR_QUARTER',
+            semanticGroup: 'DATETIME'
+          }
+        },
+        {
+          name: 'bnq_bannersIds_' + id,
+          label: 'Banner ID pro kampaň ' + id,
+          dataType: 'NUMBER',
+          group: 'bannersQuarterly',
+          semantics: {
+            conceptType: 'DIMENSION'
+          }
+        },
+        {
+          name: 'bny_days_' + id,
+          label: 'Statistiky bannerů (roční) pro kampaň ' + id,
+          dataType: 'STRING',
+          group: 'bannersYearly',
+          semantics: {
+            conceptType: 'DIMENSION',
+            semanticType: 'YEAR',
+            semanticGroup: 'DATETIME'
+          }
+        },
+        {
+          name: 'bny_bannersIds_' + id,
+          label: 'Banner ID pro kampaň ' + id,
+          dataType: 'NUMBER',
+          group: 'bannersYearly',
+          semantics: {
+            conceptType: 'DIMENSION'
+          }
+        }
+
+      ];
+      schema = schema.concat(banner);
+    }
+    return schema;
+
+  }
+
+
+  this.adSchemaDefault = function (schema) {
+    var ad = [
+      {
+        name: 'ads_headline1',
+        label: 'Titulek 1',
+        dataType: 'STRING',
+        group: 'ads',
+        semantics: {
+          conceptType: 'DIMENSION'
+        }
+      },
+      {
+        name: 'add_days',
+        label: 'Statistiky inzerátů (denní)',
+        dataType: 'STRING',
+        group: 'adsDaily',
+        semantics: {
+          conceptType: 'DIMENSION',
+          semanticType: 'YEAR_MONTH_DAY',
+          semanticGroup: 'DATETIME'
+        }
+      },
+      {
+        name: 'add_adsIds',
+        label: 'ID reklamy',
+        dataType: 'NUMBER',
+        group: 'adsDaily',
+        semantics: {
+          conceptType: 'DIMENSION'
+        }
+      },
+      {
+        name: 'adw_days',
+        label: 'Statistiky inzerátů (týdenní)',
+        dataType: 'STRING',
+        group: 'adsWeekly',
+        semantics: {
+          conceptType: 'DIMENSION',
+          semanticType: 'YEAR_WEEK',
+          semanticGroup: 'DATETIME'
+        }
+      },
+      {
+        name: 'adw_adsIds',
+        label: 'ID reklamy',
+        dataType: 'NUMBER',
+        group: 'adsWeekly',
+        semantics: {
+          conceptType: 'DIMENSION'
+        }
+      },
+      {
+        name: 'adm_days',
+        label: 'Statistiky inzerátů (měsíční)',
+        dataType: 'STRING',
+        group: 'adsMonthly',
+        semantics: {
+          conceptType: 'DIMENSION',
+          semanticType: 'YEAR_MONTH',
+          semanticGroup: 'DATETIME'
+        }
+      },
+      {
+        name: 'adm_adsIds',
+        label: 'ID reklamy',
+        dataType: 'NUMBER',
+        group: 'adsMonthly',
+        semantics: {
+          conceptType: 'DIMENSION'
+        }
+      }, {
+        name: 'adq_days',
+        label: 'Statistiky inzerátů (kvartální)',
+        dataType: 'STRING',
+        group: 'adsQuarterly',
+        semantics: {
+          conceptType: 'DIMENSION',
+          semanticType: 'YEAR_QUARTER',
+          semanticGroup: 'DATETIME'
+        }
+      },
+      {
+        name: 'adq_adsIds',
+        label: 'ID reklamy',
+        dataType: 'NUMBER',
+        group: 'adsQuarterly',
+        semantics: {
+          conceptType: 'DIMENSION'
+        }
+      },
+      {
+        name: 'ady_days',
+        label: 'Statistiky inzerátů (roční)',
+        dataType: 'STRING',
+        group: 'adsYearly',
+        semantics: {
+          conceptType: 'DIMENSION',
+          semanticType: 'YEAR',
+          semanticGroup: 'DATETIME'
+        }
+      },
+      {
+        name: 'ady_adsIds',
+        label: 'ID reklamy',
+        dataType: 'NUMBER',
+        group: 'adsYearly',
+        semantics: {
+          conceptType: 'DIMENSION'
+        }
+      }
+
+    ];
+    return schema.concat(ad);
+  }
+
+
+
+  this.adSchemaByGroup = function (schema, ids) {
+    var idsArr = ids.split(',');
+    var id;
+    var ad;
+    while (idsArr.length > 0) {
+      id = idsArr.pop();
+      ad = [
+        {
+          name: 'ads_headline1_' + id,
+          label: 'Název inzerátů pro sestavu ' + id,
           dataType: 'STRING',
           group: 'ads',
           semantics: {
@@ -2363,8 +2467,8 @@ var Schema = function (config) {
           }
         },
         {
-          name: 'add_days',
-          label: 'Statistiky inzerátů (denní)',
+          name: 'add_days_' + id,
+          label: 'Statistiky inzerátů (denní) pro sestavu ' + id,
           dataType: 'STRING',
           group: 'adsDaily',
           semantics: {
@@ -2374,8 +2478,8 @@ var Schema = function (config) {
           }
         },
         {
-          name: 'add_adsIds',
-          label: 'Ads Id',
+          name: 'add_adsIds_' + id,
+          label: 'ID reklamy pro sestavu ' + id,
           dataType: 'NUMBER',
           group: 'adsDaily',
           semantics: {
@@ -2383,8 +2487,8 @@ var Schema = function (config) {
           }
         },
         {
-          name: 'adw_days',
-          label: 'Statistiky inzerátů (týdenní)',
+          name: 'adw_days_' + id,
+          label: 'Statistiky inzerátů (týdenní) pro sestavu ' + id,
           dataType: 'STRING',
           group: 'adsWeekly',
           semantics: {
@@ -2394,8 +2498,8 @@ var Schema = function (config) {
           }
         },
         {
-          name: 'adw_adsIds',
-          label: 'Ads Id',
+          name: 'adw_adsIds_' + id,
+          label: 'ID reklamy pro sestavu ' + id,
           dataType: 'NUMBER',
           group: 'adsWeekly',
           semantics: {
@@ -2403,8 +2507,8 @@ var Schema = function (config) {
           }
         },
         {
-          name: 'adm_days',
-          label: 'Statistiky inzerátů (měsíční)',
+          name: 'adm_days_' + id,
+          label: 'Statistiky inzerátů (měsíční) pro sestavu ' + id,
           dataType: 'STRING',
           group: 'adsMonthly',
           semantics: {
@@ -2414,16 +2518,16 @@ var Schema = function (config) {
           }
         },
         {
-          name: 'adm_adsIds',
-          label: 'Ads Id',
+          name: 'adm_adsIds_' + id,
+          label: 'ID reklamy pro sestavu ' + id,
           dataType: 'NUMBER',
           group: 'adsMonthly',
           semantics: {
             conceptType: 'DIMENSION'
           }
         }, {
-          name: 'adq_days',
-          label: 'Statistiky inzerátů (kvartální)',
+          name: 'adq_days_' + id,
+          label: 'Statistiky inzerátů (kvartální) pro sestavu ' + id,
           dataType: 'STRING',
           group: 'adsQuarterly',
           semantics: {
@@ -2433,8 +2537,8 @@ var Schema = function (config) {
           }
         },
         {
-          name: 'adq_adsIds',
-          label: 'Ads Id',
+          name: 'adq_adsIds_' + id,
+          label: 'ID reklamy pro sestavu ' + id,
           dataType: 'NUMBER',
           group: 'adsQuarterly',
           semantics: {
@@ -2442,8 +2546,8 @@ var Schema = function (config) {
           }
         },
         {
-          name: 'ady_days',
-          label: 'Statistiky inzerátů (roční)',
+          name: 'ady_days_' + id,
+          label: 'Statistiky inzerátů (roční) pro sestavu ' + id,
           dataType: 'STRING',
           group: 'adsYearly',
           semantics: {
@@ -2453,271 +2557,271 @@ var Schema = function (config) {
           }
         },
         {
-          name: 'ady_adsIds',
-          label: 'Ads Id',
+          name: 'ady_adsIds_' + id,
+          label: 'ID reklamy pro sestavu ' + id,
           dataType: 'NUMBER',
           group: 'adsYearly',
           semantics: {
             conceptType: 'DIMENSION'
           }
         }
-  
+
       ];
-      return schema.concat(ad);
+      schema = schema.concat(ad);
     }
-  
-  
-  
-    this.adSchemaByGroup = function (schema, ids) {
-      var idsArr = ids.split(',');
-      var id;
-      var ad;
-      while (idsArr.length > 0) {
-        id = idsArr.pop();
-        ad = [
-          {
-            name: 'ads_headline1_' + id,
-            label: 'Název inzerátů pro sestavu ' + id,
-            dataType: 'STRING',
-            group: 'ads',
-            semantics: {
-              conceptType: 'DIMENSION'
-            }
-          },
-          {
-            name: 'add_days_' + id,
-            label: 'Statistiky inzerátů (denní) pro sestavu ' + id,
-            dataType: 'STRING',
-            group: 'adsDaily',
-            semantics: {
-              conceptType: 'DIMENSION',
-              semanticType: 'YEAR_MONTH_DAY',
-              semanticGroup: 'DATETIME'
-            }
-          },
-          {
-            name: 'add_adsIds_' + id,
-            label: 'Ads Id pro sestavu ' + id,
-            dataType: 'NUMBER',
-            group: 'adsDaily',
-            semantics: {
-              conceptType: 'DIMENSION'
-            }
-          },
-          {
-            name: 'adw_days_' + id,
-            label: 'Statistiky inzerátů (týdenní) pro sestavu ' + id,
-            dataType: 'STRING',
-            group: 'adsWeekly',
-            semantics: {
-              conceptType: 'DIMENSION',
-              semanticType: 'YEAR_WEEK',
-              semanticGroup: 'DATETIME'
-            }
-          },
-          {
-            name: 'adw_adsIds_' + id,
-            label: 'Ads Id pro sestavu ' + id,
-            dataType: 'NUMBER',
-            group: 'adsWeekly',
-            semantics: {
-              conceptType: 'DIMENSION'
-            }
-          },
-          {
-            name: 'adm_days_' + id,
-            label: 'Statistiky inzerátů (měsíční) pro sestavu ' + id,
-            dataType: 'STRING',
-            group: 'adsMonthly',
-            semantics: {
-              conceptType: 'DIMENSION',
-              semanticType: 'YEAR_MONTH',
-              semanticGroup: 'DATETIME'
-            }
-          },
-          {
-            name: 'adm_adsIds_' + id,
-            label: 'Ads Id pro sestavu ' + id,
-            dataType: 'NUMBER',
-            group: 'adsMonthly',
-            semantics: {
-              conceptType: 'DIMENSION'
-            }
-          }, {
-            name: 'adq_days_' + id,
-            label: 'Statistiky inzerátů (kvartální) pro sestavu ' + id,
-            dataType: 'STRING',
-            group: 'adsQuarterly',
-            semantics: {
-              conceptType: 'DIMENSION',
-              semanticType: 'YEAR_QUARTER',
-              semanticGroup: 'DATETIME'
-            }
-          },
-          {
-            name: 'adq_adsIds_' + id,
-            label: 'Ads Id pro sestavu ' + id,
-            dataType: 'NUMBER',
-            group: 'adsQuarterly',
-            semantics: {
-              conceptType: 'DIMENSION'
-            }
-          },
-          {
-            name: 'ady_days_' + id,
-            label: 'Statistiky inzerátů (roční) pro sestavu ' + id,
-            dataType: 'STRING',
-            group: 'adsYearly',
-            semantics: {
-              conceptType: 'DIMENSION',
-              semanticType: 'YEAR',
-              semanticGroup: 'DATETIME'
-            }
-          },
-          {
-            name: 'ady_adsIds_' + id,
-            label: 'Ads Id pro sestavu ' + id,
-            dataType: 'NUMBER',
-            group: 'adsYearly',
-            semantics: {
-              conceptType: 'DIMENSION'
-            }
-          }
-  
-        ];
-        schema = schema.concat(ad);
-      }
-      return schema;
-    }
-  
-    this.adSchemaByCampaign = function (schema, ids) {
-      var idsArr = ids.split(',');
-      var id;
-      var ad;
-      while (idsArr.length > 0) {
-        id = idsArr.pop();
-        ad = [
-          {
-            name: 'ads_headline1_' + id,
-            label: 'Název inzerátů pro kampan ' + id,
-            dataType: 'STRING',
-            group: 'ads',
-            semantics: {
-              conceptType: 'DIMENSION'
-            }
-          },
-          {
-            name: 'add_days_' + id,
-            label: 'Statistiky inzerátů (denní) pro kampan ' + id,
-            dataType: 'STRING',
-            group: 'adsDaily',
-            semantics: {
-              conceptType: 'DIMENSION',
-              semanticType: 'YEAR_MONTH_DAY',
-              semanticGroup: 'DATETIME'
-            }
-          },
-          {
-            name: 'add_adsIds_' + id,
-            label: 'Ads Id pro kampan ' + id,
-            dataType: 'NUMBER',
-            group: 'adsDaily',
-            semantics: {
-              conceptType: 'DIMENSION'
-            }
-          },
-          {
-            name: 'adw_days_' + id,
-            label: 'Statistiky inzerátů (týdenní) pro kampan ' + id,
-            dataType: 'STRING',
-            group: 'adsWeekly',
-            semantics: {
-              conceptType: 'DIMENSION',
-              semanticType: 'YEAR_WEEK',
-              semanticGroup: 'DATETIME'
-            }
-          },
-          {
-            name: 'adw_adsIds_' + id,
-            label: 'Ads Id pro kampan ' + id,
-            dataType: 'NUMBER',
-            group: 'adsWeekly',
-            semantics: {
-              conceptType: 'DIMENSION'
-            }
-          },
-          {
-            name: 'adm_days_' + id,
-            label: 'Statistiky inzerátů (měsíční) pro kampan ' + id,
-            dataType: 'STRING',
-            group: 'adsMonthly',
-            semantics: {
-              conceptType: 'DIMENSION',
-              semanticType: 'YEAR_MONTH',
-              semanticGroup: 'DATETIME'
-            }
-          },
-          {
-            name: 'adm_adsIds_' + id,
-            label: 'Ads Id pro kampan ' + id,
-            dataType: 'NUMBER',
-            group: 'adsMonthly',
-            semantics: {
-              conceptType: 'DIMENSION'
-            }
-          }, {
-            name: 'adq_days_' + id,
-            label: 'Statistiky inzerátů (kvartální) pro kampan ' + id,
-            dataType: 'STRING',
-            group: 'adsQuarterly',
-            semantics: {
-              conceptType: 'DIMENSION',
-              semanticType: 'YEAR_QUARTER',
-              semanticGroup: 'DATETIME'
-            }
-          },
-          {
-            name: 'adq_adsIds_' + id,
-            label: 'Ads Id pro kampan ' + id,
-            dataType: 'NUMBER',
-            group: 'adsQuarterly',
-            semantics: {
-              conceptType: 'DIMENSION'
-            }
-          },
-          {
-            name: 'ady_days_' + id,
-            label: 'Statistiky inzerátů (roční) pro kampan ' + id,
-            dataType: 'STRING',
-            group: 'adsYearly',
-            semantics: {
-              conceptType: 'DIMENSION',
-              semanticType: 'YEAR',
-              semanticGroup: 'DATETIME'
-            }
-          },
-          {
-            name: 'ady_adsIds_' + id,
-            label: 'Ads Id pro kampan ' + id,
-            dataType: 'NUMBER',
-            group: 'adsYearly',
-            semantics: {
-              conceptType: 'DIMENSION'
-            }
-          }
-  
-        ];
-        schema = schema.concat(ad);
-      }
-      return schema;
-  
-    }
-  
-    this.standardGroupsSchema = function (schema) {
-      var groups = [
+    return schema;
+  }
+
+  this.adSchemaByCampaign = function (schema, ids) {
+    var idsArr = ids.split(',');
+    var id;
+    var ad;
+    while (idsArr.length > 0) {
+      id = idsArr.pop();
+      ad = [
         {
-          name: 'gos_name',
-          label: 'Název skupiny',
+          name: 'ads_headline1_' + id,
+          label: 'Titulek 1 pro kampaň ' + id,
+          dataType: 'STRING',
+          group: 'ads',
+          semantics: {
+            conceptType: 'DIMENSION'
+          }
+        },
+        {
+          name: 'add_days_' + id,
+          label: 'Statistiky inzerátů (denní) pro kampaň ' + id,
+          dataType: 'STRING',
+          group: 'adsDaily',
+          semantics: {
+            conceptType: 'DIMENSION',
+            semanticType: 'YEAR_MONTH_DAY',
+            semanticGroup: 'DATETIME'
+          }
+        },
+        {
+          name: 'add_adsIds_' + id,
+          label: 'ID reklamy pro kampaň ' + id,
+          dataType: 'NUMBER',
+          group: 'adsDaily',
+          semantics: {
+            conceptType: 'DIMENSION'
+          }
+        },
+        {
+          name: 'adw_days_' + id,
+          label: 'Statistiky inzerátů (týdenní) pro kampaň ' + id,
+          dataType: 'STRING',
+          group: 'adsWeekly',
+          semantics: {
+            conceptType: 'DIMENSION',
+            semanticType: 'YEAR_WEEK',
+            semanticGroup: 'DATETIME'
+          }
+        },
+        {
+          name: 'adw_adsIds_' + id,
+          label: 'ID reklamy pro kampaň ' + id,
+          dataType: 'NUMBER',
+          group: 'adsWeekly',
+          semantics: {
+            conceptType: 'DIMENSION'
+          }
+        },
+        {
+          name: 'adm_days_' + id,
+          label: 'Statistiky inzerátů (měsíční) pro kampaň ' + id,
+          dataType: 'STRING',
+          group: 'adsMonthly',
+          semantics: {
+            conceptType: 'DIMENSION',
+            semanticType: 'YEAR_MONTH',
+            semanticGroup: 'DATETIME'
+          }
+        },
+        {
+          name: 'adm_adsIds_' + id,
+          label: 'ID reklamy pro kampaň ' + id,
+          dataType: 'NUMBER',
+          group: 'adsMonthly',
+          semantics: {
+            conceptType: 'DIMENSION'
+          }
+        }, {
+          name: 'adq_days_' + id,
+          label: 'Statistiky inzerátů (kvartální) pro kampaň ' + id,
+          dataType: 'STRING',
+          group: 'adsQuarterly',
+          semantics: {
+            conceptType: 'DIMENSION',
+            semanticType: 'YEAR_QUARTER',
+            semanticGroup: 'DATETIME'
+          }
+        },
+        {
+          name: 'adq_adsIds_' + id,
+          label: 'ID reklamy pro kampaň ' + id,
+          dataType: 'NUMBER',
+          group: 'adsQuarterly',
+          semantics: {
+            conceptType: 'DIMENSION'
+          }
+        },
+        {
+          name: 'ady_days_' + id,
+          label: 'Statistiky inzerátů (roční) pro kampaň ' + id,
+          dataType: 'STRING',
+          group: 'adsYearly',
+          semantics: {
+            conceptType: 'DIMENSION',
+            semanticType: 'YEAR',
+            semanticGroup: 'DATETIME'
+          }
+        },
+        {
+          name: 'ady_adsIds_' + id,
+          label: 'ID reklamy pro kampaň ' + id,
+          dataType: 'NUMBER',
+          group: 'adsYearly',
+          semantics: {
+            conceptType: 'DIMENSION'
+          }
+        }
+
+      ];
+      schema = schema.concat(ad);
+    }
+    return schema;
+
+  }
+
+  this.standardGroupsSchema = function (schema) {
+    var groups = [
+      {
+        name: 'gos_name',
+        label: 'Název sestavy',
+        dataType: 'STRING',
+        group: 'groups',
+        semantics: {
+          conceptType: 'DIMENSION'
+        }
+      },
+      {
+        name: 'god_days',
+        label: 'Statistiky sestav (denní)',
+        dataType: 'STRING',
+        group: 'groupsDaily',
+        semantics: {
+          conceptType: 'DIMENSION',
+          semanticType: 'YEAR_MONTH_DAY',
+          semanticGroup: 'DATETIME'
+        }
+      },
+      {
+        name: 'god_groupsIds',
+        label: 'Groups Id',
+        dataType: 'NUMBER',
+        group: 'groupsDaily',
+        semantics: {
+          conceptType: 'DIMENSION'
+        }
+      },
+      {
+        name: 'gow_days',
+        label: 'Statistiky sestav (týdenní)',
+        dataType: 'STRING',
+        group: 'groupsWeekly',
+        semantics: {
+          conceptType: 'DIMENSION',
+          semanticType: 'YEAR_WEEK',
+          semanticGroup: 'DATETIME'
+        }
+      },
+      {
+        name: 'gow_groupsIds',
+        label: 'Groups Id',
+        dataType: 'NUMBER',
+        group: 'groupsWeekly',
+        semantics: {
+          conceptType: 'DIMENSION'
+        }
+      },
+      {
+        name: 'gom_days',
+        label: 'Statistiky sestav (měsíční)',
+        dataType: 'STRING',
+        group: 'groupsMonthly',
+        semantics: {
+          conceptType: 'DIMENSION',
+          semanticType: 'YEAR_MONTH',
+          semanticGroup: 'DATETIME'
+        }
+      },
+      {
+        name: 'gom_groupsIds',
+        label: 'Groups Id',
+        dataType: 'NUMBER',
+        group: 'groupsMonthly',
+        semantics: {
+          conceptType: 'DIMENSION'
+        }
+      },
+      {
+        name: 'goq_days',
+        label: 'Statistiky sestav (kvartální)',
+        dataType: 'STRING',
+        group: 'groupsQuarterly',
+        semantics: {
+          conceptType: 'DIMENSION',
+          semanticType: 'YEAR_QUARTER',
+          semanticGroup: 'DATETIME'
+        }
+      },
+      {
+        name: 'goq_groupsIds',
+        label: 'Groups Id',
+        dataType: 'NUMBER',
+        group: 'groupsQuarterly',
+        semantics: {
+          conceptType: 'DIMENSION'
+        }
+      },
+      {
+        name: 'goy_days',
+        label: 'Statistiky sestav (roční)',
+        dataType: 'STRING',
+        group: 'groupsYearly',
+        semantics: {
+          conceptType: 'DIMENSION',
+          semanticType: 'YEAR',
+          semanticGroup: 'DATETIME'
+        }
+      },
+      {
+        name: 'goy_groupsIds',
+        label: 'Groups ID',
+        dataType: 'NUMBER',
+        group: 'groupsYearly',
+        semantics: {
+          conceptType: 'DIMENSION'
+        }
+      }
+
+    ];
+    return schema.concat(groups);
+  }
+
+
+  this.extendGroupsSchema = function (schema, ids) {
+    var idsArr = ids.split(',');
+    var id;
+    var groups;
+    while (idsArr.length > 0) {
+      id = idsArr.pop();
+      groups = [
+        {
+          name: 'gos_name_' + id,
+          label: 'Název sestav pro kampaň ' + id,
           dataType: 'STRING',
           group: 'groups',
           semantics: {
@@ -2725,8 +2829,8 @@ var Schema = function (config) {
           }
         },
         {
-          name: 'god_days',
-          label: 'Statistiky skupin (denní)',
+          name: 'god_days_' + id,
+          label: 'Statistiky sestav (denní) pro kampaň ' + id,
           dataType: 'STRING',
           group: 'groupsDaily',
           semantics: {
@@ -2736,8 +2840,8 @@ var Schema = function (config) {
           }
         },
         {
-          name: 'god_groupsIds',
-          label: 'Groups Id',
+          name: 'god_groupsIds_' + id,
+          label: 'Groups ID pro kampaň ' + id,
           dataType: 'NUMBER',
           group: 'groupsDaily',
           semantics: {
@@ -2745,8 +2849,8 @@ var Schema = function (config) {
           }
         },
         {
-          name: 'gow_days',
-          label: 'Statistiky skupin (týdenní)',
+          name: 'gow_days_' + id,
+          label: 'Statistiky sestav (týdenní) pro kampaň ' + id,
           dataType: 'STRING',
           group: 'groupsWeekly',
           semantics: {
@@ -2756,8 +2860,8 @@ var Schema = function (config) {
           }
         },
         {
-          name: 'gow_groupsIds',
-          label: 'Groups Id',
+          name: 'gow_groupsIds_' + id,
+          label: 'Groups ID pro kampaň ' + id,
           dataType: 'NUMBER',
           group: 'groupsWeekly',
           semantics: {
@@ -2765,8 +2869,8 @@ var Schema = function (config) {
           }
         },
         {
-          name: 'gom_days',
-          label: 'Statistiky skupin (měsíční)',
+          name: 'gom_days_' + id,
+          label: 'Statistiky sestav (měsíční) pro kampaň ' + id,
           dataType: 'STRING',
           group: 'groupsMonthly',
           semantics: {
@@ -2776,8 +2880,8 @@ var Schema = function (config) {
           }
         },
         {
-          name: 'gom_groupsIds',
-          label: 'Groups Id',
+          name: 'gom_groupsIds_' + id,
+          label: 'Groups ID pro kampaň ' + id,
           dataType: 'NUMBER',
           group: 'groupsMonthly',
           semantics: {
@@ -2785,8 +2889,8 @@ var Schema = function (config) {
           }
         },
         {
-          name: 'goq_days',
-          label: 'Statistiky skupin (kvartální)',
+          name: 'goq_days_' + id,
+          label: 'Statistiky sestav (kvartální) pro kampaň ' + id,
           dataType: 'STRING',
           group: 'groupsQuarterly',
           semantics: {
@@ -2796,8 +2900,8 @@ var Schema = function (config) {
           }
         },
         {
-          name: 'goq_groupsIds',
-          label: 'Groups Id',
+          name: 'goq_groupsIds_' + id,
+          label: 'Groups ID pro kampaň ' + id,
           dataType: 'NUMBER',
           group: 'groupsQuarterly',
           semantics: {
@@ -2805,8 +2909,8 @@ var Schema = function (config) {
           }
         },
         {
-          name: 'goy_days',
-          label: 'Statistiky skupin (roční)',
+          name: 'goy_days_' + id,
+          label: 'Statistiky sestav (roční) pro kampaň ' + id,
           dataType: 'STRING',
           group: 'groupsYearly',
           semantics: {
@@ -2816,140 +2920,18 @@ var Schema = function (config) {
           }
         },
         {
-          name: 'goy_groupsIds',
-          label: 'Groups Id',
+          name: 'goy_groupsIds_' + id,
+          label: 'Groups ID pro kampaň ' + id,
           dataType: 'NUMBER',
           group: 'groupsYearly',
           semantics: {
             conceptType: 'DIMENSION'
           }
         }
-  
+
       ];
-      return schema.concat(groups);
+      schema = schema.concat(groups);
     }
-  
-  
-    this.extendGroupsSchema = function (schema, ids) {
-      var idsArr = ids.split(',');
-      var id;
-      var groups;
-      while (idsArr.length > 0) {
-        id = idsArr.pop();
-        groups = [
-          {
-            name: 'gos_name_' + id,
-            label: 'Název skupin pro kampan ' + id,
-            dataType: 'STRING',
-            group: 'groups',
-            semantics: {
-              conceptType: 'DIMENSION'
-            }
-          },
-          {
-            name: 'god_days_' + id,
-            label: 'Statistiky skupin (denní) pro kampan ' + id,
-            dataType: 'STRING',
-            group: 'groupsDaily',
-            semantics: {
-              conceptType: 'DIMENSION',
-              semanticType: 'YEAR_MONTH_DAY',
-              semanticGroup: 'DATETIME'
-            }
-          },
-          {
-            name: 'god_groupsIds_' + id,
-            label: 'Groups Id pro kampan ' + id,
-            dataType: 'NUMBER',
-            group: 'groupsDaily',
-            semantics: {
-              conceptType: 'DIMENSION'
-            }
-          },
-          {
-            name: 'gow_days_' + id,
-            label: 'Statistiky skupin (týdenní) pro kampan ' + id,
-            dataType: 'STRING',
-            group: 'groupsWeekly',
-            semantics: {
-              conceptType: 'DIMENSION',
-              semanticType: 'YEAR_WEEK',
-              semanticGroup: 'DATETIME'
-            }
-          },
-          {
-            name: 'gow_groupsIds_' + id,
-            label: 'Groups Id pro kampan ' + id,
-            dataType: 'NUMBER',
-            group: 'groupsWeekly',
-            semantics: {
-              conceptType: 'DIMENSION'
-            }
-          },
-          {
-            name: 'gom_days_' + id,
-            label: 'Statistiky skupin (měsíční) pro kampan ' + id,
-            dataType: 'STRING',
-            group: 'groupsMonthly',
-            semantics: {
-              conceptType: 'DIMENSION',
-              semanticType: 'YEAR_MONTH',
-              semanticGroup: 'DATETIME'
-            }
-          },
-          {
-            name: 'gom_groupsIds_' + id,
-            label: 'Groups Id pro kampan ' + id,
-            dataType: 'NUMBER',
-            group: 'groupsMonthly',
-            semantics: {
-              conceptType: 'DIMENSION'
-            }
-          },
-          {
-            name: 'goq_days_' + id,
-            label: 'Statistiky skupin (kvartální) pro kampan ' + id,
-            dataType: 'STRING',
-            group: 'groupsQuarterly',
-            semantics: {
-              conceptType: 'DIMENSION',
-              semanticType: 'YEAR_QUARTER',
-              semanticGroup: 'DATETIME'
-            }
-          },
-          {
-            name: 'goq_groupsIds_' + id,
-            label: 'Groups Id pro kampan ' + id,
-            dataType: 'NUMBER',
-            group: 'groupsQuarterly',
-            semantics: {
-              conceptType: 'DIMENSION'
-            }
-          },
-          {
-            name: 'goy_days_' + id,
-            label: 'Statistiky skupin (roční) pro kampan ' + id,
-            dataType: 'STRING',
-            group: 'groupsYearly',
-            semantics: {
-              conceptType: 'DIMENSION',
-              semanticType: 'YEAR',
-              semanticGroup: 'DATETIME'
-            }
-          },
-          {
-            name: 'goy_groupsIds_' + id,
-            label: 'Groups Id pro kampan ' + id,
-            dataType: 'NUMBER',
-            group: 'groupsYearly',
-            semantics: {
-              conceptType: 'DIMENSION'
-            }
-          }
-  
-        ];
-        schema = schema.concat(groups);
-      }
-      return schema;
-    }
+    return schema;
   }
+}
