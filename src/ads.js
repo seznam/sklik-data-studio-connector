@@ -30,6 +30,7 @@ var AdsClass = function (rRoot) {
   * @param {Root}
   */
   this.Root = rRoot;
+  this.dataCore = new DataCore(rRoot);
 
   /**
    * Prepare report at API specialized for granuality
@@ -51,10 +52,9 @@ var AdsClass = function (rRoot) {
     } else if (this.Root.campaignsId.length > 0) {
       restrictionFilter.campaign = { 'ids': this.Root.campaignsId };
     }
-    restrictionFilter.statisticsConditions = [{"columnName":"quality","operator":"GTE","intValue":0}];
 
     var reponseCreate = this.Root.sklikApi('ads.createReport', [{ 'session': this.Root.session, 'userId': this.Root.userId },
-      restrictionFilter, { 'statGranularity': period }, { 'source': "GDSv100" }]
+      restrictionFilter, { 'statGranularity': period }]
     );
     return this.adsReadReport(reponseCreate, limit);
   }
@@ -77,10 +77,9 @@ var AdsClass = function (rRoot) {
     } else if (this.Root.campaignsId.length > 0) {
       restrictionFilter.campaign = { 'ids': this.Root.campaignsId };
     }
-    restrictionFilter.statisticsConditions = [{"columnName":"quality","operator":"GTE","intValue":0}];
     
     var reponseCreate = this.Root.sklikApi('ads.createReport', [{ 'session': this.Root.session, 'userId': this.Root.userId },
-      restrictionFilter, { 'source': "GDSv100" }
+      restrictionFilter
     ]);
     return this.adsReadReport(reponseCreate, 5000);
   }
@@ -104,7 +103,7 @@ var AdsClass = function (rRoot) {
       {
         'offset': 0,
         'limit': limit,
-        'allowEmptyStatistics': true,
+        'allowEmptyStatistics': this.Root.allowEmptyStatistics,
         'displayColumns': this.Root.displayColumns.ads
       }]
     );
@@ -123,14 +122,14 @@ var AdsClass = function (rRoot) {
       var values = [];
       this.Root.rDataSchema.forEach(function (field) {
         var fieldName = field.name.split('_');
-        if (ads.stats != undefined && ads.stats[0][fieldName[1]] != undefined && field.group == 'ads') {
-          values.push(ads.stats[0][fieldName[1]]);
-        } else if (field.group == 'campaigns' && ads.campaign != undefined && ads.campaign[fieldName[1]] != undefined) {
-          values.push(ads.campaign[fieldName[1]]);
-        } else if (field.group == 'groups' && ads.group != undefined && ads.group[fieldName[1]] != undefined) {
-          values.push(ads.group[fieldName[1]]);
-        } else if (ads[fieldName[1]] != undefined && field.group == 'ads') {
-          values.push(ads[fieldName[1]]);
+        if (ads.stats != undefined && (ads.stats[0][fieldName[1]] != undefined || ads.stats[0][fieldName[1]] === null) && field.group == 'ads') {
+          values.push(this.dataCore.dataPostEdit(ads.stats[0][fieldName[1]],fieldName[1]));
+        } else if (field.group == 'campaigns' && ads.campaign != undefined && (ads.campaign[fieldName[1]] != undefined ||ads.campaign[fieldName[1]] === null)) {
+          values.push(this.dataCore.dataPostEdit(ads.campaign[fieldName[1]],fieldName[1]));
+        } else if (field.group == 'groups' && ads.group != undefined && (ads.group[fieldName[1]] != undefined || ads.group[fieldName[1]] === null)) {
+          values.push(this.dataCore.dataPostEdit(ads.group[fieldName[1]],fieldName[1]));
+        } else if ((ads[fieldName[1]] != undefined || ads[fieldName[1]] != undefined == null) && field.group == 'ads') {
+          values.push(this.dataCore.dataPostEdit(ads[fieldName[1]],fieldName[1]));
         } else {
           values.push('');
         }
@@ -200,11 +199,11 @@ var AdsClass = function (rRoot) {
             var fieldName = field.name.split('_')[1];
             if (fieldName == 'adsIds') {
               values.push(id);
-            } else if (stats[i][fieldName] != undefined && (field.group.indexOf('ads') != -1)) {
+            } else if ((stats[i][fieldName] != undefined || stats[i][fieldName] === null) && (field.group.indexOf('ads') != -1)) {
               if (actualDayIsEmpty) {
                 values.push(0);
               } else {
-                values.push(stats[i][fieldName]);
+                values.push(this.dataCore.dataPostEdit(stats[i][fieldName],fieldName));
               }
             } else if (fieldName == 'days' && (field.group == 'adsDaily' || field.group == 'adsWeekly' || field.group == 'adsMonthly' || field.group == 'adsQuarterly' || field.group == 'adsYearly')) {
               if (stats[i].date == undefined || actualDayIsEmpty) {
@@ -215,16 +214,16 @@ var AdsClass = function (rRoot) {
               } else {
                 var d = stats[i].date.toString();
                 if(field.group == 'adsWeekly') {
-                  d = this.toYearWeekFormat(d);
+                  d = this.toYearWeekFormat(d, field.group);
                 }
               }
-              values.push(d);
-            } else if (field.group == 'ads' && response.report[c] != undefined && response.report[c][fieldName] != undefined) {
-              values.push(response.report[c][fieldName]);
-            } else if (field.group == 'groups' && response.report[c].group != undefined && response.report[c].group[fieldName] != undefined) {
-              values.push(response.report[c].group[fieldName]);
-            } else if (field.group == 'campaigns' && response.report[c].campaign != undefined && response.report[c].campaign[fieldName] != undefined) {
-              values.push(response.report[c].campaign[fieldName]);
+              values.push(this.dataCore.dataPostEdit(d,field.group));
+            } else if (field.group == 'ads' && response.report[c] != undefined && (response.report[c][fieldName] != undefined || response.report[c][fieldName] === null)) {
+              values.push(this.dataCore.dataPostEdit(response.report[c][fieldName],fieldName));
+            } else if (field.group == 'groups' && response.report[c].group != undefined && (response.report[c].group[fieldName] != undefined || response.report[c].group[fieldName] === null)) {
+              values.push(this.dataCore.dataPostEdit(response.report[c].group[fieldName],fieldName));
+            } else if (field.group == 'campaigns' && response.report[c].campaign != undefined && (response.report[c].campaign[fieldName] != undefined || response.report[c].campaign[fieldName] === null)) {
+              values.push(this.dataCore.dataPostEdit(response.report[c].campaign[fieldName],fieldName));
             } else {
               values.push('');
             }

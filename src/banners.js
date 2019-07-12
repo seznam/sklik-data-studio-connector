@@ -30,6 +30,7 @@ var BannersClass = function (rRoot) {
   * @param {Root}
   */
   this.Root = rRoot;
+  this.dataCore = new DataCore(rRoot);
 
   /**
    * Prepare report at API specialized for granuality
@@ -51,10 +52,9 @@ var BannersClass = function (rRoot) {
     } else if (this.Root.campaignsId.length > 0) {
       restrictionFilter.campaign = { 'ids': this.Root.campaignsId };
     }
-    restrictionFilter.statisticsConditions = [{"columnName":"quality","operator":"GTE","intValue":0}];
 
     var reponseCreate = this.Root.sklikApi('banners.createReport', [{ 'session': this.Root.session, 'userId': this.Root.userId },
-      restrictionFilter, { 'statGranularity': period }, { 'source': "GDSv100" }]
+      restrictionFilter, { 'statGranularity': period }]
     );
     return this.bannersReadReport(reponseCreate, limit);
   }
@@ -77,10 +77,8 @@ var BannersClass = function (rRoot) {
     } else if (this.Root.campaignsId.length > 0) {
       restrictionFilter.campaign = { 'ids': this.Root.campaignsId };
     }
-    restrictionFilter.statisticsConditions = [{"columnName":"quality","operator":"GTE","intValue":0}];
-    
     var reponseCreate = this.Root.sklikApi('banners.createReport', [{ 'session': this.Root.session, 'userId': this.Root.userId },
-      restrictionFilter, { 'source': "GDSv100" }
+      restrictionFilter
     ]);
     return this.bannersReadReport(reponseCreate, 5000);
   }
@@ -104,7 +102,7 @@ var BannersClass = function (rRoot) {
       {
         'offset': 0,
         'limit': limit,
-        'allowEmptyStatistics': true,
+        'allowEmptyStatistics': this.Root.allowEmptyStatistics,
         'displayColumns': this.Root.displayColumns.banners
       }]
     );
@@ -123,14 +121,14 @@ var BannersClass = function (rRoot) {
       var values = [];
       this.Root.rDataSchema.forEach(function (field) {
         var fieldName = field.name.split('_');
-        if (banners.stats != undefined && banners.stats[0][fieldName[1]] != undefined && field.group == 'banners') {
-          values.push(banners.stats[0][fieldName[1]]);
-        } else if (field.group == 'campaigns' && banners.campaign != undefined && banners.campaign[fieldName[1]] != undefined) {
-          values.push(banners.campaign[fieldName[1]]);
-        } else if (field.group == 'groups' && banners.group != undefined && banners.group[fieldName[1]] != undefined) {
-          values.push(banners.group[fieldName[1]]);
-        } else if (banners[fieldName[1]] != undefined && field.group == 'banners') {
-          values.push(banners[fieldName[1]]);
+        if (banners.stats != undefined && (banners.stats[0][fieldName[1]] != undefined || banners.stats[0][fieldName[1]] === null) && field.group == 'banners') {
+          values.push(this.dataCore.dataPostEdit(banners.stats[0][fieldName[1]],fieldName[1]));
+        } else if (field.group == 'campaigns' && banners.campaign != undefined && (banners.campaign[fieldName[1]] != undefined || banners.campaign[fieldName[1]] === null)) {
+          values.push(this.dataCore.dataPostEdit(banners.campaign[fieldName[1]], fieldName[1]));
+        } else if (field.group == 'groups' && banners.group != undefined && (banners.group[fieldName[1]] != undefined || banners.group[fieldName[1]] === null)) {
+          values.push(this.dataCore.dataPostEdit(banners.group[fieldName[1]],fieldName));
+        } else if ((banners[fieldName[1]] != undefined || banners[fieldName[1]] === null) && field.group == 'banners') {
+          values.push(this.dataCore.dataPostEdit(banners[fieldName[1]], fieldName[1]));
         } else {
           values.push('');
         }
@@ -199,11 +197,11 @@ var BannersClass = function (rRoot) {
             var fieldName = field.name.split('_')[1];
             if (fieldName == 'bannersIds') {
               values.push(id);
-            } else if (stats[i][fieldName] != undefined && (field.group.indexOf('banners') != -1)) {
+            } else if ((stats[i][fieldName] != undefined || stats[i][fieldName] === null) && (field.group.indexOf('banners') != -1)) {
               if (actualDayIsEmpty) {
                 values.push(0);
               } else {
-                values.push(stats[i][fieldName]);
+                values.push(this.dataCore.dataPostEdit(stats[i][fieldName],fieldName));
               }
             } else if (fieldName == 'days' && (field.group == 'bannersDaily' || field.group == 'bannersWeekly' || field.group == 'bannersMonthly' || field.group == 'bannersQuarterly' || field.group == 'bannersYearly')) {
               if (stats[i].date == undefined || actualDayIsEmpty) {
@@ -217,12 +215,12 @@ var BannersClass = function (rRoot) {
                   d = this.toYearWeekFormat(d);
                 }
               }
-              values.push(d);
+              values.push(this.dataCore.dataPostEdit(d, field.group));
 
-            } else if (field.group == 'groups' && response.report[c].group != undefined && response.report[c].group[fieldName] != undefined) {
-              values.push(response.report[c].group[fieldName]);
-            } else if (field.group == 'campaigns' && response.report[c].campaign != undefined && response.report[c].campaign[fieldName] != undefined) {
-              values.push(response.report[c].campaign[fieldName]);
+            } else if (field.group == 'groups' && response.report[c].group != undefined && (response.report[c].group[fieldName] != undefined || response.report[c].group[fieldName] === null)) {
+              values.push(this.dataCore.dataPostEdit(response.report[c].group[fieldName], fieldName));
+            } else if (field.group == 'campaigns' && response.report[c].campaign != undefined && (response.report[c].campaign[fieldName] != undefined || response.report[c].campaign[fieldName] === null)) {
+              values.push(this.dataCore.dataPostEdit(response.report[c].campaign[fieldName], fieldName));
             } else {
               values.push('');
             }

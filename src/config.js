@@ -45,6 +45,12 @@ function getConfig(request) {
         placeholder: ""
       },
       {
+        type: "CHECKBOX",
+        name: "allowEmptyStatistics",
+        displayName: "Zahrnout entity bez statistik",
+        text: "V přehledech zobrazovat i entity (kampaně, sestavy, ...) které nemají žádné zobrazení a další statistiky",
+      },
+      {
         type: "INFO",
         name: "info_campaigns",
         text: "Je možné sledovat více kampaní. Ale metriky jsou omeze limitem 5000 záznamů. Nezle tedy zobrazit například více jak [počet kampaní * počet dní > 5000] a podobně"
@@ -71,6 +77,19 @@ function getConfig(request) {
         placeholder: ","
       },
       {
+        type: "INFO",
+        name: "info_keywords",
+        text: "Konektor omezuje počet klíčových slov na 15 000 a protože mohou existovat účty, který tuto hranici překračují, je třeba specifikovat konkrétní kampaně na které to bude redukované. Tato redukce může být udělaná i pro lepší přehlednost - pokud chcete sledovat jenom uričté kampaně."
+      },
+      {
+        type: "TEXTINPUT",
+        name: "campaignsIdsForKeywords",
+        displayName: "ID kampaní pro výběr klíčových slov",
+        text: "Seznam kampaní, ze kterých se budou načítat přehledy klíčových slov",
+        helpText: "Oddělujte prosím čárkou",
+        placeholder: ","
+      },
+      {
         type: "CHECKBOX",
         name: "logmode",
         displayName: "Zapnout logování",
@@ -79,7 +98,7 @@ function getConfig(request) {
       {
         type: "CHECKBOX",
         name: "debugmode",
-        displayName: "Zapnout vývojářský mod",
+        displayName: "Zapnout rozšířené logování",
         text: "Ukazuje podrobné stavy konektoru (dotazy a odpovědi z API, požadované sloupce atd...)"
       }
     ],

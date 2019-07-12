@@ -30,6 +30,7 @@ var CampaignsClass = function (rRoot) {
    * @param {Root}
    */
   this.Root = rRoot;
+  this.dataCore = new DataCore(rRoot);
 
   /**
    * Prepare report at API specialized for granuality
@@ -47,11 +48,10 @@ var CampaignsClass = function (rRoot) {
     if (campaignsId.length > 0) {
       restrictionFilter.ids = campaignsId;
     }
-    restrictionFilter.statisticsConditions = [{"columnName":"quality","operator":"GTE","intValue":0}];
     
 
     var reponseCreate = this.Root.sklikApi('campaigns.createReport', [{ 'session': this.Root.session, 'userId': this.Root.userId },
-                                                                      restrictionFilter, { 'statGranularity': period }, {'source': "GDSv100"}]
+                                                                      restrictionFilter, { 'statGranularity': period }]
 
     );
     return this.campaignsReadReport(reponseCreate, limit);
@@ -70,10 +70,9 @@ var CampaignsClass = function (rRoot) {
     if (campaignsId.length > 0) {
       restrictionFilter.ids = campaignsId;
     }    
-    restrictionFilter.statisticsConditions = [{"columnName":"quality","operator":"GTE","intValue":0}];
     
     var reponseCreate = this.Root.sklikApi('campaigns.createReport', [{ 'session': this.Root.session, 'userId': this.Root.userId },
-    restrictionFilter,{'source': "GDSv100"}]
+    restrictionFilter]
     );
     return this.campaignsReadReport(reponseCreate, 5000);
   }
@@ -91,7 +90,7 @@ var CampaignsClass = function (rRoot) {
       {
         'offset': 0,
         'limit': limit,
-        'allowEmptyStatistics': true,
+        'allowEmptyStatistics': this.Root.allowEmptyStatistics,
         'displayColumns': this.Root.displayColumns.campaigns
       }]
     );
@@ -123,8 +122,8 @@ var CampaignsClass = function (rRoot) {
     //Aktualni den v iteraci
     var actualDate;
 
-    this.Root.Log.addRecord('\n Mám načtené z reportu' + JSON.stringify(response.report), true, 'campaignsDataReport');
-    this.Root.Log.addRecord('\n Zobraz sloupecky' + JSON.stringify(this.Root.rDataSchema), true, 'campaignsDataReport');
+    this.Root.Log.addRecord('\nNačtené data z API (odpověď API server)', true, 'campaignsClass.campaignsDataReport()');
+    this.Root.Log.addValue(response.report, true, 'campaignsClass.campaignsDataReport()');
 
     //Iterace nad jednou entitou reportu
     for (var c = 0; c < response.report.length; c++) {
@@ -154,15 +153,16 @@ var CampaignsClass = function (rRoot) {
             actualDayIsEmpty = false;
           }
           this.Root.rDataSchema.forEach(function (field) {
-            if (field.name.substring(4) == 'campaignsIds') {
+            var columnName = field.name.substring(4);
+            if (columnName == 'campaignsIds') {
               values.push(id);
-            } else if (stats[i][field.name.substring(4)] != undefined && (field.group.indexOf('campaigns') != -1)) {
+            } else if ((stats[i][columnName] != undefined || stats[i][columnName] === null) && (field.group.indexOf('campaigns') != -1)) {
               if (actualDayIsEmpty) {
                 values.push(0);
               } else {
-                values.push(stats[i][field.name.substring(4)]);
+                values.push(this.dataCore.dataPostEdit(stats[i][columnName],columnName));
               }
-            } else if (field.name.substring(4) == 'days' && (field.group == 'campaignsDaily' || field.group == 'campaignsWeekly' || field.group == 'campaignsMonthly' || field.group == 'campaignsQuarterly' || field.group == 'campaignsYearly')) {
+            } else if (columnName == 'days' && (field.group == 'campaignsDaily' || field.group == 'campaignsWeekly' || field.group == 'campaignsMonthly' || field.group == 'campaignsQuarterly' || field.group == 'campaignsYearly')) {
               if (stats[i].date == undefined || actualDayIsEmpty) {
                 var d = actualDay.toString();
                 if(field.group == 'campaignsWeekly') {
@@ -174,9 +174,9 @@ var CampaignsClass = function (rRoot) {
                   d = this.toYearWeekFormat(d);
                 }
               }
-              values.push(d);
-            } else if (response.report[c][field.name.substring(4)] != undefined && field.group == 'campaigns') {
-              values.push(response.report[c][field.name.substring(4)]);
+              values.push(this.dataCore.dataPostEdit(d, columnName));
+            } else if ((response.report[c][columnName] != undefined || response.report[c][columnName] === null)&& field.group == 'campaigns') {
+              values.push(this.dataCore.dataPostEdit(response.report[c][columnName], columnName));
             } else {
               values.push('');
             }
@@ -203,12 +203,13 @@ var CampaignsClass = function (rRoot) {
     response.report.forEach(function (campaign) {
       var values = [];
       this.Root.rDataSchema.forEach(function (field) {
-        if (campaign.stats != undefined && campaign.stats[0][field.name.substring(4)] != undefined && field.group == 'campaigns') {
-          values.push(campaign.stats[0][field.name.substring(4)]);
-        } else if (field.name.substring(4) == 'name' && field.group == 'campaigns') {
-          values.push(campaign.name);
-        } else if (campaign[field.name.substring(4)] != undefined && field.group == 'campaigns') {
-          values.push(campaign[field.name.substring(4)]);
+        var columnName = field.name.substring(4);
+        if (campaign.stats != undefined && (campaign.stats[0][columnName] != undefined || campaign.stats[0][columnName] === null) && field.group == 'campaigns') {
+          values.push(this.dataCore.dataPostEdit(campaign.stats[0][columnName], columnName));
+        } else if (columnName == 'name' && field.group == 'campaigns') {
+          values.push(this.dataCore.dataPostEdit(campaign.name, 'name'));
+        } else if ((campaign[columnName] != undefined || campaign[columnName] === null) && field.group == 'campaigns') {
+          values.push(this.dataCore.dataPostEdit(campaign[columnName], columnName));
         } else {
           values.push('');
         }

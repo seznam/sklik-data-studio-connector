@@ -34,6 +34,8 @@ var Schema = function (config) {
 
   /**
   * Význam zkratek
+  * clc - column u client (cl - client + c - column)
+  * kwc - column u keywords (kw - keyword + c - column)
   * cgc - column u kampaně (cg - campaigns + c - column)
   * cpg - jedna se o soucas prehledu kampani
   * cpd - jedna se o soucas dennich prehledu kampani
@@ -46,7 +48,570 @@ var Schema = function (config) {
   */
   this.SklikDataSchema = [
      
-    //####################################### Campaigns
+    /*
+    * ######################################################
+    * ############### SCHEMA FOR GRANULARITY ###############
+    * ######################################################
+    */    
+    {
+      name: 'daily',
+      label: 'Po dnech',
+      dataType: 'STRING',
+      group: 'granularity',
+      semantics: {
+        conceptType: 'DIMENSION',
+        semanticType: 'YEAR_MONTH_DAY',
+        semanticGroup: 'DATETIME'
+      }
+    },
+
+    {
+      name: 'weekly',
+      label: 'Po týdnech',
+      dataType: 'STRING',
+      group: 'granularity',
+      semantics: {
+        conceptType: 'DIMENSION',
+        semanticType: 'YEAR_WEEK',
+        semanticGroup: 'DATETIME'
+      }
+    },
+
+    {
+      name: 'monthly',
+      label: 'Po měsících',
+      dataType: 'STRING',
+      group: 'granularity',
+      semantics: {
+        conceptType: 'DIMENSION',
+        semanticType: 'YEAR_MONTH',
+        semanticGroup: 'DATETIME'
+      }
+    },
+    {
+      name: 'quarterly',
+      label: 'Po čtvrtletích',
+      dataType: 'STRING',
+      group: 'granularity',
+      semantics: {
+        conceptType: 'DIMENSION',
+        semanticType: 'YEAR_QUARTER',
+        semanticGroup: 'DATETIME'
+      }
+    },
+    {
+      name: 'yearly',
+      label: 'Po rocích',
+      dataType: 'STRING',
+      group: 'granularity',
+      semantics: {
+        conceptType: 'DIMENSION',
+        semanticType: 'YEAR',
+        semanticGroup: 'DATETIME'
+      }
+    },
+
+
+    /*
+    * #######################################################
+    * ################# SCHEMA FOR KEYWORDS #################
+    * #######################################################
+    */
+
+  {
+    name: 'kwc_createDate',
+    label: 'Klíčové slova: Datum vytvoření',
+    dataType: 'STRING',
+    group: 'keywords',
+    semantics: {
+      conceptType: 'DIMENSION'
+    }
+  },
+  {
+    name: 'kwc_deleteDate',
+    label: 'Klíčové slova: Datum smazání',
+    dataType: 'STRING',
+    group: 'keywords',
+    semantics: {
+      conceptType: 'DIMENSION'
+    }
+  },
+  {
+    name: 'kwc_deleted',
+    label: 'Klíčové slova: Smazané',
+    dataType: 'STRING',
+    group: 'keywords',
+    semantics: {
+      conceptType: 'DIMENSION'
+    }
+  },
+  {
+    name: 'kwc_disabled',
+    label: 'Klíčové slova: Zakázané',
+    dataType: 'STRING',
+    group: 'keywords',
+    semantics: {
+      conceptType: 'DIMENSION'
+    }
+  },
+  {
+    name: 'kwc_status',
+    label: 'Klíčové slova: Stav',
+    dataType: 'STRING',
+    group: 'keywords',
+    semantics: {
+      conceptType: 'DIMENSION'
+    }
+  },
+  {
+    name: 'kwc_url',
+    label: 'Klíčové slova: Cílová URL klíčového slova',
+    dataType: 'STRING',
+    group: 'keywords',
+    semantics: {
+      conceptType: 'DIMENSION'
+    }
+  },
+  {
+    name: 'kwc_isRegisteredBrand',
+    label: 'Klíčové slova: Registrovaná značka',
+    dataType: 'STRING',
+    group: 'keywords',
+    semantics: {
+      conceptType: 'DIMENSION'
+    }
+  },
+  {
+    name: 'kwc_isUnsuitable',
+    label: 'Klíčové slova: Vhodnost klíčového slova',
+    dataType: 'STRING',
+    group: 'keywords',
+    semantics: {
+      conceptType: 'DIMENSION'
+    }
+  },
+  {
+    name: 'kwc_isTooGeneric',
+    label: 'Klíčové slova: Obecné klíčové slovo',
+    dataType: 'STRING',
+    group: 'keywords',
+    semantics: {
+      conceptType: 'DIMENSION'
+    }
+  },
+  {
+    name: 'kwc_isGloballyDisabled',
+    label: 'Klíčové slova: Globálně zakázané klíčové slovo',
+    dataType: 'STRING',
+    group: 'keywords',
+    semantics: {
+      conceptType: 'DIMENSION'
+    }
+  },
+  {
+    name: 'kwc_isTrademark',
+    label: 'Klíčové slova: Ochranná známka',
+    dataType: 'STRING',
+    group: 'keywords',
+    semantics: {
+      conceptType: 'DIMENSION'
+    }
+  },
+  {
+    name: 'kwc_isSuspicious',
+    label: 'Klíčové slova: Podezřelé klíčové slovo',
+    dataType: 'STRING',
+    group: 'keywords',
+    semantics: {
+      conceptType: 'DIMENSION'
+    }
+  },
+  {
+    name: 'kwc_statusId',
+    label: 'Klíčové slova: ID stavu',
+    dataType: 'NUMBER',
+    group: 'keywords',
+    semantics: {
+      conceptType: 'METRIC'
+    }
+  },
+  {
+    name: 'kwc_cpc',
+    label: 'Klíčové slova: CPC',
+    dataType: 'NUMBER',
+    group: 'keywords',
+    semantics: {
+      conceptType: 'METRIC'
+    }
+  },
+
+  {
+    name: 'kwc_avgCpc',
+    label: 'Klíčové slova: CPC Ø',
+    dataType: 'NUMBER',
+    group: 'keywords',
+    semantics: {
+      conceptType: 'METRIC'
+    }
+  },
+
+  {
+    name: 'kwc_avgPos',
+    label: 'Klíčové slova: Pozice Ø',
+    dataType: 'NUMBER',
+    group: 'keywords',
+    semantics: {
+      conceptType: 'METRIC'
+    }
+  },
+  
+  {
+    name: 'kwc_clickMoney',
+    label: 'Klíčové slova: Cena za prokliky',
+    dataType: 'NUMBER',
+    group: 'keywords',
+    semantics: {
+      conceptType: 'METRIC'
+    }
+  },
+
+  {
+    name: 'kwc_clicks',
+    label: 'Klíčové slova: Prokliky',
+    dataType: 'NUMBER',
+    group: 'keywords',
+    semantics: {
+      conceptType: 'METRIC'
+    }
+  },
+
+  {
+    name: 'kwc_conversions',
+    label: 'Klíčové slova: Konverze',
+    dataType: 'NUMBER',
+    group: 'client',
+    semantics: {
+      conceptType: 'METRIC'
+    }
+  },
+
+  {
+    name: 'kwc_conversionValue',
+    label: 'Klíčové slova: Hodnota konverze',
+    dataType: 'NUMBER',
+    group: 'keywords',
+    semantics: {
+      conceptType: 'METRIC'
+    }
+  },
+
+  {
+    name: 'kwc_impressionMoney',
+    label: 'Klíčové slova: Cena za zobrazení',
+    dataType: 'NUMBER',
+    group: 'keywords',
+    semantics: {
+      conceptType: 'METRIC'
+    }
+  },
+  {
+    name: 'kwc_totalMoney',
+    label: 'Klíčové slova: Cena',
+    dataType: 'NUMBER',
+    group: 'keywords',
+    semantics: {
+      conceptType: 'METRIC'
+    }
+  },
+  {
+    name: 'kwc_transactions',
+    label: 'Klíčové slova: Transakce',
+    dataType: 'NUMBER',
+    group: 'keywords',
+    semantics: {
+      conceptType: 'METRIC'
+    }
+  },
+  {
+    name: 'kwc_missImpressions',
+    label: 'Klíčové slova: Ztracená zobrazení',
+    dataType: 'NUMBER',
+    group: 'keywords',
+    semantics: {
+      conceptType: 'METRIC'
+    }
+  },
+  {
+    name: 'kwc_underLowerThreshold',
+    label: 'Klíčové slova: Ztracená zobrazení -  nízké cpc',
+    dataType: 'NUMBER',
+    group: 'keywords',
+    semantics: {
+      conceptType: 'METRIC'
+    }
+  },
+  {
+    name: 'kwc_exhaustedBudget',
+    label: 'Klíčové slova: Ztracená zobrazení - rozpočet',
+    dataType: 'NUMBER',
+    group: 'keywords',
+    semantics: {
+      conceptType: 'METRIC'
+    }
+  },
+  {
+    name: 'kwc_stoppedBySchedule',
+    label: 'Klíčové slova: Ztracená zobrazení - časové plánování',
+    dataType: 'NUMBER',
+    group: 'keywords',
+    semantics: {
+      conceptType: 'METRIC'
+    }
+  },
+  {
+    name: 'kwc_underForestThreshold',
+    label: 'Klíčové slova: Ztracená zobrazení - nízký rank',
+    dataType: 'NUMBER',
+    group: 'keywords',
+    semantics: {
+      conceptType: 'METRIC'
+    }
+  },
+  {
+    name: 'kwc_exhaustedBudgetShare',
+    label: 'Klíčové slova: Ztracená zobrazení - sdílený rozpočet',
+    dataType: 'NUMBER',
+    group: 'keywords',
+    semantics: {
+      conceptType: 'METRIC'
+    }
+  },
+  {
+    name: 'kwc_ctr',
+    label: 'Klíčové slova: CTR',
+    dataType: 'NUMBER',
+    group: 'keywords',
+    semantics: {
+      conceptType: 'METRIC'
+    }
+  },
+  {
+    name: 'kwc_pno',
+    label: 'Klíčové slova: PNO',
+    dataType: 'NUMBER',
+    group: 'keywords',
+    semantics: {
+      conceptType: 'METRIC'
+    }
+  },
+  {
+    name: 'kwc_ish',
+    label: 'Klíčové slova: Podíl ztracených zobrazení - vyhledávací síť',
+    dataType: 'NUMBER',
+    group: 'keywords',
+    semantics: {
+      conceptType: 'METRIC'
+    }
+  },
+  {
+    name: 'kwc_ishContext',
+    label: 'Klíčové slova: Podíl ztracených zobrazení - obsahová síť',
+    dataType: 'NUMBER',
+    group: 'keywords',
+    semantics: {
+      conceptType: 'METRIC'
+    }
+  },
+  {
+    name: 'kwc_ishSum',
+    label: 'Klíčové slova: Podíl ztracených zobrazení',
+    dataType: 'NUMBER',
+    group: 'keywords',
+    semantics: {
+      conceptType: 'METRIC'
+    }
+  },
+    {
+      name: 'kwc_name',
+      label: 'Klíčové slova: Klíčové slovo',
+      dataType: 'STRING',
+      group: 'keywords',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
+      name: 'kwc_impressions',
+      label: 'Klíčové slova: Zobrazení',
+      dataType: 'NUMBER',
+      group: 'keywords',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+
+
+    /*
+    * #######################################################
+    * ################## SCHEMA FOR CLIENT ##################
+    * #######################################################
+    */
+    {
+      name: 'cgc_avgConValue',
+      label: 'Kampaň: Průměrná hodnota objednávky',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      formula: 'cgc_conversionValue/cgc_conversions',
+      semantics: {
+        conceptType: 'METRIC',          
+        semanticType: 'CURRENCY_CZK',
+        semanticGroup: 'CURRENCY'
+      }
+    },
+    {
+      name: 'cgc_conValue',
+      label: 'Kampaň: Cena konverze',
+      dataType: 'NUMBER',
+      group: 'campaigns',
+      formula: 'goc_totalMoney_kc/cgc_conversions',
+      semantics: {
+        conceptType: 'METRIC',          
+        semanticType: 'CURRENCY_CZK',
+        semanticGroup: 'CURRENCY'
+      }
+    },
+    {
+      name: 'clc_impressions',
+      label: 'Účet: Zobrazení',
+      dataType: 'NUMBER',
+      group: 'client',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'clc_clicks',
+      label: 'Účet: Prokliky',
+      dataType: 'NUMBER',
+      group: 'client',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'clc_ctr',
+      label: 'Účet: CTR',
+      dataType: 'NUMBER',
+      group: 'client',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'clc_cpc',
+      label: 'Účet: CPC',
+      dataType: 'NUMBER',
+      group: 'client',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'clc_price',
+      label: 'Účet: Celkové náklady',
+      dataType: 'NUMBER',
+      group: 'client',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'clc_avgPosition',
+      label: 'Účet: Průměrná pozice',
+      dataType: 'NUMBER',
+      group: 'client',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'clc_conversions',
+      label: 'Účet: Konverze',
+      dataType: 'NUMBER',
+      group: 'client',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'clc_conversionRatio',
+      label: 'Účet: Konverzní poměr',
+      dataType: 'NUMBER',
+      group: 'client',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'clc_conversionAvgPrice',
+      label: 'Účet: Cena konverze',
+      dataType: 'NUMBER',
+      group: 'client',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'clc_conversionValue',
+      label: 'Účet: Hodnota konverze',
+      dataType: 'NUMBER',
+      group: 'client',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'clc_conversionAvgValue',
+      label: 'Účet: Hodnota konverze Ø',
+      dataType: 'NUMBER',
+      group: 'client',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'clc_transactionAvgPrice',
+      label: 'Účet: Cena transakce Ø',
+      dataType: 'NUMBER',
+      group: 'client',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'clc_transactionAvgValue',
+      label: 'Účet: Hodnota transakce Ø',
+      dataType: 'NUMBER',
+      group: 'client',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'clc_transactionAvgCount',
+      label: 'Účet: Počet transakcí na konverzi Ø',
+      dataType: 'NUMBER',
+      group: 'client',
+      semantics: {
+        conceptType: 'METRIC'
+      }
+    },
+
+    /*
+    * ########################################################
+    * ################# SCHEMA FOR CAMPAIGNS #################
+    * ########################################################
+    */
     {
       name: 'cpg_name',
       label: 'Název kampaně',
@@ -69,7 +634,7 @@ var Schema = function (config) {
     {
       name: 'cgc_automaticLocation',
       label: 'Kampaň: Zapnutí automatické lokace',
-      dataType: 'BOOLEAN',
+      dataType: 'STRING',
       group: 'campaigns',
       semantics: {
         conceptType: 'DIMENSION'
@@ -87,7 +652,7 @@ var Schema = function (config) {
     {
       name: 'cgc_context',
       label: 'Kampaň: Obsahová kampaň',
-      dataType: 'BOOLEAN',
+      dataType: 'STRING',
       group: 'campaigns',
       semantics: {
         conceptType: 'DIMENSION'
@@ -96,7 +661,7 @@ var Schema = function (config) {
     {
       name: 'cgc_contextNetwork',
       label: 'Kampaň: Obsahová síť',
-      dataType: 'BOOLEAN',
+      dataType: 'STRING',
       group: 'campaigns',
       semantics: {
         conceptType: 'DIMENSION'
@@ -114,7 +679,7 @@ var Schema = function (config) {
     {
       name: 'cgc_deleted',
       label: 'Kampaň: Smazaná',
-      dataType: 'BOOLEAN',
+      dataType: 'STRING',
       group: 'campaigns',
       semantics: {
         conceptType: 'DIMENSION'
@@ -141,7 +706,7 @@ var Schema = function (config) {
     {
       name: 'cgc_deviceDesktop',
       label: 'Kampaň: Cílení na desktopy',
-      dataType: 'BOOLEAN',
+      dataType: 'STRING',
       group: 'campaigns',
       semantics: {
         conceptType: 'DIMENSION'
@@ -150,7 +715,7 @@ var Schema = function (config) {
     {
       name: 'cgc_deviceTablet',
       label: 'Kampaň: Cílení na tablety',
-      dataType: 'BOOLEAN',
+      dataType: 'STRING',
       group: 'campaigns',
       semantics: {
         conceptType: 'DIMENSION'
@@ -159,7 +724,7 @@ var Schema = function (config) {
     {
       name: 'cgc_deviceMobil',
       label: 'Kampaň: Cílení na mobily',
-      dataType: 'BOOLEAN',
+      dataType: 'STRING',
       group: 'campaigns',
       semantics: {
         conceptType: 'DIMENSION'
@@ -168,7 +733,7 @@ var Schema = function (config) {
     {
       name: 'cgc_deviceOther',
       label: 'Kampaň: Cílení na ostatní multimediální zařízení',
-      dataType: 'BOOLEAN',
+      dataType: 'STRING',
       group: 'campaigns',
       semantics: {
         conceptType: 'DIMENSION'
@@ -207,7 +772,7 @@ var Schema = function (config) {
     {
       name: 'cgc_fulltext',
       label: 'Kampaň: Vyhledávací kampaň',
-      dataType: 'BOOLEAN',
+      dataType: 'STRING',
       group: 'campaigns',
       semantics: {
         conceptType: 'DIMENSION'
@@ -658,7 +1223,7 @@ var Schema = function (config) {
     }, {
       name: 'goc_deleted',
       label: 'Sestava: Smazaná',
-      dataType: 'BOOLEAN',
+      dataType: 'STRING',
       group: 'groups',
       semantics: {
         conceptType: 'DIMENSION'
@@ -724,7 +1289,7 @@ var Schema = function (config) {
     }, {
       name: 'goc_sensitivity',
       label: 'Sestava: Erotická reklama',
-      dataType: 'BOOLEAN',
+      dataType: 'STRING',
       group: 'groups',
       semantics: {
         conceptType: 'DIMENSION'
@@ -1046,7 +1611,7 @@ var Schema = function (config) {
     {
       name: 'adc_deleted',
       label: 'Inzerát: Smazaný',
-      dataType: 'BOOLEAN',
+      dataType: 'STRING',
       group: 'ads',
       semantics: {
         conceptType: 'DIMENSION'
@@ -1574,7 +2139,7 @@ var Schema = function (config) {
     {
       name: 'bnc_deleted',
       label: 'Banner: Smazáno',
-      dataType: 'BOOLEAN',
+      dataType: 'STRING',
       group: 'banners',
       semantics: {
         conceptType: 'DIMENSION'

@@ -33,7 +33,13 @@ var GetDataLog = function (logMode, debugMode, folderId, fileId) {
      * Name of logger file
      */
     const FILE_NAME = 'Sklik_DataStudio_Log';
-  
+
+    /**
+     * In code is special record messages dedicated only for debug (step by step)
+     * If this const is true, will be recorded into log file
+     */
+    const ERROR_DEBUG = true;  
+
     /**
      * ID of folder where the logger file is
      * @var {String}
@@ -71,12 +77,16 @@ var GetDataLog = function (logMode, debugMode, folderId, fileId) {
         var doc = this.openFile();
         if (doc) {
           var d = new Date();
-          this.docRecord = doc.getBody().appendParagraph('\n\nNačítání dat:' + d.toString());
+          this.docRecord = doc.getBody().appendParagraph('############# Start scriptu ##############');
+          this.addInfo('##########################################');
+          this.addInfo('Čas spuštění scriptu: '+ d.toString());
+
+          this.addInfo('##### Nastavení logování #####');
           if (this.logMode) {
-            this.addInfo('Log Mode je zapnutý');
+            this.addInfo('Log mode: zapnutý');
           }
           if (this.debugMode) {
-            this.addInfo('Debug Mode je zapnutý');
+            this.addInfo('Debug mode: zapnutý');
           }
         }
       }
@@ -137,11 +147,9 @@ var GetDataLog = function (logMode, debugMode, folderId, fileId) {
               }
             } while (file.hasNext());
           }
-          return DocumentApp.create(FILE_NAME);
-  
+          return DocumentApp.create(FILE_NAME);  
         }
       }
-      return false;
     }
   
     /**
@@ -151,31 +159,80 @@ var GetDataLog = function (logMode, debugMode, folderId, fileId) {
      * @param {Location} - source of logger message
      */
     this.addRecord = function (text, debug, location) {
-      if (this.logMode && (debug == undefined || this.debugMode === debug) && this.docRecord) {
+      if (this.canAddMessage(debug)) {
+        if(text.length > 2000) {
+          text = text.substr(0, 2000);
+          text += ' #### Record was shorted ### ';
+       }
         if (location) {
-          var e = this.docRecord.appendText('\n' + text + '[' + location + ']');
+          var e = this.docRecord.appendText('\n\n' + text + '[' + location + ']');
         } else {
-          var e = this.docRecord.appendText('\n' + text);
+          var e = this.docRecord.appendText('\n\n' + text);
         }
       }
     }
   
     /**
-     * Add new logger message
-     * @param {String} - message to logger
-     * @param {Boolean} - will save only if is debug mode enabled
-     * @param {Location} - source of logger message
+     * Dump one value 
+     * @param {Mixed} value- message to logger
+     * @param {Boolean} debug - will save only if is debug mode enabled
+     * @param {String} location - source of logger message
      */
-    this.addValue = function (text, debug, location) {
-      if (this.logMode && (debug == undefined || this.debugMode === debug) && this.docRecord) {
+    this.addValue = function (value, debug, location) {
+      if (this.canAddMessage(debug)) {
+        if (typeof value == "object") {
+          value = JSON.stringify(value);
+        }
+
+        if(value.length > 2000) {
+          value = value.substr(0, 2000);
+          value += ' #### Record was shorted ### ';
+        }
         if (location) {
-          var e = this.docRecord.appendText('\n' + text + '[' + location + ']');
+          var e = this.docRecord.appendText('\n' + value + '[' + location + ']');
         } else {
-          var e = this.docRecord.appendText('\n' + text);
+          var e = this.docRecord.appendText('\n' + value);
+        }
+      }
+    }
+
+    /**
+     * Special debug messages (for solving problems)
+     * @param {String} text - message to logger
+     * @param {String} location - source of logger message
+     * @param {Mixed} params - 
+     */
+    this.addDebug = function (text, location, params) {
+      if (ERROR_DEBUG) {
+        if(text.length > 2000) {
+          text = text.substr(0, 2000);
+          text += ' #### Record was shorted ### ';
+        }
+        var e = this.docRecord.appendText('\n' + text + '[' + location + ']');
+        if(params != undefined) {
+          if (typeof params == "object") {
+            var params = JSON.stringify(params);
+          } 
+          if(params.length > 2000) {
+            params = params.substr(0, 2000);
+            params += ' #### Record was shorted ### ';
+          }
+          var e = this.docRecord.appendText('\n' + params);
         }
       }
     }
   
+    /**
+     * Check if this message can be added
+     * @param {Boolean} - debug mode is enabled
+     * @return {Boolean} - True (text is add to output)
+     */
+    this.canAddMessage = function (debug) {
+      return (this.logMode && (debug == undefined || this.debugMode === debug) && this.docRecord);
+    }
+
+
+
     /**
      * Add new logger message
      * @param {String} - message to logger
@@ -183,13 +240,4 @@ var GetDataLog = function (logMode, debugMode, folderId, fileId) {
     this.addInfo = function (text) {
       var e = this.docRecord.appendText('\n' + text);
     }
-  }
-  
-  /**
-   * Logger test 
-   */
-  function testErrorLog() {
-    var Log = new GetDataLog(true, true);
-    Log.setup();
-    Log.addRecord('test2', true);
   }

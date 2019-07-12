@@ -39,14 +39,24 @@ function getSchema(request) {
  * @link https://developers.google.com/datastudio/connector/reference#getdata
  */
 function getData(request) {
-  var Sch = new Schema(request.configParams);
-  var Ro = new Root(request.configParams, Sch.getSchema(), request.fields, request.dateRange); 
-  Ro.setup();
-   if (Ro.load()) {
-     return {
-       schema: Ro.getDataSchema(),
-       rows: Ro.getData()
-     };
+  //Register request -> testing in debugging 
+  //console.error({'request': request});
+  //return false;
+
+  try {
+    var Sch = new Schema(request.configParams);
+    var Ro = new Root(request.configParams, Sch.getSchema(), request.fields, request.dateRange);
+    Ro.setup();
+    if (Ro.load()) {
+      return {
+        schema: Ro.getDataSchema(),
+        rows: Ro.getData()
+      };
+    }
+  } catch (exp) {
+    console.error({'location': 'getData', 'err': exp });
+    Ro.Log.addRecord('Ve scriptu nastal neidentifikovaný problém');
+    Ro.Log.addValue(exp, true);
   }
 }
 

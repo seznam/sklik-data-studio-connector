@@ -2,9 +2,17 @@
 This connector imports Sklik reports, through Sklik API DRAK JSON, into Google Data Studio, a graphical display platform. 
 
 # Version
-Actual version: 1.0.1 
+Actual version: 2.0.0
 
 # Changelog
+
+12.7.2019 (1.1.0 -> 2.0.0)
+* [ADD] Přidání metriky pro klíčové slova a celého účtu
+* [ADD] Rozšíření logování do logovacího souboru
+* [FIX] Úprava API volání na stabilnější verzi
+* [CHANGE] Úprava zobrazování boolenovských, null a některých datumových hodnot
+* [CHANGE] Oprava názvů u sloupečků
+
 14.6.2018 (1.0.1 -> 1.1.0)
 * [CHANGE] Změna defaultního nastavení některých metrik: 
 Kampaně: PNO (Cost Of Sale(COS)),(Kč) Peníze utracené za prokliky, (Kč) Průměrná cena za klik (Avg CPC), (Kč) Nastaveni budgetu, Celkem utracené peníze, (Kč) Celkvý budget, (Kč) Penize za zobrazení, CTR, Průměrná pozice 
@@ -28,8 +36,8 @@ Sklik Data studio connector
 Automatické spojení statistických reportů z reklamního systému Sklik do grafické platformy Google Data studio, které je určeno k vizualizaci dat pro lepší přehled a orientaci.
 
 Aktuální verze
-Sklik Data Studio Connector v1.1.0 ID
-AKfycbyyv7x6-N2IYj0DZ7Vlz4oQASIqJdupbiAuT0luea8
+Sklik Data Studio Connector v2.0.0 ID
+AKfycbz5dp60Pq7R-gV3j2fIGoviSCojh0A7I3V3jT49BEMWzm6Cdzd0kPDiy7HVUvXhFLUINA
 
 **Připojení konektoru**
 
