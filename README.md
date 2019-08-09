@@ -5,6 +5,8 @@ This connector imports Sklik reports, through Sklik API DRAK JSON, into Google D
 Actual version: 2.0.0
 
 # Changelog
+09.8.2019 (2.0.0 -> 2.0.1)
+* [FIX] Duplicita sloupců (Kampaň: Prokliky).
 
 12.7.2019 (1.1.0 -> 2.0.0)
 * [ADD] Přidání metriky pro klíčové slova a celého účtu

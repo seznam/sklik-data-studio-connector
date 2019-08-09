@@ -624,7 +624,7 @@ var Schema = function (config) {
     },
     {
       name: 'cgc_actualClicks',
-      label: 'Kampaň: Prokliky',
+      label: 'Kampaň: Aktuální prokliky',
       dataType: 'NUMBER',
       group: 'campaigns',
       semantics: {
