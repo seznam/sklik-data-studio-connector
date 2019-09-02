@@ -274,6 +274,18 @@ var Schema = function (config) {
       conceptType: 'METRIC'
     }
   },
+  {
+    name: 'kwc_clickMoney_kc',
+    label: 'Klíčové slova: (Kč) Cena za prokliky',
+    dataType: 'NUMBER',
+    group: 'keywords',
+    formula: 'kwc_clickMoney*0.01',
+      semantics: {
+        conceptType: 'METRIC',          
+        semanticType: 'CURRENCY_CZK',
+        semanticGroup: 'CURRENCY'
+      }
+  },
 
   {
     name: 'kwc_clicks',
@@ -304,6 +316,18 @@ var Schema = function (config) {
       conceptType: 'METRIC'
     }
   },
+  {
+    name: 'kwc_conversionValue_kc',
+    label: 'Klíčové slova: (Kč) Hodnota konverze',
+    dataType: 'NUMBER',
+    group: 'keywords',
+    formula: 'kwc_conversionValue*0.01',
+      semantics: {
+        conceptType: 'METRIC',          
+        semanticType: 'CURRENCY_CZK',
+        semanticGroup: 'CURRENCY'
+      }
+  },
 
   {
     name: 'kwc_impressionMoney',
@@ -312,6 +336,18 @@ var Schema = function (config) {
     group: 'keywords',
     semantics: {
       conceptType: 'METRIC'
+    }
+  },
+  {
+    name: 'kwc_impressionMoney_kc',
+    label: 'Klíčové slova: (Kč) Cena za zobrazení',
+    dataType: 'NUMBER',
+    group: 'keywords',
+    formula: 'kwc_impressionMoney*0.01',
+    semantics: {
+      conceptType: 'METRIC',          
+      semanticType: 'CURRENCY_CZK',
+      semanticGroup: 'CURRENCY'
     }
   },
   {
@@ -324,12 +360,36 @@ var Schema = function (config) {
     }
   },
   {
+    name: 'kwc_totalMoney_kc',
+    label: 'Klíčové slova: (Kč) Cena',
+    dataType: 'NUMBER',
+    group: 'keywords',
+    formula: 'kwc_totalMoney*0.01',
+    semantics: {
+      conceptType: 'METRIC',          
+      semanticType: 'CURRENCY_CZK',
+      semanticGroup: 'CURRENCY'
+    }
+  },
+  {
     name: 'kwc_transactions',
     label: 'Klíčové slova: Transakce',
     dataType: 'NUMBER',
     group: 'keywords',
     semantics: {
       conceptType: 'METRIC'
+    }
+  },
+  {
+    name: 'kwc_transactions_kc',
+    label: 'Klíčové slova: (Kč) Transakce',
+    dataType: 'NUMBER',
+    group: 'keywords',
+    formula: 'kwc_transactions*0.01',
+    semantics: {
+      conceptType: 'METRIC',          
+      semanticType: 'CURRENCY_CZK',
+      semanticGroup: 'CURRENCY'
     }
   },
   {
@@ -526,6 +586,18 @@ var Schema = function (config) {
       }
     },
     {
+      name: 'clc_price_kc',
+      label: 'Účet: (Kč) Celkové náklady',
+      dataType: 'NUMBER',
+      group: 'client',
+      formula: 'clc_price*0.01',
+      semantics: {
+        conceptType: 'METRIC',          
+        semanticType: 'CURRENCY_CZK',
+        semanticGroup: 'CURRENCY'
+      }
+    },
+    {
       name: 'clc_avgPosition',
       label: 'Účet: Průměrná pozice',
       dataType: 'NUMBER',
@@ -562,12 +634,36 @@ var Schema = function (config) {
       }
     },
     {
+      name: 'clc_conversionAvgPrice_kc',
+      label: 'Účet: (Kč) Cena konverze',
+      dataType: 'NUMBER',
+      group: 'client',
+      formula: 'clc_conversionAvgPrice*0.01',
+      semantics: {
+        conceptType: 'METRIC',          
+        semanticType: 'CURRENCY_CZK',
+        semanticGroup: 'CURRENCY'
+      }
+    },
+    {
       name: 'clc_conversionValue',
       label: 'Účet: Hodnota konverze',
       dataType: 'NUMBER',
       group: 'client',
       semantics: {
         conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'clc_conversionValue_kc',
+      label: 'Účet: (Kč) Hodnota konverze',
+      dataType: 'NUMBER',
+      group: 'client',
+      formula: 'clc_conversionValue*0.01',
+      semantics: {
+        conceptType: 'METRIC',          
+        semanticType: 'CURRENCY_CZK',
+        semanticGroup: 'CURRENCY'
       }
     },
     {
@@ -580,6 +676,18 @@ var Schema = function (config) {
       }
     },
     {
+      name: 'clc_conversionAvgValue_kc',
+      label: 'Účet: (Kč) Hodnota konverze Ø',
+      dataType: 'NUMBER',
+      group: 'client',
+      formula: 'clc_conversionAvgValue*0.01',
+      semantics: {
+        conceptType: 'METRIC',          
+        semanticType: 'CURRENCY_CZK',
+        semanticGroup: 'CURRENCY'
+      }
+    },
+    {
       name: 'clc_transactionAvgPrice',
       label: 'Účet: Cena transakce Ø',
       dataType: 'NUMBER',
@@ -589,12 +697,36 @@ var Schema = function (config) {
       }
     },
     {
+      name: 'clc_transactionAvgPrice_kc',
+      label: 'Účet: (Kč) Cena transakce Ø',
+      dataType: 'NUMBER',
+      group: 'client',
+      formula: 'clc_transactionAvgPrice*0.01',
+      semantics: {
+        conceptType: 'METRIC',          
+        semanticType: 'CURRENCY_CZK',
+        semanticGroup: 'CURRENCY'
+      }
+    },
+    {
       name: 'clc_transactionAvgValue',
       label: 'Účet: Hodnota transakce Ø',
       dataType: 'NUMBER',
       group: 'client',
       semantics: {
         conceptType: 'METRIC'
+      }
+    },
+    {
+      name: 'clc_transactionAvgValue_kc',
+      label: 'Účet: (Kč) Hodnota transakce Ø',
+      dataType: 'NUMBER',
+      group: 'client',
+      formula: 'clc_transactionAvgValue*0.01',
+      semantics: {
+        conceptType: 'METRIC',          
+        semanticType: 'CURRENCY_CZK',
+        semanticGroup: 'CURRENCY'
       }
     },
     {
