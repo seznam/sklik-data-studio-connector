@@ -2,7 +2,7 @@
 This connector imports Sklik reports, through Sklik API DRAK JSON, into Google Data Studio, a graphical display platform. 
 
 # Version
-Actual version: 2.0.0
+Actual version: 2.1.0
 
 # Changelog
 30.9.2019 (2.0.1 -> 2.1.0)
