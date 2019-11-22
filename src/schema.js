@@ -1384,15 +1384,7 @@ var Schema = function (config) {
       semantics: {
         conceptType: 'METRIC'
       }
-    }, {
-      name: 'goc_maxCpcContext',
-      label: 'Sestava: Max. CPC obsah',
-      dataType: 'NUMBER',
-      group: 'groups',
-      semantics: {
-        conceptType: 'METRIC'
-      }
-    }, {
+    },  {
       name: 'goc_maxUserDailyImpressions',
       label: 'Sestava: Zobrazení jednomu uživateli za den',
       dataType: 'NUMBER',

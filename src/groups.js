@@ -88,7 +88,7 @@ var GroupsClass = function (rRoot) {
     for (var i = 0; i < this.Root.displayColumns.campaigns.length; i++) {
       this.Root.displayColumns.groups.push('campaign.' + this.Root.displayColumns.campaigns[i]);
     }
-    this.Root.Log.addRecord('Zobraz sloupecky' + this.Root.displayColumns.groups.join(), true, 'groupsReadReport');
+    this.Root.Log.addRecord('Zobraz sloupecky ' + this.Root.displayColumns.groups.join(), true, 'groupsReadReport');
     return this.Root.sklikApi(
       'groups.readReport',
       [{ 'session': this.Root.session, 'userId': this.Root.userId },
@@ -109,8 +109,8 @@ var GroupsClass = function (rRoot) {
    * @return {Boolean}
    */
   this.returnGroupsDataPackage = function (response) {
-    this.Root.Log.addRecord('\n Mám načtené z reportu' + JSON.stringify(response), true, 'campaignsDataReport');
-    this.Root.Log.addRecord('\n Zobraz sloupecky' + JSON.stringify(this.Root.rDataSchema), true, 'campaignsDataReport');
+    this.Root.Log.addRecord('\n Mám načtené z reportu' + JSON.stringify(response), true, 'groupsDataReport');
+    this.Root.Log.addRecord('\n Zobraz sloupecky' + JSON.stringify(this.Root.rDataSchema), true, 'groupsDataReport');
     response.report.forEach(function (groups) {
       var values = [];
       this.Root.rDataSchema.forEach(function (field) {
@@ -122,7 +122,7 @@ var GroupsClass = function (rRoot) {
         } else if (field.group == 'campaigns' && groups.campaign != undefined && (groups.campaign[columnName[1]] != undefined || groups.campaign[columnName[1]] === null)) {
           values.push(this.dataCore.dataPostEdit(groups.campaign[columnName[1]],columnName[1]));
         } else if (groups[columnName[1]] != undefined && field.group == 'groups') {
-          values.push(this.dataCore.dataPostEdit(groups[columnName[1]]),columnName[1]);
+          values.push(this.dataCore.dataPostEdit(groups[columnName[1]],columnName[1]));
         } else {
           values.push('');
         }
