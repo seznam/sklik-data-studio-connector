@@ -50,22 +50,24 @@ AKfycbz5dp60Pq7R-gV3j2fIGoviSCojh0A7I3V3jT49BEMWzm6Cdzd0kPDiy7HVUvXhFLUINA
 
 **Připojení konektoru**
 
-V GDS (Google Data studio) se přepnete na Zdroje dat a v pravém spodním rohu dáte přidat další konektor. 
-![](https://github.com/ChocoTUx/readmetester/blob/master/doc/01.JPG)
+V GDS (Google Data studio) v levé horní části rozkliknete tlačítko Create a vyberete možnost Data source. 
+![](https://github.com/seznam/sklik-data-studio-connector/blob/master/wiki/datasource_01.jpg)
 
-Budete přesměrování na stránku se seznamem veřejných konektorů. Jelikož náš konektor ještě není plně přístupný, musíte přístup k němu zadat pomoci ID. V levém sloupci dole se přepnete na Vývojáři, vyplníte Deployment ID (ID najdete v předchozí části návodu) a dáte Ověřit. 
-Následně se vám načte konektor (načte se nový banner s názvem konektoru, popisem). Konektor přidáte pomocí tlačítka Přidat konektor.
-![](https://github.com/ChocoTUx/readmetester/blob/master/doc/02.JPG)
+Budete přesměrování na stránku se seznamem veřejných konektorů. Jelikož náš konektor ještě není plně přístupný, musíte přístup k němu zadat pomoci ID. Pro možnost přidání ID, je třeba kliknout na konektor, který je označený jako Build your own.
+![](https://github.com/seznam/sklik-data-studio-connector/blob/master/wiki/datasource_02.jpg)
+
+Do políčka Deployment ID zadáte ID našeho konektoru a potvrdíte tlačítkem Validate
+![](https://github.com/seznam/sklik-data-studio-connector/blob/master/wiki/datasource_03.jpg)
 
 Pokud přidáváte konektor poprvé, musíte si projít sérií bezpečnostních schvalován (jelikož se jedná o konektor, který není oficiálně schválený Googlem – jejich vývojáři nezkontrolovali bezpečnost kódu). 
 Ve vyskakovacím okně (pokud se nezobrazí, zkuste kontrolovat, že nemáte zablokované vyskakovací okna v prohlížeči nebo není okno zobrazené na pozadí) a kliknete na Autorizovat. Následně vybere účet pro který chcete konektor povolit. V dalším kroku kliknete na Advanced, pod kterým vyskočí další informační hláška pod kterou kliknete na Go to Sklik GDS (unsafe). Poslední informační okno rekapituluje všechny práva vůči vašemu účtu, který konektor vyžaduje.
 1. Přístup na Google Drive + Zobrazování a práci s dokumenty: Toto je nutné pro zapnutí Logování (logování zapisuje do Google dokumentu stav posledního spojení. Pomocí jeho chybových hlášek můžete snadněji detekovat zdroj chyby). 
 2. Přístup k externí service: Napojení na samotný Sklik API.
-![](https://github.com/ChocoTUx/readmetester/blob/master/doc/03.JPG)
+![](https://github.com/seznam/sklik-data-studio-connector/blob/master/wiki/datasource_04.jpg)
 *Zdrojové kódy našeho konektoru jsou zveřejněny na GitHubu. Můžete si tedy vytvořit vlastní konektor a mít díky tomu práci těchto scriptů plně pod kontrolou.*
 
 Posledním krokem je nastavení configu. Zde se zadávají všechny individuální nastavení potřebná pro fungování konektoru. Jakmile budou všechny informace vyplněny, stačí vpravo nahoře konektor Připojit.
-![](https://github.com/ChocoTUx/readmetester/blob/master/doc/04.JPG)
+![](https://github.com/seznam/sklik-data-studio-connector/blob/master/wiki/datasource_05.jpg)
 
 **Nastavení configu**
 
