@@ -56,6 +56,9 @@ V GDS (Google Data studio) v levé horní části rozkliknete tlačítko Create 
 Budete přesměrování na stránku se seznamem veřejných konektorů. Jelikož náš konektor ještě není plně přístupný, musíte přístup k němu zadat pomoci ID. Pro možnost přidání ID, je třeba kliknout na konektor, který je označený jako Build your own.
 ![](https://github.com/seznam/sklik-data-studio-connector/blob/master/wiki/datasource_02.jpg)
 
+*Pokud tuto možnost nevidíte, pak je potřeba ji povolit v nastavení.*
+![](https://github.com/seznam/sklik-data-studio-connector/blob/master/wiki/datasource_02b.jpg)
+
 Do políčka Deployment ID zadáte ID našeho konektoru a potvrdíte tlačítkem Validate
 ![](https://github.com/seznam/sklik-data-studio-connector/blob/master/wiki/datasource_03.jpg)
 
