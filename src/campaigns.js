@@ -44,6 +44,9 @@ var CampaignsClass = function (rRoot) {
       'dateFrom': this.Root.startDate,
       'dateTo': this.Root.endDate
     };
+    if(this.Root.campaignsTypes.length > 0) {
+      restrictionFilter.type = this.Root.campaignsTypes;
+    }
 
     if (campaignsId.length > 0) {
       restrictionFilter.ids = campaignsId;
@@ -66,6 +69,10 @@ var CampaignsClass = function (rRoot) {
       'dateFrom': this.Root.startDate,
       'dateTo': this.Root.endDate
     };
+
+    if(this.Root.campaignsTypes.length > 0) {
+      restrictionFilter.type = this.Root.campaignsTypes;
+    }
 
     if (campaignsId.length > 0) {
       restrictionFilter.ids = campaignsId;

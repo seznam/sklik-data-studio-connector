@@ -121,6 +121,12 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
   this.data = [];
 
   /**
+   * Requested campaignsTypes from config
+   * @param {String[]}
+   */
+   this.campaignsTypes = [];
+
+  /**
    * Requested campaignsId from config
    * @param {int[]}
    */
@@ -226,7 +232,19 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
    */
   this.setup = function () {
     try {
-      this.Log = new GetDataLog(this.config.logmode, this.config.debugmode);
+      if(this.config.rw_log_file_name != undefined && this.config.rw_log_file_name != '') {
+        var logFileName = this.config.rw_log_file_name;
+      } else {        
+        var logFileName = this.config.logFileName;
+      } 
+
+      if(this.config.rw_log_folder_id != undefined && this.config.rw_log_folder_id != '') {
+        var logFolderId = this.config.rw_log_folder_id;
+      } else if (this.config.logFolderId != undefined && this.config.logFolderId != '') {
+        var logFolderId = this.config.logFolderId;
+      } 
+
+      this.Log = new GetDataLog(this.config.logmode, this.config.debugmode, logFolderId, logFileName);     
       this.Log.setup();
     } catch (exp) {
       console.error({ 'location': 'Root.setup', 'err': exp, 'note': 'create Log.setup' });
@@ -241,9 +259,31 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
     this.Log.addValue(this.date, true, 'root.setup()');
     try {
       this.setupReportList();
+      
+      //Restriction about campaigns types (avaliable for campaign, group, ad)
+      //The same logic as else part condition but try to use param rw_campaigns_types (rw_* is custom param per single tables and I use it for rewrite global config params)
+      if (this.config.rw_campaigns_types != undefined && this.config.rw_campaigns_types == 'ignore') {
+        this.Log.addRecord('Pro tuto tabulku se ignoruje nastavení filtru podle typu kampaně');      
+      } else if(this.config.rw_campaigns_types != undefined && this.config.rw_campaigns_types != '') {
+        this.campaignsTypes = this.config.rw_campaigns_types.split(',');
+        this.Log.addRecord('Budou se načítat informace jenom data z těchto typů kampaní: ' + this.config.rw_campaigns_id);
+      } else if (this.config.campaignsTypes != undefined && this.config.campaignsTypes != '') {
+        this.campaignsTypes = this.config.campaignsTypes.split(',');
+        this.Log.addRecord('Budou se načítat informace jenom data z těchto typů kampaní: ' + this.config.campaignsTypes);
+      }
+
       //Pokud jsou nastavené campaignsId, tak se jede podle toho 
-      //(řídí campaigns, ale groups a ads pouze pokud není groupsId)
-      if (this.config.campaignsId != undefined && this.config.campaignsId != '') {
+      //(řídí campaigns, ale groups a ads pouze pokud není groupsId)   
+      //The same logic as else part condition but try to use param rw_campaigns_id (rw_* is custom param per single tables and I use it for rewrite global config params)
+      
+      if (this.config.rw_campaigns_id != undefined && this.config.rw_campaigns_id != '') {
+        var stringCampaignsId = this.config.rw_campaigns_id.split(',');
+        this.Log.addRecord('Budou se načítat informace jenom pro tyto kampaně: ' + this.config.rw_campaigns_id);
+        //From {String[]} -> {Int[]}
+        for (var i = 0; i < stringCampaignsId.length; i++) {
+          this.campaignsId.push(parseInt(stringCampaignsId[i]));
+        }
+      } else if (this.config.campaignsId != undefined && this.config.campaignsId != '') {
         var stringCampaignsId = this.config.campaignsId.split(',');
         this.Log.addRecord('Budou se načítat informace jenom pro tyto kampaně: ' + this.config.campaignsId);
         //From {String[]} -> {Int[]}
@@ -251,8 +291,18 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
           this.campaignsId.push(parseInt(stringCampaignsId[i]));
         }
       }
+
       //Pokud jsou nastavené i groupsId tak jsou řídící pro groups a ads
-      if (this.config.groupsId != undefined && this.config.groupsId != '') {
+      //The same logic as else part condition but try to use param rw_group_id (rw_* is custom param per single tables and I use it for rewrite global config params)
+      if (this.config.rw_group_id != undefined && this.config.rw_group_id != '') {
+        var stringGroupsId = this.config.rw_group_id.split(',');
+        this.Log.addRecord('Budou se načítat informace jenom pro tyto sestavy: ' + this.config.rw_group_id);
+        //From {String[]} -> {Int[]}
+        for (var i = 0; i < stringGroupsId.length; i++) {
+          this.groupsId.push(parseInt(stringGroupsId[i]));
+        }
+        this.loadFromGroups = true;
+      } else if (this.config.groupsId != undefined && this.config.groupsId != '') {
         var stringGroupsId = this.config.groupsId.split(',');
         this.Log.addRecord('Budou se načítat informace jenom pro tyto sestavy: ' + this.config.groupsId);
         //From {String[]} -> {Int[]}
@@ -260,7 +310,8 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
           this.groupsId.push(parseInt(stringGroupsId[i]));
         }
         this.loadFromGroups = true;
-      } else {
+      }
+       else {
         this.loadGroupsFromCampaigns = true;
       }
 
@@ -320,7 +371,7 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
    */
   this.parseDataRequest = function () {
     //Jedna se o vytrideni dat, ktere jsou v pozadavku na zobrazeni z celkoveho baliku dat
-
+    this.Log.addDebug('-//- Start iteration over schema fields and match with request', 'root.parseDataRequest[start]');
     this.fields.forEach(function (field) {
       for (var i = 0; i < this.sklikDataSchema.length; i++) {
         if (this.sklikDataSchema[i].name === field.name) {
@@ -415,7 +466,7 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
       return original;
     };
 
-
+    this.Log.addDebug('-//- Translate date format form GDS to API', 'root.setupDate[start]');
     try {
       if (this.date && this.date.endDate) {
         var parts = this.date.endDate.split('-');
@@ -439,9 +490,9 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
       this.Log.addRecord('Nastal problém při úpravě převodu data z formátu GDS do formátu API');
       this.Log.addValue(ext);
     }
-
-
-
+    this.Log.addDebug('-//- Translate date from GDS to API', 'root.setupDate[finall]');
+    this.Log.addDebug('-//- GDS date', 'root.setupDate[finall]', JSON.stringify(this.date));
+    this.Log.addDebug('-//- API format endDate ' + this.endDate + ' a startDate ' + this.startDate, 'root.setupDate[finall]');
   }
 
   /**
@@ -453,7 +504,7 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
     try {
       for (entity in this.displayColumns) {
         if (this.displayColumns[entity].length > 0) {
-
+          this.Log.addDebug('-//- Will be loaded report ' + entity, 'root.loadData');
           return entity;
         }
       }
@@ -470,7 +521,7 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
    * Load data from API
    */
   this.loadData = function () {
-
+    this.Log.addDebug('-//- Select what kind of report will be called', 'root.loadData[start]');
     this.Log.addRecord('Začátek stahování dat z API');
 
     //What endpint (what entity) will be called
@@ -482,12 +533,12 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
           var instance = new ClientClass(this);
           break;
         case 'keywords':
-
+          this.Log.addDebug('-//- CampaignsIDs restriction for Keywords', 'Root.loadData()', this.campaignsIdsForKeywords);
           var instance = new KeywordsClass(this, this.campaignsIdsForKeywords);
           break;
       }
       if (this.granularity == 'total') {
-
+        this.Log.addDebug('-//- Was selected ' + selectedEntity + ' report in period total', 'root.loadData[final]');
         var response = instance.getDataFromApi(this.granularity, { 'limit': 5000 });
         if (response) {
           return instance.convertDataToGDS(response);
@@ -495,7 +546,7 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
           return false;
         }
       } else {
-
+        this.Log.addDebug('-//- Was selected ' + selectedEntity + ' report in period ' + this.granularity, 'root.loadData');
         var days = this.setupDaysCycle(this.granularity);
 
         var response = instance.getDataFromApi(this.granularity, { 'limit': Math.floor(5000 / days) });
@@ -520,7 +571,7 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
     //groups před campaigns
     //This part is DEPRECATED for new entities (and this entitis will be rebuild to new format)
     if (this.reportsList.adsDaily || this.reportsList.adsWeekly || this.reportsList.adsMonthly || this.reportsList.adsQuarterly || this.reportsList.adsYearly) {
-
+      this.Log.addDebug('-//- Was selected ads report in period', 'root.loadData[final]');
       this.displayColumns.ads.push('headline1');
       var Ads = new AdsClass(this);
       if (this.reportsList.adsDaily) {
@@ -540,7 +591,7 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
         return Ads.returnAdsPeriodDataPackage(response);
       }
     } else if (this.reportsList.ads) {
-
+      this.Log.addDebug('-//- Was selected ads report', 'root.loadData[final]');
       this.displayColumns.ads.push('headline1');
       var Ads = new AdsClass(this);
       var response = Ads.adsCreateReport();
@@ -549,7 +600,7 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
       }
     }
     if (this.reportsList.bannersDaily || this.reportsList.bannersWeekly || this.reportsList.bannersMonthly || this.reportsList.bannersQuarterly || this.reportsList.bannersYearly) {
-
+      this.Log.addDebug('-//- Was selected banners report in period', 'root.loadData[final]');
       this.displayColumns.banners.push('bannerName');
       var Banners = new BannersClass(this);
       if (this.reportsList.bannersDaily) {
@@ -569,7 +620,7 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
         return Banners.returnBannersPeriodDataPackage(response);
       }
     } else if (this.reportsList.banners) {
-
+      this.Log.addDebug('-//- Was selected banners report', 'root.loadData[final]');
       this.displayColumns.banners.push('bannerName');
       var Banners = new BannersClass(this);
       var response = Banners.bannersCreateReport();
@@ -579,7 +630,7 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
     }
 
     if (this.reportsList.groupsDaily || this.reportsList.groupsWeekly || this.reportsList.groupsMonthly || this.reportsList.groupsQuarterly || this.reportsList.groupsYearly) {
-
+      this.Log.addDebug('-//- Was selected groups report in period', 'root.loadData[final]');
       this.displayColumns.groups.push('name');
       var Groups = new GroupsClass(this);
       if (this.reportsList.groupsDaily) {
@@ -599,7 +650,7 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
         return Groups.returnGroupsPeriodDataPackage(response);
       }
     } else if (this.reportsList.groups) {
-
+      this.Log.addDebug('-//- Was selected groups report', 'root.loadData[final]');
       this.displayColumns.groups.push('name');
       var Groups = new GroupsClass(this);
       var response = Groups.groupsCreateReport();
@@ -609,7 +660,7 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
     }
 
     if (this.reportsList.campaignsDaily || this.reportsList.campaignsWeekly || this.reportsList.campaignsMonthly || this.reportsList.campaignsQuarterly || this.reportsList.campaignsYearly) {
-
+      this.Log.addDebug('-//- Was selected campaigns report in period', 'root.loadData[final]');
       this.displayColumns.campaigns.push('name');
       var Campaigns = new CampaignsClass(this);
       if (this.reportsList.campaignsDaily) {
@@ -629,7 +680,7 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
         return Campaigns.returnCampaignsPeriodDataPackage(response);
       }
     } else if (this.reportsList.campaigns) {
-
+      this.Log.addDebug('-//- Was selected campaigns report', 'root.loadData[final]');
       this.displayColumns.campaigns.push('name');
       var Campaigns = new CampaignsClass(this);
       var response = Campaigns.campaignsCreateReport(this.campaignsId);
@@ -639,7 +690,7 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
     }
 
 
-
+    this.Log.addDebug('-//- Have no dimensions -> go to single report', 'root.loadData[single]');
     //Pokud nezobrazuji zadnou dimenzi, tak jenom cista data (scorecard)
     return this.singleCreateReport();
 
@@ -699,8 +750,8 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
     //Prevod dne na porovnavatelny string
     var dayInString = '';
     var startLoop = true;
-
-
+    this.Log.addDebug('-//- Prepare complete data range from requested date period', 'root.setupDaysCycle[start]');
+    this.Log.addDebug('-//- Actual period is' + period, 'root.setupDaysCycle[start]');
     try {
       while (dayCounter.getTime() <= this.eDate.getTime()) {
         var correctMonth = dayCounter.getMonth() + 1;
@@ -803,7 +854,13 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
    */
   this.sklikApiCall = function (method, parameters, retry) {
     this.Log.addRecord('\n ############### Call method [' + method + '] ###############', true, 'root.sklikApiCall()');
-    this.Log.addValue(JSON.stringify(parameters), true, 'root.sklikApiCall()');
+    if(method == 'client.loginByToken') {
+      var paramv = JSON.stringify(parameters);
+      this.Log.addValue(paramv.substr(0, 15)+'..shorted', true, 'root.sklikApiCall()');
+    } else {
+      this.Log.addValue(JSON.stringify(parameters), true, 'root.sklikApiCall()');
+    }
+    
 
     if (retry == undefined) { retry = 1; }
 
@@ -876,3 +933,4 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
     return 1 + Math.ceil((n1stThursday - date) / 604800000);
   }
 }
+

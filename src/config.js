@@ -28,6 +28,7 @@ http://www.seznam.cz, or contact: https://napoveda.sklik.cz/casto-kladene-dotazy
 function getConfig(request) {
   var config = {
     configParams: [
+       
       {
         type: "TEXTINPUT",
         name: "token",
@@ -49,6 +50,38 @@ function getConfig(request) {
         name: "allowEmptyStatistics",
         displayName: "Zahrnout entity bez statistik",
         text: "V přehledech zobrazovat i entity (kampaně, sestavy, ...) které nemají žádné zobrazení a další statistiky",
+      },
+      {
+        type: "SELECT_MULTIPLE",
+        name: "campaignsTypes",
+        displayName: "Výběr typů kampaní",
+        helpText: "Statistiky pro entinty - kampaň, sestava, reklama, klíčové slova budou brané jenom z kampění spadající do vybraných typů.",
+        options: [
+          {
+            label: "Kombinovaná",
+            value: "combined"
+          },
+          {
+            label: "Videokampaň",
+            value: "video"
+          },
+          {
+            label: "Obsahová",
+            value: "context"
+          },
+          {
+            label: "Vyhledávací",
+            value: "fulltext"
+          },
+          {
+            label: "Produktová",
+            value: "product"
+          },
+          {
+            label: "Zboží.cz",
+            value: "zbozi"
+          }
+        ]
       },
       {
         type: "INFO",
@@ -94,6 +127,21 @@ function getConfig(request) {
         name: "logmode",
         displayName: "Zapnout logování",
         text: "Při každém načtení dat loguje akce konektoru (případě místo chyby konektoru)",
+      },
+      {
+        type: "TEXTINPUT",
+        name: "logFileName",
+        displayName: "Název logovacího souboru",
+        text: "Na vašem Google Drive disku se vytvoří soubor, do kterého se budou logovat mezistavy konektoru.",
+        helpText: "Soubor bude umístěn v root složce disku",
+        placeholder: "Sklik_DataStudio_Log"
+      },
+      {
+        type: "TEXTINPUT",
+        name: "logFolderId",
+        displayName: "ID složky pro logovací soubory",
+        text: "Logovací soubor se vytváří do výchozí složky na Google Drive. Pokud tuto pozici chcete změnit, zadejte prosím ID složky",
+        helpText: "ID složky najdete v URL - https://drive.google.com/drive/folders/1kMOLdsdfsdfsd tedy řetězec za folders/"
       },
       {
         type: "CHECKBOX",

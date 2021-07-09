@@ -56,7 +56,7 @@ var DataCore = function (rRoot) {
         }
         }  
       
-
+      //this.Root.Log.addDebug('-//- indexed stats array', 'dataCore.indexingArrayFieldsOfStats()', indexedStats);
       return indexedStats;
     }
 
@@ -179,7 +179,7 @@ var DataCore = function (rRoot) {
       var values = [];
       //Actual day in iteration
       var actualDay;
-
+      this.Root.Log.addDebug('-//- Avaliable days','dataCore.returnDataPackageInGranularity()',dayRange);
       
       for (var r = 0; r < reports.length; r++) {
         var report = reports[r];

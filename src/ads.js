@@ -53,6 +53,14 @@ var AdsClass = function (rRoot) {
       restrictionFilter.campaign = { 'ids': this.Root.campaignsId };
     }
 
+    if(this.Root.campaignsTypes.length > 0) {
+      if(restrictionFilter.campaign == undefined) {
+        restrictionFilter.campaign = { 'type': this.Root.campaignsTypes };
+      } else {
+        restrictionFilter.campaign.type = this.Root.campaignsTypes;
+      }      
+    }
+
     var reponseCreate = this.Root.sklikApi('ads.createReport', [{ 'session': this.Root.session, 'userId': this.Root.userId },
       restrictionFilter, { 'statGranularity': period }]
     );
@@ -76,6 +84,14 @@ var AdsClass = function (rRoot) {
       restrictionFilter.campaign = { 'ids': this.Root.groupsFromCampaignsIds };
     } else if (this.Root.campaignsId.length > 0) {
       restrictionFilter.campaign = { 'ids': this.Root.campaignsId };
+    }
+
+    if(this.Root.campaignsTypes.length > 0) {
+      if(restrictionFilter.campaign == undefined) {
+        restrictionFilter.campaign = { 'type': this.Root.campaignsTypes };
+      } else {
+        restrictionFilter.campaign.type = this.Root.campaignsTypes;
+      }      
     }
     
     var reponseCreate = this.Root.sklikApi('ads.createReport', [{ 'session': this.Root.session, 'userId': this.Root.userId },

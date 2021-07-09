@@ -54,6 +54,15 @@ var KeywordsClass = function (rRoot, campaignsId) {
     if (this.campaignsIds.length > 0) {
       restrictionFilter.campaign = {'ids': this.campaignsIds}
     }
+
+    if(this.Root.campaignsTypes.length > 0) {
+      if(restrictionFilter.campaign == undefined) {
+        restrictionFilter.campaign = { 'type': this.Root.campaignsTypes };
+      } else {
+        restrictionFilter.campaign.type = this.Root.campaignsTypes;
+      }      
+    }
+
     var displayOptions = {
       'statGranularity': granularity
     }
@@ -97,7 +106,7 @@ var KeywordsClass = function (rRoot, campaignsId) {
     for (var c = 0; c < cycle && c < 3; c++) {
       response = this.readReport(reportId, c*limit, limit);
       if(!response) {
-
+        this.Root.Log.addDebug('-//- Jedna z odpovědí je FALSE', 'Keywords.readReportRoot()');
         return false;
       }
       if (c == 0) {
@@ -106,7 +115,7 @@ var KeywordsClass = function (rRoot, campaignsId) {
         completeResponse.report = completeResponse.report.concat(response.report);
       }
     }
-
+    this.Root.Log.addDebug('-//- Complete reponse from', 'Keywords.readReportRoot()', completeResponse); 
     return completeResponse;
   }
 

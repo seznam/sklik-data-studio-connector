@@ -26,9 +26,10 @@ http://www.seznam.cz, or contact: https://napoveda.sklik.cz/casto-kladene-dotazy
  * @param {Boolean} logMode - setup basic logger
  * @param {Boolean} debugMode - extended logger (include api calls dumps, columns detail etc.)
  * @param {String} folderId - ID of folder where the logger file is
+ * @param {String} logFileName - Name of logger file
  * @param {String} fileId - ID of the looger file
  */
-var GetDataLog = function (logMode, debugMode, folderId, fileId) {
+var GetDataLog = function (logMode, debugMode, folderId, logFileName, fileId) {
     /**
      * Name of logger file
      */
@@ -51,6 +52,23 @@ var GetDataLog = function (logMode, debugMode, folderId, fileId) {
      * @var {String}
      */
     this.fileId = fileId;
+
+    /**
+     * Get email of active user. Use to check if I write log info to my own files
+     * @var {String}
+     */
+    //this.ownerEmail = Session.getActiveUser().getEmail();
+    //Need extended in appsscript.json - "https://www.googleapis.com/auth/userinfo.email"
+
+    /**
+     * Name of logger file. If null or empty, then use const FILE_NAME
+     * @var {String}
+     */
+    this.logFileName = logFileName;
+    if(this.logFileName == '') {
+      this.logFileName = FILE_NAME;
+    }
+
   
     if (logMode == undefined || logMode == 'True' || logMode == 'true' || logMode === true) {
       this.logMode = true;
@@ -96,7 +114,7 @@ var GetDataLog = function (logMode, debugMode, folderId, fileId) {
      * Open folder with logger file
      */
     this.openFolder = function () {
-      if (this.folderId) {
+      if (this.folderId != '' && this.folderId) {
         var fFolder = DriveApp.getFolderById(this.folderId);
         if (fFolder) {
           this.folder = fFolder;
@@ -111,43 +129,49 @@ var GetDataLog = function (logMode, debugMode, folderId, fileId) {
      * III. create new one
      */
     this.openFile = function () {
+      //If I have fileId, open it (preferred way)
       if (this.fileId) {
         var doc = DocumentApp.openById(this.fileId);
         doc.getBody().clear();
         return doc;
       } else {
-        //Pokud nastavil slozku, ukladam tam
+        //If I have folderId, looking for a file here
         if (this.folder) {
-          //Pokud soubor extistuje ukladam do nej
-          var file = this.folder.getFilesByName(FILE_NAME);
-          if (file.hasNext()) {
-            file = file.next();
+          //If file exists, use them
+          var files = this.folder.getFilesByName(this.logFileName);
+          while (files.hasNext()) {
+            file = files.next();
+            //file is deleted or Im not owner -> this file will not use
+            //if(file.isTrashed() || file.getOwner().getEmail() != this.ownerEmail) {
+            if(file.isTrashed()) {
+              continue;
+            }
             var doc = DocumentApp.openById(file.getId());
             doc.getBody().clear();
             return doc;
           }
-          //Jinak vytvorim novy soubor
-          var docHelp = DocumentApp.create(FILE_NAME);
+          //If file do not exists, will create new one
+          var docHelp = DocumentApp.create(this.logFileName);
           ins = DriveApp.getFileById(docHelp.getId());
-          var file = ins.makeCopy(FILE_NAME, this.folder);
+          var file = ins.makeCopy(this.logFileName, this.folder);
           DriveApp.removeFile(ins);
           return DocumentApp.openById(file.getId());
           //Pokud nenastavil slozku, ukladam do rootu (ale nejdrive prohledam disk a hledam dle nazvu)
           //Kdyz nekde najdu, tak ukladam do nej (at je kde chce)
         } else {
-          var file = DriveApp.getFilesByName(FILE_NAME);
-          if (file.hasNext()) {
-            var fileS;
-            do {
-              fileS = file.next();
-              if (!fileS.isTrashed()) {
-                var doc = DocumentApp.openById(fileS.getId());
-                doc.getBody().clear();
-                return doc;
-              }
-            } while (file.hasNext());
+          var files = DriveApp.getFilesByName(this.logFileName);
+          while (files.hasNext()) {
+            file = files.next();
+            //file is deleted or Im not owner -> this file will not use
+            //if(file.isTrashed() || file.getOwner().getEmail() != this.ownerEmail) {
+            if(file.isTrashed()) {
+              continue;
+            }
+            var doc = DocumentApp.openById(file.getId());
+            doc.getBody().clear();
+            return doc;
           }
-          return DocumentApp.create(FILE_NAME);  
+          return DocumentApp.create(this.logFileName);  
         }
       }
     }

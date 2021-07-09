@@ -2,9 +2,15 @@
 This connector imports Sklik reports, through Sklik API DRAK JSON, into Google Data Studio, a graphical display platform. 
 
 # Version
-Actual version: 3.0.0
+Actual version: 3.1.0
 
 # Changelog
+09.07.2021 (3.0.0 -> 3.1.0)
+* [ADD] Přidání filtru na typ kampaní
+* [ADD] Možnost přepisování konfigurací [viz Wiki:Přepis nastavení u tabulek]
+* [ADD] Přidání možnosti změny logovacího souboru 
+* [FIX] Oprava logovacího souboru (ignorování smazaných)
+
 10.12.2019 (2.1.0 -> 3.0.0)
 * [REMOVE] Odstranění maxCpcContext ze schématu nabízených metrik
 * [FIX] Oprava nenačítání grafů u sestav, které mají více jak jednu dimenzi
