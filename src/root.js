@@ -139,12 +139,6 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
   this.groupsId = [];
 
   /**
-   * When missing groupsId, system will load all groups from requested campaignsId list
-   * @param {Boolean}
-   */
-  this.loadGroupsFromCampaigns = false;
-
-  /**
    * When have groupsIds, system will load all groups from requested this list
    * @param {Boolean}
    */
@@ -152,7 +146,6 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
 
   /**
    * GroupsId loaded from requested campaigns
-   * @see this.loadGroupsFromCampaigns
    * @param {int[]}
    */
   this.groupsFromCampaignsIds = [];
@@ -202,9 +195,11 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
     'ads': [],
     'banners': [],
     'keywords': [],
+    'productsets': [],
     'groups': [],
     'campaigns': []
   }
+  this.types = {'cgc': 'campaigns', 'clc': 'client', 'goc': 'groups', 'adc': 'ads', 'add': 'ads', 'bnc': 'banners', 'kwc': 'keywords', 'pic': 'productsets'};
 
   /*
   * Avaliable periods
@@ -216,7 +211,7 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
   * This set up all available reports 
   */
   this.setupReportList = function () {
-    var types = ['campaigns', 'groups', 'ads', 'banners', 'client', 'keywords'];
+    var types = ['campaigns', 'groups', 'ads', 'banners', 'client', 'keywords', 'productsets'];
     for (var t = 0; t < types.length; t++) {
       this.reportsList[types[t]] = false;
       for (var p = 0; p < this.periods.length; p++) {
@@ -233,8 +228,9 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
   this.setup = function () {
     try {
       if(this.config.rw_log_file_name != undefined && this.config.rw_log_file_name != '') {
+        Logger.log(this.config.rw_log_file_name);
         var logFileName = this.config.rw_log_file_name;
-      } else {        
+      } else {
         var logFileName = this.config.logFileName;
       } 
 
@@ -252,7 +248,9 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
     }
     this.Log.addRecord('##### Nastavení vstupních dat / Config #####', true, 'root.setup()');
     this.Log.addRecord('Načtené nastavení uživatele', true, 'root.setup()');
-    this.Log.addValue(this.config, true, 'root.setup()');
+    var cnf = JSON.parse(JSON.stringify(this.config));
+    cnf.token = cnf.token.substr(0, 15)+'..shorted';
+    this.Log.addValue(cnf, true, 'root.setup()');
     this.Log.addRecord('Očekávané sloupečky (Metriky a Dimenze - požadavek GDS)', true, 'root.setup()');
     this.Log.addValue(this.fields, true, 'root.setup()');
     this.Log.addRecord('Datum (požadavek GDS)', true, 'root.setup()');
@@ -276,7 +274,9 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
       //(řídí campaigns, ale groups a ads pouze pokud není groupsId)   
       //The same logic as else part condition but try to use param rw_campaigns_id (rw_* is custom param per single tables and I use it for rewrite global config params)
       
-      if (this.config.rw_campaigns_id != undefined && this.config.rw_campaigns_id != '') {
+      if (this.config.rw_campaigns_id != undefined && this.config.rw_campaigns_id == 'ignore') {
+        this.Log.addRecord('Pro tuto tabulku se ignoruje nastavení filtru podle ID kampaní');
+      } else if (this.config.rw_campaigns_id != undefined && this.config.rw_campaigns_id != '') {
         var stringCampaignsId = this.config.rw_campaigns_id.split(',');
         this.Log.addRecord('Budou se načítat informace jenom pro tyto kampaně: ' + this.config.rw_campaigns_id);
         //From {String[]} -> {Int[]}
@@ -294,7 +294,9 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
 
       //Pokud jsou nastavené i groupsId tak jsou řídící pro groups a ads
       //The same logic as else part condition but try to use param rw_group_id (rw_* is custom param per single tables and I use it for rewrite global config params)
-      if (this.config.rw_group_id != undefined && this.config.rw_group_id != '') {
+      if (this.config.rw_group_id != undefined && this.config.rw_group_id == 'ignore') {
+        this.Log.addRecord('Pro tuto tabulku se ignoruje nastavení filtru podle ID sestav');
+      } else if (this.config.rw_group_id != undefined && this.config.rw_group_id != '') {
         var stringGroupsId = this.config.rw_group_id.split(',');
         this.Log.addRecord('Budou se načítat informace jenom pro tyto sestavy: ' + this.config.rw_group_id);
         //From {String[]} -> {Int[]}
@@ -310,9 +312,6 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
           this.groupsId.push(parseInt(stringGroupsId[i]));
         }
         this.loadFromGroups = true;
-      }
-       else {
-        this.loadGroupsFromCampaigns = true;
       }
 
       //Setup campaign restriction about keywords (from what campaign will be keywords loaded)
@@ -390,54 +389,31 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
 
           if (this.sklikDataSchema[i].semantics && this.sklikDataSchema[i].semantics.conceptType == 'DIMENSION' && this.reportsList[this.sklikDataSchema[i].group] != undefined) {
             this.reportsList[this.sklikDataSchema[i].group] = true;
-            //Pokud mam granularitu, v jednom parametru mam i ID pro které gampaignId se to ma udit 
-            if (this.loadGroupsFromCampaigns) {
-              if (this.sklikDataSchema[i].group.indexOf('groups') != -1) {
-                var s = this.sklikDataSchema[i].name.split('_');
+            //Pokud mam v jednom parametru mam i ID pro které gampaignId se to ma udit 
+            var s = this.sklikDataSchema[i].name.split('_');
+            if(s.length == 3) {
+              var num = Number(s[2]);
+              if (this.sklikDataSchema[i].group.indexOf('groups') != -1 && num != undefined) {
+                this.Log.addDebug('Bude se filtrovat pouze pro tuto sestavu: ', 'root.parseDataRequest[start]', s[2]);
                 this.Log.addRecord(JSON.stringify(s), true, 'parseDataRequest');
-                if (s.length == 3) {
-                  this.groupsFromCampaignsIds.push(parseInt(s[2]));
-                }
-              }
-              //Pokud mam granularitu, v jednom parametru mam i ID pro které groupId se to ma udit 
-            } else if (this.loadFromGroups) {
-              var s = this.sklikDataSchema[i].name.split('_');
-              this.Log.addRecord(JSON.stringify(s), true, 'parseDataRequest');
-              if (s.length == 3) {
                 this.loadFromGroupsIds.push(parseInt(s[2]));
-              }
+              } else if (this.sklikDataSchema[i].group.indexOf('campaigns') != -1 && num != undefined) {
+                this.Log.addDebug('Bude se filtrovat pouze pro tuto kampaň: ', 'root.parseDataRequest[start]', s[2]);
+                this.Log.addRecord(JSON.stringify(s), true, 'parseDataRequest');
+                this.groupsFromCampaignsIds.push(parseInt(s[2]));
+              }              
             }
           }
-          //
-          switch (this.sklikDataSchema[i].name.substring(0, 3)) {
-            //Display columns for campaigns
-            case 'cgc':
-              this.displayColumns.campaigns.push(this.sklikDataSchema[i].name.substring(4));
-              break;
-            case 'clc':
-              this.displayColumns.client.push(this.sklikDataSchema[i].name.substring(4));
-              break;
-            //Display columns for groups  
-            case 'goc':
-              this.displayColumns.groups.push(this.sklikDataSchema[i].name.substring(4));
-              break;
-            //Display columns for ads
-            case 'adc':
-              this.displayColumns.ads.push(this.sklikDataSchema[i].name.substring(4));
-              break;
-            //Display columns for banners
-            case 'bnc':
-              this.displayColumns.banners.push(this.sklikDataSchema[i].name.substring(4));
-              break;
-            case 'kwc':
-              this.displayColumns.keywords.push(this.sklikDataSchema[i].name.substring(4));
-              break;
-          }
-          break;
+          
+          //Extract from schema columns to readReport and divide to entity list.
+          var s = this.sklikDataSchema[i].name.split('_');          
+          if(this.types[s[0]] != undefined) {
+            this.displayColumns[this.types[s[0]]].push(s[1]);
+          }          
         }
       }
     }, this);
-    this.Log.addRecord('Ze schématu se vybraly tyto metriky: ', true, "root.parseDataRequest()");
+    this.Log.addRecord('Ze schématu se vybrali tyto metriky: ', true, "root.parseDataRequest()");
     this.Log.addValue(this.displayColumns, true, "root.parseDataRequest()");
     return true;
   }
@@ -526,215 +502,53 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
 
     //What endpint (what entity) will be called
     var selectedEntity = this.selectEntity();
-
-    if (selectedEntity != '' && selectedEntity != false && (selectedEntity == 'keywords' || selectedEntity == 'client')) {
-      switch (selectedEntity) {
-        case 'client':
-          var instance = new ClientClass(this);
-          break;
-        case 'keywords':
-          this.Log.addDebug('-//- CampaignsIDs restriction for Keywords', 'Root.loadData()', this.campaignsIdsForKeywords);
-          var instance = new KeywordsClass(this, this.campaignsIdsForKeywords);
-          break;
-      }
-      if (this.granularity == 'total') {
-        this.Log.addDebug('-//- Was selected ' + selectedEntity + ' report in period total', 'root.loadData[final]');
-        var response = instance.getDataFromApi(this.granularity, { 'limit': 5000 });
-        if (response) {
-          return instance.convertDataToGDS(response);
-        } else {
-          return false;
-        }
+    
+    switch (selectedEntity) {
+      case 'ads':
+        var instance = new AdsClass(this);
+        break;
+      case 'banners':
+        var instance = new BannersClass(this);
+        break;
+      case 'client':
+        var instance = new ClientClass(this);
+        break;
+      case 'keywords':
+        this.Log.addDebug('-//- CampaignsIDs restriction for Keywords', 'Root.loadData()', this.campaignsIdsForKeywords);
+        var instance = new KeywordsClass(this, this.campaignsIdsForKeywords);
+        break;
+      case 'productsets':
+        var instance = new ProductsetsClass(this, this.campaignsId);
+        break;
+      case 'groups':
+        var instance = new GroupsClass(this);
+        break;
+      case 'campaigns':
+        var instance = new CampaignsClass(this);
+        break;
+      
+    }
+    if (this.granularity == 'total') {
+      this.Log.addDebug('-//- Was selected ' + selectedEntity + ' report in period total', 'root.loadData[final]');
+      var response = instance.getDataFromApi(this.granularity, { 'limit': 5000 });
+      if (response) {
+        return instance.convertDataToGDS(response);
       } else {
-        this.Log.addDebug('-//- Was selected ' + selectedEntity + ' report in period ' + this.granularity, 'root.loadData');
-        var days = this.setupDaysCycle(this.granularity);
-
-        var response = instance.getDataFromApi(this.granularity, { 'limit': Math.floor(5000 / days) });
-        if (response) {
-          return instance.convertDataToGDSInGranularity(response);
-        } else {
-          return false;
-        }
+        return false;
       }
     } else {
-      return this.loadDataOld();
-    }    
-  }
+      this.Log.addDebug('-//- Was selected ' + selectedEntity + ' report in period ' + this.granularity, 'root.loadData');
+      var days = this.setupDaysCycle(this.granularity);
 
-  /**
-   * Old way of loading data from API 
-   * use for ads,banners,groups,campaigns
-   */
-  this.loadDataOld = function() {
-    //Je třeba dodržet sestupné pořadí (pokud chci reklamu a sloupečky z groups, 
-    //tak by to mohlo prvně chytit groups reporty (proto ads podmínky před groups a 
-    //groups před campaigns
-    //This part is DEPRECATED for new entities (and this entitis will be rebuild to new format)
-    if (this.reportsList.adsDaily || this.reportsList.adsWeekly || this.reportsList.adsMonthly || this.reportsList.adsQuarterly || this.reportsList.adsYearly) {
-      this.Log.addDebug('-//- Was selected ads report in period', 'root.loadData[final]');
-      this.displayColumns.ads.push('headline1');
-      var Ads = new AdsClass(this);
-      if (this.reportsList.adsDaily) {
-        var period = 'daily';
-      } else if (this.reportsList.adsWeekly) {
-        var period = 'weekly';
-      } else if (this.reportsList.adsMonthly) {
-        var period = 'monthly';
-      } else if (this.reportsList.adsQuarterly) {
-        var period = 'quarterly';
-      } else if (this.reportsList.adsYearly) {
-        var period = 'yearly';
-      }
-      var days = this.setupDaysCycle(period);
-      var response = Ads.adsPeriodCreateReport(Math.floor(5000 / days), period);
+      var response = instance.getDataFromApi(this.granularity, { 'limit': Math.floor(5000 / days) });
       if (response) {
-        return Ads.returnAdsPeriodDataPackage(response);
-      }
-    } else if (this.reportsList.ads) {
-      this.Log.addDebug('-//- Was selected ads report', 'root.loadData[final]');
-      this.displayColumns.ads.push('headline1');
-      var Ads = new AdsClass(this);
-      var response = Ads.adsCreateReport();
-      if (response) {
-        return Ads.returnAdsDataPackage(response);
-      }
-    }
-    if (this.reportsList.bannersDaily || this.reportsList.bannersWeekly || this.reportsList.bannersMonthly || this.reportsList.bannersQuarterly || this.reportsList.bannersYearly) {
-      this.Log.addDebug('-//- Was selected banners report in period', 'root.loadData[final]');
-      this.displayColumns.banners.push('bannerName');
-      var Banners = new BannersClass(this);
-      if (this.reportsList.bannersDaily) {
-        var period = 'daily';
-      } else if (this.reportsList.bannersWeekly) {
-        var period = 'weekly';
-      } else if (this.reportsList.bannersMonthly) {
-        var period = 'monthly';
-      } else if (this.reportsList.bannersQuarterly) {
-        var period = 'quarterly';
-      } else if (this.reportsList.bannersYearly) {
-        var period = 'yearly';
-      }
-      var days = this.setupDaysCycle(period);
-      var response = Banners.bannersPeriodCreateReport(Math.floor(5000 / days), period);
-      if (response) {
-        return Banners.returnBannersPeriodDataPackage(response);
-      }
-    } else if (this.reportsList.banners) {
-      this.Log.addDebug('-//- Was selected banners report', 'root.loadData[final]');
-      this.displayColumns.banners.push('bannerName');
-      var Banners = new BannersClass(this);
-      var response = Banners.bannersCreateReport();
-      if (response) {
-        return Banners.returnBannersDataPackage(response);
-      }
-    }
-
-    if (this.reportsList.groupsDaily || this.reportsList.groupsWeekly || this.reportsList.groupsMonthly || this.reportsList.groupsQuarterly || this.reportsList.groupsYearly) {
-      this.Log.addDebug('-//- Was selected groups report in period', 'root.loadData[final]');
-      this.displayColumns.groups.push('name');
-      var Groups = new GroupsClass(this);
-      if (this.reportsList.groupsDaily) {
-        var period = 'daily';
-      } else if (this.reportsList.groupsWeekly) {
-        var period = 'weekly';
-      } else if (this.reportsList.groupsMonthly) {
-        var period = 'monthly';
-      } else if (this.reportsList.groupsQuarterly) {
-        var period = 'quarterly';
-      } else if (this.reportsList.groupsYearly) {
-        var period = 'yearly';
-      }
-      var days = this.setupDaysCycle(period);
-      var response = Groups.groupsPeriodCreateReport(Math.floor(5000 / days), period);
-      if (response) {
-        return Groups.returnGroupsPeriodDataPackage(response);
-      }
-    } else if (this.reportsList.groups) {
-      this.Log.addDebug('-//- Was selected groups report', 'root.loadData[final]');
-      this.displayColumns.groups.push('name');
-      var Groups = new GroupsClass(this);
-      var response = Groups.groupsCreateReport();
-      if (response) {
-        return Groups.returnGroupsDataPackage(response);
-      }
-    }
-
-    if (this.reportsList.campaignsDaily || this.reportsList.campaignsWeekly || this.reportsList.campaignsMonthly || this.reportsList.campaignsQuarterly || this.reportsList.campaignsYearly) {
-      this.Log.addDebug('-//- Was selected campaigns report in period', 'root.loadData[final]');
-      this.displayColumns.campaigns.push('name');
-      var Campaigns = new CampaignsClass(this);
-      if (this.reportsList.campaignsDaily) {
-        var period = 'daily';
-      } else if (this.reportsList.campaignsWeekly) {
-        var period = 'weekly';
-      } else if (this.reportsList.campaignsMonthly) {
-        var period = 'monthly';
-      } else if (this.reportsList.campaignsQuarterly) {
-        var period = 'quarterly';
-      } else if (this.reportsList.campaignsYearly) {
-        var period = 'yearly';
-      }
-      var days = this.setupDaysCycle(period);
-      var response = Campaigns.campaignsPeriodCreateReport(this.campaignsId, Math.floor(5000 / days), period);
-      if (response) {
-        return Campaigns.returnCampaignsPeriodDataPackage(response);
-      }
-    } else if (this.reportsList.campaigns) {
-      this.Log.addDebug('-//- Was selected campaigns report', 'root.loadData[final]');
-      this.displayColumns.campaigns.push('name');
-      var Campaigns = new CampaignsClass(this);
-      var response = Campaigns.campaignsCreateReport(this.campaignsId);
-      if (response) {
-        return Campaigns.returnCampaignsDataPackage(response);
-      }
-    }
-
-
-    this.Log.addDebug('-//- Have no dimensions -> go to single report', 'root.loadData[single]');
-    //Pokud nezobrazuji zadnou dimenzi, tak jenom cista data (scorecard)
-    return this.singleCreateReport();
-
-
-
-  }
-
-
-  /**
-  * For scorecard will not load any dimensions. 
-  * Its assumption, that get only one columns (so make report from it and return only this number)
-  */
-  this.singleCreateReport = function () {
-
-    //Pokud existuje alespoň jeden sloupeček v ads (načtu z něj)
-    if (this.displayColumns.ads.length > 0) {
-      var Ads = new AdsClass(this);
-      var response = Ads.adsCreateReport();
-      if (response) {
-        return Ads.returnAdsDataPackage(response);
-      }
-      //Pokud existuje alespoň jeden sloupeček v banners (načtu z něj)
-    } else if (this.displayColumns.banners.length > 0) {
-      var Banners = new BannersClass(this);
-      var response = Banners.bannersCreateReport();
-      if (response) {
-        return Banners.returnBannersDataPackage(response);
-      }
-      //Pokud existuje alespoň jeden sloupeček v groups (načtu z něj)
-    } else if (this.displayColumns.groups.length > 0) {
-      var Groups = new GroupsClass(this);
-      var response = Groups.groupsCreateReport();
-      if (response) {
-        return Groups.returnGroupsDataPackage(response);
-      }
-      //Pokud neexistuje sloupeček v groups, ale v campaigns, načítám z něj
-    } else if (this.displayColumns.campaigns.length > 0) {
-      var Campaigns = new CampaignsClass(this);
-      var response = Campaigns.campaignsCreateReport(this.campaignsId);
-      if (response) {
-        return Campaigns.returnCampaignsDataPackage(response);
+        return instance.convertDataToGDSInGranularity(response);
+      } else {
+        return false;
       }
     }
   }
+
 
   /**
   * On setup granularity of API, get response only records with non empty. 

@@ -65,7 +65,7 @@ var GetDataLog = function (logMode, debugMode, folderId, logFileName, fileId) {
      * @var {String}
      */
     this.logFileName = logFileName;
-    if(this.logFileName == '') {
+    if(this.logFileName == '' || this.logFileName == undefined) {
       this.logFileName = FILE_NAME;
     }
 
@@ -160,7 +160,7 @@ var GetDataLog = function (logMode, debugMode, folderId, logFileName, fileId) {
           //Kdyz nekde najdu, tak ukladam do nej (at je kde chce)
         } else {
           var files = DriveApp.getFilesByName(this.logFileName);
-          while (files.hasNext()) {
+          while (files.hasNext()) {            
             file = files.next();
             //file is deleted or Im not owner -> this file will not use
             //if(file.isTrashed() || file.getOwner().getEmail() != this.ownerEmail) {

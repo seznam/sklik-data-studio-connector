@@ -115,30 +115,23 @@ var DataCore = function (rRoot) {
      */
     this.returnDataPackage = function (response, entity) {
       this.Root.Log.addRecord('\nNačtené data z API (odpověď API server)', true, 'dataCore.returnDataPackage()');
-      this.Root.Log.addValue(response.report, true, 'dataCore.returnDataPackage()');
-      
+
+      if (response.report == undefined || response.report.length == undefined) {
+        this.Root.Log.addRecord('Api vrátilo prázdnou množinu - entity v daných podmínkách jsou nulové a v konfiguraci je nastaveno tyto položky nezobrazovat'); 
+        return false;
+      } else {
+        this.Root.Log.addValue(response.report, true, 'dataCore.returnDataPackage()');
+      }
+
       if(response.report.length == 0) {
          this.Root.Log.addRecord('Api vrátilo prázdnou množinu - entity v daných podmínkách jsou nulové a v konfiguraci je nastaveno tyto položky nezobrazovat'); 
          return false;
       }
       
-      response.report.forEach(function (record) {
+      response.report.forEach(function (report) {
         var values = [];
         this.Root.rDataSchema.forEach(function (field) {
-          var columnName = field.name.substring(4);
-          if (record.stats != undefined && (record.stats[0][columnName] != undefined || record.stats[0][columnName] === null)) {
-            if (field.group == entity) {
-               values.push(this.dataPostEdit(record.stats[0][columnName], columnName));
-            }
-          } else if ((record[columnName] != undefined || record[columnName] === null) && field.group == entity) {  
-            values.push(this.dataPostEdit(record[columnName], columnName));
-          } else if (record[field.group.slice(0,-1)] != undefined && (record[field.group.slice(0,-1)][columnName] != undefined || record[field.group.slice(0,-1)][columnName] === null)) {  
-            values.push(this.dataPostEdit(record[field.group.slice(0,-1)][columnName], columnName));            
-          } else if(field.dataType == 'NUMBER') {
-            values.push(0);
-          } else {
-            values.push('');
-          }
+          values.push(this.valuesPushToReponse(field, report));  
         }, this);
         this.Root.data.push({
           values: values
@@ -188,26 +181,7 @@ var DataCore = function (rRoot) {
         var values = [];
         this.actualDay = dayRange[d];
         this.Root.rDataSchema.forEach(function (field) {
-          var columnName = field.name.substring(4);
-          if (stats[this.actualDay] != undefined && (stats[this.actualDay][columnName] != undefined || stats[this.actualDay][columnName] === null)) {
-            values.push(this.dataPostEdit(stats[this.actualDay][columnName],columnName));                        
-          } else if (field.group == 'granularity') {
-            if (report[this.actualDay] != undefined && field.name == 'weekly') {
-              dateF = this.toYearWeekFormat(d);
-            } else {
-              dateF = this.actualDay;
-            }          
-            values.push(this.dataPostEdit(dateF,field.name));
-          } else if ((report[columnName] != undefined || report[columnName] === null) && field.group == entity) {            
-               values.push(this.dataPostEdit(report[columnName], columnName));
-          } else if (report[columnName] != undefined && (report[field.group.slice(0,-1)][columnName] != undefined || report[field.group.slice(0,-1)][columnName] === null)) {       
-               values.push(this.dataPostEdit(report[field.group.slice(0,-1)][columnName], columnName));
-          //If expected field is number ()
-          } else if(field.dataType == 'NUMBER') {
-            values.push(0);
-          } else {
-            values.push('');
-          }
+          values.push(this.valuesPushToReponse(field, report, stats));
         }, this);      
         this.Root.data.push({
           values: values
@@ -217,7 +191,67 @@ var DataCore = function (rRoot) {
       this.Root.Log.addRecord('Data jsou uloženy ve výstupním formátu pro GDS');
       return true;
     }
-    
+
+
+    this.valuesPushToReponse = function(field, report, stats) {
+      var value;
+      //Parser schema field name (extract name)
+      var s = field.name.split('_');
+      var columnName = s[1];
+      if(s.length == 3) {
+        var num = Number(s[2]);
+      }  
+      if(stats == undefined && report.stats != undefined && (report.stats[0][columnName] != undefined || report.stats[0][columnName] === null)) {
+          if (s[2] != undefined && typeof report.stats[0][columnName] == 'object') {
+            console.log('here');
+            value = this.dataPostEdit(report.stats[0][columnName][s[2]], columnName);
+          } else {
+            value = this.dataPostEdit(report.stats[0][columnName], columnName);                       
+          }
+          //if (field.group == entity) {
+            //  value = this.dataPostEdit(report.stats[0][columnName], columnName);
+          //}
+      } else if (this.actualDay != undefined && stats[this.actualDay] != undefined && (stats[this.actualDay][columnName] != undefined || stats[this.actualDay][columnName] === null)) {
+        if (s[2] != undefined && typeof stats[this.actualDay][columnName] == 'object') { 
+          value = this.dataPostEdit(stats[this.actualDay][columnName][s[2]], columnName);
+        } else {
+          value = this.dataPostEdit(stats[this.actualDay][columnName],columnName);                        
+        }
+      //Handle daily parser
+      } else if (field.group == 'granularity') {
+        if (report[this.actualDay] != undefined && field.name == 'weekly') {
+          dateF = this.toYearWeekFormat(d);
+        } else {
+          dateF = this.actualDay;
+        }          
+        value = this.dataPostEdit(dateF,field.name);
+
+      } else if ((report[columnName] != undefined || report[columnName] === null) && field.group == entity) {                            
+          if (s[2] != undefined && typeof report[columnName] == 'object') {
+            value = this.dataPostEdit(report[columnName][s[2]], columnName);
+          } else {
+            value = this.dataPostEdit(report[columnName], columnName);    
+          }
+      } else if (report[field.group.slice(0,-1)] != undefined && (report[field.group.slice(0,-1)][columnName] != undefined || report[field.group.slice(0,-1)][columnName] === null)) {
+          if(s[2] != undefined && typeof report[columnName] == 'object') {
+            value = this.dataPostEdit(report[field.group.slice(0,-1)][columnName][s[2]], columnName);  
+          } else {
+            value = this.dataPostEdit(report[field.group.slice(0,-1)][columnName], columnName);
+          }
+
+      //Special condition for fields like adc_id_123455
+      } else if (num != undefined) {
+          value = report[columnName];                
+      //If expected field is number ()
+      } else if(field.dataType == 'NUMBER') {
+        value = 0;
+      } else {
+        value ='';
+      }
+      return value;
+    }
+
+
     /**
     * For weekly granularity need date format in year-week. 
     * @param {Date} full

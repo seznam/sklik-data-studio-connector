@@ -25,7 +25,7 @@ http://www.seznam.cz, or contact: https://napoveda.sklik.cz/casto-kladene-dotazy
  * and transforme data from readReport response to GDS format
  * @param {Root} rRoot 
  */
- var CampaignsClass = function (rRoot) {
+var ProductsetsClass = function (rRoot, campaignsId) {
   /**
   * @param {Root}
   */
@@ -34,8 +34,14 @@ http://www.seznam.cz, or contact: https://napoveda.sklik.cz/casto-kladene-dotazy
   /**
    * @param {DataCore} 
    */
-  this.DC = new DataCore(rRoot, 'campaigns');
+  this.DC = new DataCore(rRoot, 'productsets');
 
+  /**
+   * @param {Array|False}
+   * Productsets will be only from this campaignsId (or from all account on False)
+   */
+  this.campaignsIds = campaignsId;
+  
   /**
   *
   * @param {Object} params - {limit - limit for readReport - can be agregate by stats granularity}
@@ -45,13 +51,8 @@ http://www.seznam.cz, or contact: https://napoveda.sklik.cz/casto-kladene-dotazy
       'dateFrom': this.Root.startDate,
       'dateTo': this.Root.endDate
     };
-    
-    if (this.Root.campaignsId.length > 0) {
-      restrictionFilter.ids = this.Root.campaignsId;
-    }
-
-    if(this.Root.campaignsTypes.length > 0) {
-      restrictionFilter.type = this.Root.campaignsTypes;
+    if (this.campaignsIds.length > 0) {
+      restrictionFilter.campaign = {'ids': this.campaignsIds}
     }
 
     var displayOptions = {
@@ -59,7 +60,7 @@ http://www.seznam.cz, or contact: https://napoveda.sklik.cz/casto-kladene-dotazy
     }
 
     var response = this.Root.sklikApiCall(
-      'campaigns.createReport', 
+      'productSets.createReport', 
       [
         { 'session': this.Root.session, 'userId': this.Root.userId },
         restrictionFilter,
@@ -71,8 +72,8 @@ http://www.seznam.cz, or contact: https://napoveda.sklik.cz/casto-kladene-dotazy
     if (response.reportId != undefined && response.totalCount != undefined) {
       return this.readReportRoot(response.reportId, response.totalCount, params.limit);
     } else {
-      this.Root.Log.addRecord('Nepodařilo se získat reportId nebo totalCount z createReportu', true, 'CampaignsClass.getDataFromApi()');
-      this.Root.Log.addValue(response, true, 'CampaignsClass.getDataFromApi()');
+      this.Root.Log.addRecord('Nepodařilo se získat reportId nebo totalCount z createReportu', true, 'ProductsetsClass.getDataFromApi()');
+      this.Root.Log.addValue(response, true, 'ProductsetsClass.getDataFromApi()');
       return false;
     }
   }
@@ -90,14 +91,14 @@ http://www.seznam.cz, or contact: https://napoveda.sklik.cz/casto-kladene-dotazy
     var response;
 
     if (totalCount > limit) {
-      this.Root.Log.addRecord('Počet kampaní je více než povolená hodnota - požadujete '+totalCount+' a limit je nastaven na '+limit+'.'
+      this.Root.Log.addRecord('Počet produktový setů je více než povolená hodnota - požadujete '+totalCount+' a limit je nastaven na '+limit+'.'
          +' Bude tedy zobrazeno pouze limitní část celého seznamu. Zkuste omezit načítání na vybrané kampaně, nebo snižte časový rozsah.');      
     }
     var cycle = Math.ceil(totalCount/limit);
     for (var c = 0; c < cycle && c < 3; c++) {
       response = this.readReport(reportId, c*limit, limit);
       if(!response) {
-        this.Root.Log.addDebug('-//- Jedna z odpovědí je FALSE', 'Campaigns.readReportRoot()');
+        this.Root.Log.addDebug('-//- Jedna z odpovědí je FALSE', 'Productsets.readReportRoot()');
         return false;
       }
       if (c == 0) {
@@ -106,7 +107,7 @@ http://www.seznam.cz, or contact: https://napoveda.sklik.cz/casto-kladene-dotazy
         completeResponse.report = completeResponse.report.concat(response.report);
       }
     }
-    this.Root.Log.addDebug('-//- Complete reponse from', 'Campaigns.readReportRoot()', completeResponse); 
+    this.Root.Log.addDebug('-//- Complete reponse from', 'Productsets.readReportRoot()', completeResponse); 
     return completeResponse;
   }
 
@@ -118,14 +119,14 @@ http://www.seznam.cz, or contact: https://napoveda.sklik.cz/casto-kladene-dotazy
    */
   this.readReport = function(reportId, offset, limit) {
     return this.Root.sklikApiCall(
-      'campaigns.readReport',
+      'productSets.readReport',
       [{ 'session': this.Root.session, 'userId': this.Root.userId },
       reportId,
       {
         'offset': offset,
         'limit': limit,
         'allowEmptyStatistics': this.Root.allowEmptyStatistics,
-        'displayColumns': this.DC.getColumns('campaigns')
+        'displayColumns': this.DC.getColumns('productsets')
       }],
       1
     );
@@ -137,7 +138,7 @@ http://www.seznam.cz, or contact: https://napoveda.sklik.cz/casto-kladene-dotazy
    * @return {Boolean}
    */
   this.convertDataToGDS = function (response) {
-    return this.DC.returnDataPackage(response, 'campaigns');
+    return this.DC.returnDataPackage(response, 'productsets');
   }
 
   /**
@@ -146,6 +147,6 @@ http://www.seznam.cz, or contact: https://napoveda.sklik.cz/casto-kladene-dotazy
    * @return {Boolean}
    */
   this.convertDataToGDSInGranularity = function (response) {
-    return this.DC.returnDataPackageInGranularity(response, 'campaigns');
+    return this.DC.returnDataPackageInGranularity(response, 'productsets');
   }
 }

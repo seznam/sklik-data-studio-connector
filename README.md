@@ -2,14 +2,23 @@
 This connector imports Sklik reports, through Sklik API DRAK JSON, into Google Data Studio, a graphical display platform. 
 
 # Version
-Actual version: 3.1.0
+Actual version: 4.0.0
 
 # Changelog
+07.02.2022 (3.1.0 -> 4.0.0)
+
+[ADD] Přidání statistiky pro produktové skupiny
+[ADD] Přidání video statistik
+[ADD] Přidání možnosti přepisu proměnných z configu
+[CHANGE] Přechod u ads, banners, groups, campaigns na jednotné metody -> změna hlavně u granularit
+[FIX] Schování tokenu v logu, oprava některých nefunkčních metrik 
+
 09.07.2021 (3.0.0 -> 3.1.0)
-* [ADD] Přidání filtru na typ kampaní
-* [ADD] Možnost přepisování konfigurací [viz Wiki:Přepis nastavení u tabulek]
-* [ADD] Přidání možnosti změny logovacího souboru 
-* [FIX] Oprava logovacího souboru (ignorování smazaných)
+
+[ADD] Přidání filtru na typ kampaní
+[ADD] Možnost přepisování konfigurací [viz Wiki:Přepis nastavení u tabulek]
+[ADD] Přidání možnosti změny logovacího souboru
+[FIX] Oprava logovacího souboru (ignorování smazaných)
 
 10.12.2019 (2.1.0 -> 3.0.0)
 * [REMOVE] Odstranění maxCpcContext ze schématu nabízených metrik
@@ -51,32 +60,27 @@ Sklik Data studio connector
 Automatické spojení statistických reportů z reklamního systému Sklik do grafické platformy Google Data studio, které je určeno k vizualizaci dat pro lepší přehled a orientaci.
 
 Aktuální verze
-Sklik Data Studio Connector v3.0.0 ID
-AKfycbz5dp60Pq7R-gV3j2fIGoviSCojh0A7I3V3jT49BEMWzm6Cdzd0kPDiy7HVUvXhFLUINA
+Sklik Data Studio Connector v4.0.0 ID
+AKfycbwYho46coR8ajdpHm76Q5J_x66fEZxG9q8ZgVpQsyb-HOFBmDVhHfBn6WQOQM87k-O8Dg
 
 **Připojení konektoru**
 
-V GDS (Google Data studio) v levé horní části rozkliknete tlačítko Create a vyberete možnost Data source. 
-![](https://github.com/seznam/sklik-data-studio-connector/blob/master/wiki/datasource_01.jpg)
+V GDS (Google Data studio) se přepnete na Zdroje dat a v pravém spodním rohu dáte přidat další konektor. 
+![](https://github.com/ChocoTUx/readmetester/blob/master/doc/01.JPG)
 
-Budete přesměrování na stránku se seznamem veřejných konektorů. Jelikož náš konektor ještě není plně přístupný, musíte přístup k němu zadat pomoci ID. Pro možnost přidání ID, je třeba kliknout na konektor, který je označený jako Build your own.
-![](https://github.com/seznam/sklik-data-studio-connector/blob/master/wiki/datasource_02.jpg)
-
-*Pokud tuto možnost nevidíte, pak je potřeba ji povolit v nastavení.*
-![](https://github.com/seznam/sklik-data-studio-connector/blob/master/wiki/datasource_02b.jpg)
-
-Do políčka Deployment ID zadáte ID našeho konektoru a potvrdíte tlačítkem Validate
-![](https://github.com/seznam/sklik-data-studio-connector/blob/master/wiki/datasource_03.jpg)
+Budete přesměrování na stránku se seznamem veřejných konektorů. Jelikož náš konektor ještě není plně přístupný, musíte přístup k němu zadat pomoci ID. V levém sloupci dole se přepnete na Vývojáři, vyplníte Deployment ID (ID najdete v předchozí části návodu) a dáte Ověřit. 
+Následně se vám načte konektor (načte se nový banner s názvem konektoru, popisem). Konektor přidáte pomocí tlačítka Přidat konektor.
+![](https://github.com/ChocoTUx/readmetester/blob/master/doc/02.JPG)
 
 Pokud přidáváte konektor poprvé, musíte si projít sérií bezpečnostních schvalován (jelikož se jedná o konektor, který není oficiálně schválený Googlem – jejich vývojáři nezkontrolovali bezpečnost kódu). 
 Ve vyskakovacím okně (pokud se nezobrazí, zkuste kontrolovat, že nemáte zablokované vyskakovací okna v prohlížeči nebo není okno zobrazené na pozadí) a kliknete na Autorizovat. Následně vybere účet pro který chcete konektor povolit. V dalším kroku kliknete na Advanced, pod kterým vyskočí další informační hláška pod kterou kliknete na Go to Sklik GDS (unsafe). Poslední informační okno rekapituluje všechny práva vůči vašemu účtu, který konektor vyžaduje.
 1. Přístup na Google Drive + Zobrazování a práci s dokumenty: Toto je nutné pro zapnutí Logování (logování zapisuje do Google dokumentu stav posledního spojení. Pomocí jeho chybových hlášek můžete snadněji detekovat zdroj chyby). 
 2. Přístup k externí service: Napojení na samotný Sklik API.
-![](https://github.com/seznam/sklik-data-studio-connector/blob/master/wiki/datasource_04.jpg)
+![](https://github.com/ChocoTUx/readmetester/blob/master/doc/03.JPG)
 *Zdrojové kódy našeho konektoru jsou zveřejněny na GitHubu. Můžete si tedy vytvořit vlastní konektor a mít díky tomu práci těchto scriptů plně pod kontrolou.*
 
 Posledním krokem je nastavení configu. Zde se zadávají všechny individuální nastavení potřebná pro fungování konektoru. Jakmile budou všechny informace vyplněny, stačí vpravo nahoře konektor Připojit.
-![](https://github.com/seznam/sklik-data-studio-connector/blob/master/wiki/datasource_05.jpg)
+![](https://github.com/ChocoTUx/readmetester/blob/master/doc/04.JPG)
 
 **Nastavení configu**
 
