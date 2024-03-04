@@ -2,9 +2,13 @@
 This connector imports Sklik reports, through Sklik API DRAK JSON, into Google Looker Studio, a graphical display platform. 
 
 # Version
-Actual version: 4.0.0
+Actual version: 4.0.1
 
 # Changelog
+04.03.2024 (4.0.0 -> 4.0.1) 
+
+[ADD] Přidání typu kampaně do výpisu
+
 07.02.2022 (3.1.0 -> 4.0.0)
 
 [ADD] Přidání statistiky pro produktové skupiny
