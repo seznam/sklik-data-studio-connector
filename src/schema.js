@@ -661,6 +661,15 @@ var Schema = function (config) {
     * #######################################################
     */
     {
+      name: 'cgc_type',
+      label: 'Kampaň: Typ kampaně',
+      dataType: 'STRING',
+      group: 'campaigns',
+      semantics: {
+        conceptType: 'DIMENSION'
+      }
+    },
+    {
       name: 'cgc_avgConValue',
       label: 'Kampaň: Průměrná hodnota objednávky',
       dataType: 'NUMBER',
