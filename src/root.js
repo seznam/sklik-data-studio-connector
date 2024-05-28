@@ -228,7 +228,6 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
   this.setup = function () {
     try {
       if(this.config.rw_log_file_name != undefined && this.config.rw_log_file_name != '') {
-        Logger.log(this.config.rw_log_file_name);
         var logFileName = this.config.rw_log_file_name;
       } else {
         var logFileName = this.config.logFileName;
@@ -246,28 +245,30 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
       console.error({ 'location': 'Root.setup', 'err': exp, 'note': 'create Log.setup' });
       return false;
     }
-    this.Log.addRecord('##### Nastavení vstupních dat / Config #####', true, 'root.setup()');
-    this.Log.addRecord('Načtené nastavení uživatele', true, 'root.setup()');
-    var cnf = JSON.parse(JSON.stringify(this.config));
+    this.Log.addHeader('Nastavení vstupních dat / Config', 2, '', true);
+    this.Log.addCaption('Načtené nastavení uživatele', true, {'file': 'root', 'func': 'setup', 'line': 249});
+    var cnf = JSON.parse(JSON.stringify(this.config)); 
     cnf.token = cnf.token.substr(0, 15)+'..shorted';
-    this.Log.addValue(cnf, true, 'root.setup()');
-    this.Log.addRecord('Očekávané sloupečky (Metriky a Dimenze - požadavek GDS)', true, 'root.setup()');
-    this.Log.addValue(this.fields, true, 'root.setup()');
-    this.Log.addRecord('Datum (požadavek GDS)', true, 'root.setup()');
-    this.Log.addValue(this.date, true, 'root.setup()');
+    this.Log.addJson(cnf, true, {'file': 'root', 'func': 'setup', 'line': 252});
+    this.Log.addCaption('Očekávané sloupečky (Metriky a Dimenze - požadavek GDS)', true, {'file': 'root', 'func': 'setup', 'line': 253});
+    this.Log.addJson(this.fields, true, {'file': 'root', 'func': 'setup', 'line': 254});
+    this.Log.addCaption('Datum (požadavek GDS)', true, {'file': 'root', 'func': 'setup', 'line': 255});
+    this.Log.addJson(this.date, true);
     try {
       this.setupReportList();
       
       //Restriction about campaigns types (avaliable for campaign, group, ad)
       //The same logic as else part condition but try to use param rw_campaigns_types (rw_* is custom param per single tables and I use it for rewrite global config params)
       if (this.config.rw_campaigns_types != undefined && this.config.rw_campaigns_types == 'ignore') {
-        this.Log.addRecord('Pro tuto tabulku se ignoruje nastavení filtru podle typu kampaně');      
+        this.Log.addCaption('Pro tuto tabulku se ignoruje nastavení filtru podle typu kampaně');      
       } else if(this.config.rw_campaigns_types != undefined && this.config.rw_campaigns_types != '') {
         this.campaignsTypes = this.config.rw_campaigns_types.split(',');
-        this.Log.addRecord('Budou se načítat informace jenom data z těchto typů kampaní: ' + this.config.rw_campaigns_id);
+        this.Log.addCaption('Budou se načítat informace jenom data z těchto typů kampaní');
+        this.Log.addValue(this.config.rw_campaigns_id);
       } else if (this.config.campaignsTypes != undefined && this.config.campaignsTypes != '') {
         this.campaignsTypes = this.config.campaignsTypes.split(',');
-        this.Log.addRecord('Budou se načítat informace jenom data z těchto typů kampaní: ' + this.config.campaignsTypes);
+        this.Log.addCaption('Budou se načítat informace jenom data z těchto typů kampaní');
+        this.Log.addValue(this.config.campaignsTypes);
       }
 
       //Pokud jsou nastavené campaignsId, tak se jede podle toho 
@@ -275,17 +276,19 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
       //The same logic as else part condition but try to use param rw_campaigns_id (rw_* is custom param per single tables and I use it for rewrite global config params)
       
       if (this.config.rw_campaigns_id != undefined && this.config.rw_campaigns_id == 'ignore') {
-        this.Log.addRecord('Pro tuto tabulku se ignoruje nastavení filtru podle ID kampaní');
+        this.Log.addCaption('Pro tuto tabulku se ignoruje nastavení filtru podle ID kampaní');
       } else if (this.config.rw_campaigns_id != undefined && this.config.rw_campaigns_id != '') {
         var stringCampaignsId = this.config.rw_campaigns_id.split(',');
-        this.Log.addRecord('Budou se načítat informace jenom pro tyto kampaně: ' + this.config.rw_campaigns_id);
+        this.Log.addCaption('Budou se načítat informace jenom pro tyto kampaně');
+        this.Log.addValue(this.config.rw_campaigns_id);
         //From {String[]} -> {Int[]}
         for (var i = 0; i < stringCampaignsId.length; i++) {
           this.campaignsId.push(parseInt(stringCampaignsId[i]));
         }
       } else if (this.config.campaignsId != undefined && this.config.campaignsId != '') {
         var stringCampaignsId = this.config.campaignsId.split(',');
-        this.Log.addRecord('Budou se načítat informace jenom pro tyto kampaně: ' + this.config.campaignsId);
+        this.Log.addCaption('Budou se načítat informace jenom pro tyto kampaně');
+        this.Log.addValue(this.config.campaignsId);
         //From {String[]} -> {Int[]}
         for (var i = 0; i < stringCampaignsId.length; i++) {
           this.campaignsId.push(parseInt(stringCampaignsId[i]));
@@ -295,10 +298,11 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
       //Pokud jsou nastavené i groupsId tak jsou řídící pro groups a ads
       //The same logic as else part condition but try to use param rw_group_id (rw_* is custom param per single tables and I use it for rewrite global config params)
       if (this.config.rw_group_id != undefined && this.config.rw_group_id == 'ignore') {
-        this.Log.addRecord('Pro tuto tabulku se ignoruje nastavení filtru podle ID sestav');
+        this.Log.addCaption('Pro tuto tabulku se ignoruje nastavení filtru podle ID sestav');
       } else if (this.config.rw_group_id != undefined && this.config.rw_group_id != '') {
         var stringGroupsId = this.config.rw_group_id.split(',');
-        this.Log.addRecord('Budou se načítat informace jenom pro tyto sestavy: ' + this.config.rw_group_id);
+        this.Log.addCaption('Budou se načítat informace jenom pro tyto sestavy');
+        this.Log.addValue(this.config.rw_group_id);
         //From {String[]} -> {Int[]}
         for (var i = 0; i < stringGroupsId.length; i++) {
           this.groupsId.push(parseInt(stringGroupsId[i]));
@@ -306,7 +310,8 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
         this.loadFromGroups = true;
       } else if (this.config.groupsId != undefined && this.config.groupsId != '') {
         var stringGroupsId = this.config.groupsId.split(',');
-        this.Log.addRecord('Budou se načítat informace jenom pro tyto sestavy: ' + this.config.groupsId);
+        this.Log.addCaption('Budou se načítat informace jenom pro tyto sestavy');
+        this.Log.addValue(this.config.groupsId);
         //From {String[]} -> {Int[]}
         for (var i = 0; i < stringGroupsId.length; i++) {
           this.groupsId.push(parseInt(stringGroupsId[i]));
@@ -320,7 +325,8 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
       }
       if (this.config.campaignsIdsForKeywords != undefined && this.config.campaignsIdsForKeywords != '') {
         this.stringCampaignsIdsForKeywords = this.config.campaignsIdsForKeywords.split(',');
-        this.Log.addRecord('Klíčová slova se budou načítat pouze z těchto kampaní: ' + this.config.campaignsIdsForKeywords);
+        this.Log.addCaption('Klíčová slova se budou načítat pouze z těchto kampaní');
+        this.Log.addValue(this.config.campaignsIdsForKeywords);
         //From {String[]} -> {Int[]}
         for (var i = 0; i < stringGroupsId.length; i++) {
           this.campaignsIdsForKeywords.push(parseInt(stringCampaignsIdsForKeywords[i]));
@@ -329,6 +335,7 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
     } catch (err) {
       //@todo make test of this throw problem
       console.error({ 'location': 'Root.setup', 'err': exp });
+      this.Log.addHeader('Neočekávaná chyba', 2, 'negative');
       this.Log.addRecord('Při načítání configu došlo k chybě :' + JSON.stringify(err));
       return false;
     }
@@ -339,7 +346,7 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
    * workflow - logIn -> parseDataRequest -> loadData -> createReport[] -> readReport[] -> returnDataPackage 
    */
   this.load = function () {
-    this.Log.addRecord('\n ###### Zahájení práce pro získání dat ######');
+    this.Log.addHeader('Získávání dat', 1, 'positive');
     if (this.logIn()) {
       console.info({ 'UserId': this.config.userId });
       if (this.parseDataRequest()) {
@@ -353,13 +360,13 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
    * Log user to API (make session)
    */
   this.logIn = function () {
-    this.Log.addRecord('Začátek přihlašování uživatele ...');
+    this.Log.addHeader('Přihlašování uživatele', 2, 'positive');
     var response = this.sklikApiCall('client.loginByToken', this.config.token, 1);
     if (response) {
-      this.Log.addRecord('Uživatel se přihlásil \n');
+      this.Log.addCaption('Uživatel se přihlásil do API');
       return true;
     } else {
-      this.Log.addRecord('Nepodařilo se přihlásit uživatele');
+      this.Log.addHeader('Nepodařilo se přihlásit uživatele', 2, 'negative');
       this.Log.addRecord('Důvod chyby u přihlašování: ' + response);
       return false;
     }
@@ -370,7 +377,8 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
    */
   this.parseDataRequest = function () {
     //Jedna se o vytrideni dat, ktere jsou v pozadavku na zobrazeni z celkoveho baliku dat
-    this.Log.addDebug('-//- Start iteration over schema fields and match with request', 'root.parseDataRequest[start]');
+    this.Log.addHeader('Výběr dat pro stahování', 2, 'positive', true);
+    this.Log.addDebug('-//- Start iteration over schema fields and match with request', {'file': 'root', 'func': 'parseDataRequest', 'line': 381});
     this.fields.forEach(function (field) {
       for (var i = 0; i < this.sklikDataSchema.length; i++) {
         if (this.sklikDataSchema[i].name === field.name) {
@@ -394,12 +402,12 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
             if(s.length == 3) {
               var num = Number(s[2]);
               if (this.sklikDataSchema[i].group.indexOf('groups') != -1 && num != undefined) {
-                this.Log.addDebug('Bude se filtrovat pouze pro tuto sestavu: ', 'root.parseDataRequest[start]', s[2]);
-                this.Log.addRecord(JSON.stringify(s), true, 'parseDataRequest');
+                this.Log.addDebug('Bude se filtrovat pouze pro tuto sestavu: ', {'file': 'root', 'func': 'parseDataRequest', 'line': 405}, s[2]);
+                this.Log.addJson(s, true);
                 this.loadFromGroupsIds.push(parseInt(s[2]));
               } else if (this.sklikDataSchema[i].group.indexOf('campaigns') != -1 && num != undefined) {
-                this.Log.addDebug('Bude se filtrovat pouze pro tuto kampaň: ', 'root.parseDataRequest[start]', s[2]);
-                this.Log.addRecord(JSON.stringify(s), true, 'parseDataRequest');
+                this.Log.addDebug('Bude se filtrovat pouze pro tuto kampaň: ', {'file': 'root', 'func': 'parseDataRequest', 'line': 409}, s[2]);
+                this.Log.addJson(s, true);
                 this.groupsFromCampaignsIds.push(parseInt(s[2]));
               }              
             }
@@ -413,8 +421,8 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
         }
       }
     }, this);
-    this.Log.addRecord('Ze schématu se vybrali tyto metriky: ', true, "root.parseDataRequest()");
-    this.Log.addValue(this.displayColumns, true, "root.parseDataRequest()");
+    this.Log.addCaption('Ze schématu se vybrali tyto metriky: ', true, {'file': 'root', 'func': 'parseDataRequest', 'line': 424});
+    this.Log.addJson(this.displayColumns, true);
     return true;
   }
 
@@ -442,7 +450,7 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
       return original;
     };
 
-    this.Log.addDebug('-//- Translate date format form GDS to API', 'root.setupDate[start]');
+    this.Log.addDebug('-//- Translate date format form GDS to API',  {'file': 'root', 'func': 'setupDate', 'line': 453});
     try {
       if (this.date && this.date.endDate) {
         var parts = this.date.endDate.split('-');
@@ -463,12 +471,13 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
       this.startDate = this.sDate.getFullYear() + '-' + monthIncrease(this.sDate.getMonth()) + '-' + day2d(this.sDate.getDate());
       this.Log.addRecord('Budou se stahovat data z časového rozmezí: Od[dateFrom] ' + this.startDate + ' Do[dateTo] ' + this.endDate);
     } catch (ext) {
+      this.Log.addHeader('Neočekávaná chyba', 2, 'negative');
       this.Log.addRecord('Nastal problém při úpravě převodu data z formátu GDS do formátu API');
       this.Log.addValue(ext);
     }
-    this.Log.addDebug('-//- Translate date from GDS to API', 'root.setupDate[finall]');
-    this.Log.addDebug('-//- GDS date', 'root.setupDate[finall]', JSON.stringify(this.date));
-    this.Log.addDebug('-//- API format endDate ' + this.endDate + ' a startDate ' + this.startDate, 'root.setupDate[finall]');
+    this.Log.addDebug('-//- Translate date from GDS to API',  {'file': 'root', 'func': 'setupDate', 'line': 477});
+    this.Log.addDebug('-//- GDS date',  {'file': 'root', 'func': 'setupDate', 'line': 478}, JSON.stringify(this.date));
+    this.Log.addDebug('-//- API format endDate ' + this.endDate + ' a startDate ' + this.startDate);
   }
 
   /**
@@ -486,6 +495,7 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
       }
     } catch (exp) {
       console.error({ 'location': 'Root.loadData', 'err': exp, 'note': 'select report type' });
+      this.Log.addHeader('Neočekávaná chyba', 2, 'negative');
       this.Log.addRecord('Nastal problém při výběru sprévného reportu (Nejde rozhodnout jaká metoda na API se má volat)');
       this.Log.addValue(exp);
       return false;
@@ -497,8 +507,8 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
    * Load data from API
    */
   this.loadData = function () {
-    this.Log.addDebug('-//- Select what kind of report will be called', 'root.loadData[start]');
-    this.Log.addRecord('Začátek stahování dat z API');
+    this.Log.addDebug('-//- Select what kind of report will be called', {'file': 'root', 'func': 'loadData', 'line': 508});
+    this.Log.addHeader('Začátek stahování dat z API', 2, 'positive', true);
 
     //What endpint (what entity) will be called
     var selectedEntity = this.selectEntity();
@@ -514,7 +524,7 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
         var instance = new ClientClass(this);
         break;
       case 'keywords':
-        this.Log.addDebug('-//- CampaignsIDs restriction for Keywords', 'Root.loadData()', this.campaignsIdsForKeywords);
+        this.Log.addDebug('-//- CampaignsIDs restriction for Keywords', {'file': 'root', 'func': 'loadData', 'line': 525}, this.campaignsIdsForKeywords);
         var instance = new KeywordsClass(this, this.campaignsIdsForKeywords);
         break;
       case 'productsets':
@@ -529,7 +539,7 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
       
     }
     if (this.granularity == 'total') {
-      this.Log.addDebug('-//- Was selected ' + selectedEntity + ' report in period total', 'root.loadData[final]');
+      this.Log.addDebug('-//- Was selected ' + selectedEntity + ' report in period total', {'file': 'root', 'func': 'loadData', 'line': 540});
       var response = instance.getDataFromApi(this.granularity, { 'limit': 5000 });
       if (response) {
         return instance.convertDataToGDS(response);
@@ -537,7 +547,7 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
         return false;
       }
     } else {
-      this.Log.addDebug('-//- Was selected ' + selectedEntity + ' report in period ' + this.granularity, 'root.loadData');
+      this.Log.addDebug('-//- Was selected ' + selectedEntity + ' report in period ' + this.granularity, {'file': 'root', 'func': 'loadData', 'line': 548});
       var days = this.setupDaysCycle(this.granularity);
 
       var response = instance.getDataFromApi(this.granularity, { 'limit': Math.floor(5000 / days) });
@@ -564,8 +574,8 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
     //Prevod dne na porovnavatelny string
     var dayInString = '';
     var startLoop = true;
-    this.Log.addDebug('-//- Prepare complete data range from requested date period', 'root.setupDaysCycle[start]');
-    this.Log.addDebug('-//- Actual period is' + period, 'root.setupDaysCycle[start]');
+    this.Log.addDebug('-//- Prepare complete data range from requested date period', {'file': 'root', 'func': 'setupDaysCycle', 'line': 575});
+    this.Log.addDebug('-//- Actual period is' + period, {'file': 'root', 'func': 'setupDaysCycle', 'line': 576});
     try {
       while (dayCounter.getTime() <= this.eDate.getTime()) {
         var correctMonth = dayCounter.getMonth() + 1;
@@ -596,13 +606,13 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
           dayInString = '';
           var increase = 1;
           if (dayCounter.getMonth() >= 9) {
-            dayInString = dayCounter.getFullYear() + '04';
+            dayInString = dayCounter.getFullYear() + '10';
             increase = 12 - dayCounter.getMonth();
           } else if (dayCounter.getMonth() >= 6) {
-            dayInString = dayCounter.getFullYear() + '03';
+            dayInString = dayCounter.getFullYear() + '07';
             increase = 9 - dayCounter.getMonth();
           } else if (dayCounter.getMonth() >= 3) {
-            dayInString = dayCounter.getFullYear() + '02';
+            dayInString = dayCounter.getFullYear() + '04';
             increase = 6 - dayCounter.getMonth();
           } else if (dayCounter.getMonth() >= 0) {
             dayInString = dayCounter.getFullYear() + '01';
@@ -617,10 +627,11 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
         this.timeline.push(dayInString);
       }
     } catch (exp) {
+      this.Log.addHeader('Neočekávaná chyba', 2, 'negative');
       this.Log.addRecord('Nastal problém při přípravě seznamu všech časových jednotek u časového rozpadu statistik');
       this.Log.addValue(exp);
     }
-    this.Log.addRecord('Seznam všech časových jednotek pro periodu: ' + period, true, 'root.setupDaysCycle()');
+    this.Log.addRecord('Seznam všech časových jednotek pro periodu: ' + period, true, {'file': 'root', 'func': 'setupDaysCycle', 'line': 634});
     this.Log.addValue(this.timeline.join('|'), true, 'root.setupDaysCycle()');
     return this.timeline.length;
   }
@@ -630,8 +641,8 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
    * @return {Object}
    */
   this.getDataSchema = function () {
-    this.Log.addRecord('Script vrací GDS schéma vybraných metrik, ke kterým přiřadí data', true, 'root.getDataSchema()');
-    this.Log.addValue(this.rDataSchema, true, 'root.getDataSchema()');
+    this.Log.addCaption('Script vrací GDS schéma vybraných metrik, ke kterým přiřadí data', true, {'file': 'root', 'func': 'getDataSchema', 'line': 644});
+    this.Log.addJson(this.rDataSchema, true);
     return this.rDataSchema;
   }
 
@@ -640,11 +651,13 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
    * @return {Object[]}
    */
   this.getData = function () {
-    this.Log.addRecord('\n ###### Vložení dat ze scriptu do GDS ######');
-    this.Log.addRecord('Data načtená scriptem', true, 'root.getData()');
-    this.Log.addValue(this.data, true, 'root.getData()');
+    this.Log.addHeader('Vložení dat do tabulky', 1, 'positive', true);
+
+    this.Log.addCaption('Data načtená scriptem', true, {'file': 'root', 'func': 'getData', 'line': 656});
+    this.Log.addJson(this.data, true);
     if (this.data.length == 0) {
-      this.Log.addRecord('Nebyly nalazeny žádné data');
+      this.Log.addHeader('Neočekávaná chyba', 2, 'negative');
+      this.Log.addCaption('Nebyly nalazeny žádné data');
     }
     return this.data;
   }
@@ -667,12 +680,13 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
    * @return {Mixed} - Reponse of HTTP status of False
    */
   this.sklikApiCall = function (method, parameters, retry) {
-    this.Log.addRecord('\n ############### Call method [' + method + '] ###############', true, 'root.sklikApiCall()');
+    this.Log.addHeader('Volání metody ' + method, 3, true);
+    this.Log.addLocation({'file': 'root', 'func': 'sklikApiCall', 'line': 683});
     if(method == 'client.loginByToken') {
       var paramv = JSON.stringify(parameters);
-      this.Log.addValue(paramv.substr(0, 15)+'..shorted', true, 'root.sklikApiCall()');
+      this.Log.addValue(paramv.substr(0, 15)+'..shorted', true);
     } else {
-      this.Log.addValue(JSON.stringify(parameters), true, 'root.sklikApiCall()');
+      this.Log.addJson(parameters, true);
     }
     
 
@@ -688,8 +702,9 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
       var response = JSON.parse(stat);
       if (stat.getResponseCode() == 200) {
         if (response.session) {
-          this.Log.addRecord('Odpověď z API pro metodu ' + method, true, 'root.sklikApiCall()');
-          this.Log.addValue(response, true, 'root.sklikApiCall()');
+          this.Log.addHeader('Odpověď z API Draka '+ method, 3, 'positive', true);
+          this.Log.addCaption('Odpověď z API pro metodu ' + method, true, {'file': 'root', 'func': 'sklikApiCall', 'line': 705});
+          this.Log.addJson(response, true);
           this.session = response.session;
           return response;
           //Logout do not return session (just status and statusMessage)
@@ -702,15 +717,16 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
         throw "Have no 200 respose in header, get [" + stat + "]";
       }
     } catch (exp) {
-      this.Log.addRecord('!!!! ERROR !!!! \n Selhalo ' + retry + '. volání metody.', true, 'root.sklikApiCall()');
-      this.Log.addValue(exp, true, 'root.sklikApiCall()');
+      this.Log.addHeader('Neočekávaná chyba', 2, 'negative', true);
+      this.Log.addRecord('Selhalo ' + retry + '. volání metody.', true, {'file': 'root', 'func': 'sklikApiCall', 'line': 720});
+      this.Log.addValue(exp, true);
 
       if (retry <= 3) {
-        this.Log.addRecord('Volám nový pokus', true, 'root.sklikApiCall()');
+        this.Log.addCaption('Volám nový pokus', true);
         return this.sklikApiCall(method, parameters, retry + 1);
       } else {
         console.error({ 'location': 'sklikApiCall', 'err': exp });
-        this.Log.addRecord('Ukončení pokusů o provolávání API', true, 'root.sklikApiCall()');
+        this.Log.addHeader('Ukončení pokusů o volání API Drak', 2, 'negative');
         this.Log.addRecord('API správně neodpovídá na dotazy a není tedy možné získat data do reportu');
         return false;
       }

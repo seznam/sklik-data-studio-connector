@@ -134,7 +134,7 @@ function getConfig(request) {
         displayName: "Název logovacího souboru",
         text: "Na vašem Google Drive disku se vytvoří soubor, do kterého se budou logovat mezistavy konektoru.",
         helpText: "Soubor bude umístěn v root složce disku",
-        placeholder: "Sklik_DataStudio_Log"
+        placeholder: "Sklik_Looker_Connector_Log"
       },
       {
         type: "TEXTINPUT",
