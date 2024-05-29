@@ -2,27 +2,36 @@
 This connector imports Sklik reports, through Sklik API DRAK JSON, into Google Looker Studio, a graphical display platform. 
 
 # Version
-Actual version: 4.0.1
+Actual version: 4.1.0
 
 # Changelog
+28.05.2024 (4.0.1 -> 4.1.0) 
+
+* [ADD] Přidání JOK kampaně do výběru v configu
+* [FIX] Rozpad na kvartální statistiky
+* [FIX] Oprava načítání klíčových slov s omezením na kampaně
+* [FIX] Opravení defaultního načítání metrik a dimenzí (načítá se název kampaně a počet zobrazení)
+* [CAHNGE] Defaultní název logovacího souboru na Sklik_Looker_Connector_Log
+* [CAHNGE] Předělání logování. Strukturovaný log a lepší práce s JSON strukturami
+
 04.03.2024 (4.0.0 -> 4.0.1) 
 
-[ADD] Přidání typu kampaně do výpisu
+*[ADD] Přidání typu kampaně do výpisu
 
 07.02.2022 (3.1.0 -> 4.0.0)
 
-[ADD] Přidání statistiky pro produktové skupiny
-[ADD] Přidání video statistik
-[ADD] Přidání možnosti přepisu proměnných z configu
-[CHANGE] Přechod u ads, banners, groups, campaigns na jednotné metody -> změna hlavně u granularit
-[FIX] Schování tokenu v logu, oprava některých nefunkčních metrik 
+* [ADD] Přidání statistiky pro produktové skupiny
+* [ADD] Přidání video statistik
+* [ADD] Přidání možnosti přepisu proměnných z configu
+* [CHANGE] Přechod u ads, banners, groups, campaigns na jednotné metody -> změna hlavně u granularit
+* [FIX] Schování tokenu v logu, oprava některých nefunkčních metrik 
 
 09.07.2021 (3.0.0 -> 3.1.0)
 
-[ADD] Přidání filtru na typ kampaní
-[ADD] Možnost přepisování konfigurací [viz Wiki:Přepis nastavení u tabulek]
-[ADD] Přidání možnosti změny logovacího souboru
-[FIX] Oprava logovacího souboru (ignorování smazaných)
+* [ADD] Přidání filtru na typ kampaní
+* [ADD] Možnost přepisování konfigurací [viz Wiki:Přepis nastavení u tabulek]
+* [ADD] Přidání možnosti změny logovacího souboru
+* [FIX] Oprava logovacího souboru (ignorování smazaných)
 
 10.12.2019 (2.1.0 -> 3.0.0)
 * [REMOVE] Odstranění maxCpcContext ze schématu nabízených metrik

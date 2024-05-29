@@ -25,7 +25,7 @@ http://www.seznam.cz, or contact: https://napoveda.sklik.cz/casto-kladene-dotazy
  * and transforme data from readReport response to GDS format
  * @param {Root} rRoot 
  */
- var CampaignsClass = function (rRoot) {
+var CampaignsClass = function (rRoot) {
   /**
   * @param {Root}
   */

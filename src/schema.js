@@ -1054,13 +1054,15 @@ var Schema = function (config) {
       }
     },
     {
+      isDefault: true,
       name: 'cgc_name',
       label: 'Kampaň: Název',
       dataType: 'STRING',
-      group: 'campaigns',
       semantics: {
-        conceptType: 'DIMENSION'
-      }
+        conceptType: 'DIMENSION',
+        semanticType: 'TEXT'
+      },
+      group: 'campaigns'
     },
     {
       name: 'cgc_paymentMethod',
@@ -1230,14 +1232,16 @@ var Schema = function (config) {
       }
     },
     {
+      isDefault: true,
       name: 'cgc_impressions',
       label: 'Kampaň: Zobrazení',
       dataType: 'NUMBER',
-      group: 'campaigns',
-      isDefault: true,
+      group: 'campaigns',            
       semantics: {
-        conceptType: 'METRIC'
+        conceptType: 'METRIC',
+         semanticType: 'NUMBER'
       }
+      
     },
     {
       name: 'cgc_totalMoney',
