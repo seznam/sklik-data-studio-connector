@@ -7,7 +7,7 @@ Actual version: 4.1.0
 # Changelog
 28.05.2024 (4.0.1 -> 4.1.0) 
 
-* [ADD] RPřidání JOK kampaně do výběru v configu
+* [ADD] Přidání JOK kampaně do výběru v configu
 * [FIX] Rozpad na kvartální statistiky
 * [FIX] Oprava načítání klíčových slov s omezením na kampaně
 * [FIX] Opravení defaultního načítání metrik a dimenzí (načítá se název kampaně a počet zobrazení)
