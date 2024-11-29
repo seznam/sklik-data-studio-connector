@@ -130,18 +130,10 @@ function getConfig(request) {
       },
       {
         type: "TEXTINPUT",
-        name: "logFileName",
-        displayName: "Název logovacího souboru",
+        name: "logFileId",
+        displayName: "ID souboru pro logování",
         text: "Na vašem Google Drive disku se vytvoří soubor, do kterého se budou logovat mezistavy konektoru.",
-        helpText: "Soubor bude umístěn v root složce disku",
-        placeholder: "Sklik_Looker_Connector_Log"
-      },
-      {
-        type: "TEXTINPUT",
-        name: "logFolderId",
-        displayName: "ID složky pro logovací soubory",
-        text: "Logovací soubor se vytváří do výchozí složky na Google Drive. Pokud tuto pozici chcete změnit, zadejte prosím ID složky",
-        helpText: "ID složky najdete v URL - https://drive.google.com/drive/folders/1kMOLdsdfsdfsd tedy řetězec za folders/"
+        helpText: "ID souboru zjistíte z URL po otevření souboru v Google Drive. Jedná se o část URL za /d/ a před /edit. Je to kombinace písmen a čísel.",
       },
       {
         type: "CHECKBOX",
