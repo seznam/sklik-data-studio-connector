@@ -227,19 +227,13 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
    */
   this.setup = function () {
     try {
-      if(this.config.rw_log_file_name != undefined && this.config.rw_log_file_name != '') {
-        var logFileName = this.config.rw_log_file_name;
+      if(this.config.rw_log_file_id != undefined && this.config.rw_log_file_id != '') {
+        var logFileId = this.config.rw_log_file_id;
       } else {
-        var logFileName = this.config.logFileName;
-      } 
+        var logFileId = this.config.logFileId;
+      }       
 
-      if(this.config.rw_log_folder_id != undefined && this.config.rw_log_folder_id != '') {
-        var logFolderId = this.config.rw_log_folder_id;
-      } else if (this.config.logFolderId != undefined && this.config.logFolderId != '') {
-        var logFolderId = this.config.logFolderId;
-      } 
-
-      this.Log = new GetDataLog(this.config.logmode, this.config.debugmode, logFolderId, logFileName);     
+      this.Log = new GetDataLog(this.config.logmode, this.config.debugmode, logFileId);     
       this.Log.setup();
     } catch (exp) {
       console.error({ 'location': 'Root.setup', 'err': exp, 'note': 'create Log.setup' });
@@ -324,17 +318,17 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
         this.allowEmptyStatistics = false;
       }
       if (this.config.campaignsIdsForKeywords != undefined && this.config.campaignsIdsForKeywords != '') {
-        this.stringCampaignsIdsForKeywords = this.config.campaignsIdsForKeywords.split(',');
+        var stringCampaignsIdsForKeywords = this.config.campaignsIdsForKeywords.split(',');
         this.Log.addCaption('Klíčová slova se budou načítat pouze z těchto kampaní');
         this.Log.addValue(this.config.campaignsIdsForKeywords);
         //From {String[]} -> {Int[]}
-        for (var i = 0; i < stringGroupsId.length; i++) {
+        for (var i = 0; i < stringCampaignsIdsForKeywords.length; i++) {
           this.campaignsIdsForKeywords.push(parseInt(stringCampaignsIdsForKeywords[i]));
         }
       }
     } catch (err) {
       //@todo make test of this throw problem
-      console.error({ 'location': 'Root.setup', 'err': exp });
+      console.error({ 'location': 'Root.setup', 'err': err });
       this.Log.addHeader('Neočekávaná chyba', 2, 'negative');
       this.Log.addRecord('Při načítání configu došlo k chybě :' + JSON.stringify(err));
       return false;
