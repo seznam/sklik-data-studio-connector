@@ -2,36 +2,43 @@
 This connector imports Sklik reports, through Sklik API DRAK JSON, into Google Looker Studio, a graphical display platform. 
 
 # Version
-Actual version: 4.1.0
+Actual version: 5.0.0
 
 # Changelog
-28.05.2024 (4.0.1 -> 4.1.0) 
+25.11.2024 (4.1.0 -> 5.0.0) 
 
-* [ADD] Přidání JOK kampaně do výběru v configu
-* [FIX] Rozpad na kvartální statistiky
-* [FIX] Oprava načítání klíčových slov s omezením na kampaně
-* [FIX] Opravení defaultního načítání metrik a dimenzí (načítá se název kampaně a počet zobrazení)
-* [CAHNGE] Defaultní název logovacího souboru na Sklik_Looker_Connector_Log
-* [CAHNGE] Předělání logování. Strukturovaný log a lepší práce s JSON strukturami
+> Změna je spojena pouze s fungování logovacího souboru. Ve verzi 4.1.0 a nižší šlo tento soubor vytvářet a případně jej vyhledávat (aby se přepsal znova). To bylo spojeno s vyššími právy do Google Drive. Google zpřísnil politiku a je velice komplikované získat osvědčení o tom, že konektor tyto práva může mít.
+Ve verzi 5.0.0 tedy v rámci konfigurace je třeba zadat přímo ID souboru, kam se bude logovat. 
+
+* [CAHNGE] Logovací soubor v konfiguraci vyžaduje ID souboru a nikoliv jeho název.
+* [REMOVE] Odstranění možnosti vybrat složku, kam se bude vytvářet soubor. To je ale zachované, neboť záleží na uživateli, kde vytvoří logovací soubor. 
+
+28.05.2024 (4.0.1 -> 4.1.0) 
+[ADD] RPřidání JOK kampaně do výběru v configu
+[FIX] Rozpad na kvartální statistiky
+[FIX] Oprava načítání klíčových slov s omezením na kampaně
+[FIX] Opravení defaultního načítání metrik a dimenzí (načítá se název kampaně a počet zobrazení)
+[CAHNGE] Defaultní název logovacího souboru na Sklik_Looker_Connector_Log
+[CAHNGE] Předělání logování. Strukturovaný log a lepší práce s JSON strukturami
 
 04.03.2024 (4.0.0 -> 4.0.1) 
 
-*[ADD] Přidání typu kampaně do výpisu
+[ADD] Přidání typu kampaně do výpisu
 
 07.02.2022 (3.1.0 -> 4.0.0)
 
-* [ADD] Přidání statistiky pro produktové skupiny
-* [ADD] Přidání video statistik
-* [ADD] Přidání možnosti přepisu proměnných z configu
-* [CHANGE] Přechod u ads, banners, groups, campaigns na jednotné metody -> změna hlavně u granularit
-* [FIX] Schování tokenu v logu, oprava některých nefunkčních metrik 
+[ADD] Přidání statistiky pro produktové skupiny
+[ADD] Přidání video statistik
+[ADD] Přidání možnosti přepisu proměnných z configu
+[CHANGE] Přechod u ads, banners, groups, campaigns na jednotné metody -> změna hlavně u granularit
+[FIX] Schování tokenu v logu, oprava některých nefunkčních metrik 
 
 09.07.2021 (3.0.0 -> 3.1.0)
 
-* [ADD] Přidání filtru na typ kampaní
-* [ADD] Možnost přepisování konfigurací [viz Wiki:Přepis nastavení u tabulek]
-* [ADD] Přidání možnosti změny logovacího souboru
-* [FIX] Oprava logovacího souboru (ignorování smazaných)
+[ADD] Přidání filtru na typ kampaní
+[ADD] Možnost přepisování konfigurací [viz Wiki:Přepis nastavení u tabulek]
+[ADD] Přidání možnosti změny logovacího souboru
+[FIX] Oprava logovacího souboru (ignorování smazaných)
 
 10.12.2019 (2.1.0 -> 3.0.0)
 * [REMOVE] Odstranění maxCpcContext ze schématu nabízených metrik
@@ -73,8 +80,8 @@ Sklik Looker studio connector
 Automatické spojení statistických reportů z reklamního systému Sklik do grafické platformy Google Looker studio, které je určeno k vizualizaci dat pro lepší přehled a orientaci.
 
 Aktuální verze
-Sklik Looker Studio Connector v4.0.0 ID
-AKfycbwYho46coR8ajdpHm76Q5J_x66fEZxG9q8ZgVpQsyb-HOFBmDVhHfBn6WQOQM87k-O8Dg
+Sklik Looker Studio Connector v5.0.0 ID
+AKfycbzl4kDh3t3SznOBQQje-hkerJ2oafRq6wTn90cB10IhxkM2ThQT-n_5pNLCh0n-EpDL
 
 **Připojení konektoru**
 
