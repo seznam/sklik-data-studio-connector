@@ -25,27 +25,15 @@ http://www.seznam.cz, or contact: https://napoveda.sklik.cz/casto-kladene-dotazy
  * For each field it includes details such as identifiers, names, data types, etc.
  * @param {Boolean} logMode - setup basic logger
  * @param {Boolean} debugMode - extended logger (include api calls dumps, columns detail etc.)
- * @param {String} folderId - ID of folder where the logger file is
- * @param {String} logFileName - Name of logger file
  * @param {String} fileId - ID of the looger file
  */
-var GetDataLog = function (logMode, debugMode, folderId, logFileName, fileId) {
-  /**
-   * Name of logger file
-   */
-  const FILE_NAME = 'Sklik_Looker_Connector_Log';
+var GetDataLog = function (logMode, debugMode, fileId) {
 
   /**
    * In code is special record messages dedicated only for debug (step by step)
    * If this const is true, will be recorded into log file
    */
   const ERROR_DEBUG = true;  
-
-  /**
-   * ID of folder where the logger file is
-   * @var {String}
-   */
-  this.folderId = folderId;
 
   /**
    * ID of the logger file
@@ -62,16 +50,7 @@ var GetDataLog = function (logMode, debugMode, folderId, logFileName, fileId) {
   //this.ownerEmail = Session.getActiveUser().getEmail();
   //Need extended in appsscript.json - "https://www.googleapis.com/auth/userinfo.email"
 
-  /**
-   * Name of logger file. If null or empty, then use const FILE_NAME
-   * @var {String}
-   */
-  this.logFileName = logFileName;
-  if(this.logFileName == '' || this.logFileName == undefined) {
-    this.logFileName = FILE_NAME;
-  }
-
-
+ 
   if (logMode == undefined || logMode == 'True' || logMode == 'true' || logMode === true) {
     this.logMode = true;
   } else {
@@ -138,8 +117,6 @@ var GetDataLog = function (logMode, debugMode, folderId, logFileName, fileId) {
    */
   this.setup = function () {
     if (this.logMode || this.debugMode) {
-      
-      this.openFolder();
       var doc = this.openFile();
       if (doc) {
         //this.defaultFontSize = getFontSize();
@@ -166,18 +143,7 @@ var GetDataLog = function (logMode, debugMode, folderId, logFileName, fileId) {
     }
   }
 
-  /**
-   * Open folder with logger file
-   */
-  this.openFolder = function () {
-    if (this.folderId != '' && this.folderId) {
-      var fFolder = DriveApp.getFolderById(this.folderId);
-      if (fFolder) {
-        this.folder = fFolder;
-      }
-    }
-  }
-
+  
   /**
    * Load logger file 
    * I. search in folder (if is setup)
@@ -190,46 +156,8 @@ var GetDataLog = function (logMode, debugMode, folderId, logFileName, fileId) {
       var doc = DocumentApp.openById(this.fileId);
       doc.getBody().clear();
       return doc;
-    } else {
-      //If I have folderId, looking for a file here
-      if (this.folder) {
-        //If file exists, use them
-        var files = this.folder.getFilesByName(this.logFileName);
-        while (files.hasNext()) {
-          file = files.next();
-          //file is deleted or Im not owner -> this file will not use
-          //if(file.isTrashed() || file.getOwner().getEmail() != this.ownerEmail) {
-          if(file.isTrashed()) {
-            continue;
-          }
-          var doc = DocumentApp.openById(file.getId());
-          doc.getBody().clear();
-          return doc;
-        }
-        //If file do not exists, will create new one
-        var docHelp = DocumentApp.create(this.logFileName);
-        ins = DriveApp.getFileById(docHelp.getId());
-        var file = ins.makeCopy(this.logFileName, this.folder);
-        DriveApp.removeFile(ins);
-        return DocumentApp.openById(file.getId());
-        //Pokud nenastavil slozku, ukladam do rootu (ale nejdrive prohledam disk a hledam dle nazvu)
-        //Kdyz nekde najdu, tak ukladam do nej (at je kde chce)
-      } else {
-        var files = DriveApp.getFilesByName(this.logFileName);
-        while (files.hasNext()) {            
-          file = files.next();
-          //file is deleted or Im not owner -> this file will not use
-          //if(file.isTrashed() || file.getOwner().getEmail() != this.ownerEmail) {
-          if(file.isTrashed()) {
-            continue;
-          }
-          var doc = DocumentApp.openById(file.getId());
-          doc.getBody().clear();
-          return doc;
-        }
-        return DocumentApp.create(this.logFileName);  
-      }
     }
+    return false;
   }
 
   /**
