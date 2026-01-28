@@ -80,6 +80,10 @@ function getConfig(request) {
           {
             label: "Zboží.cz",
             value: "zbozi"
+          },
+          {
+            label: "Jednoduchá obsahová",
+            value: "simple"
           }
         ]
       },
