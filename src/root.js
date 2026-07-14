@@ -687,28 +687,33 @@ var Root = function (rConfigParams, sklikDataSchema, rFields, rDateRange) {
     if (retry == undefined) { retry = 1; }
 
     try {
-      var stat = UrlFetchApp.fetch('https://api.sklik.cz/drak/json/' + method, {
+      var stat = UrlFetchApp.fetch('https://api.sklik.cz/drak/json/v5/' + method, {
         'method': 'post',
         'contentType': 'application/json',
         'muteHttpExceptions': true,
         'payload': JSON.stringify(parameters)
       });
-      var response = JSON.parse(stat);
-      if (stat.getResponseCode() == 200) {
-        if (response.session) {
+      var httpStatus = stat.getResponseCode();
+      var responseText = stat.getContentText();
+      var response = JSON.parse(responseText);
+
+      // The Drak JSON API returns its own status in the response body.  HTTP
+      // 200 therefore does not by itself mean that the API call succeeded.
+      if (httpStatus >= 200 && httpStatus < 300) {
+        if ((response.status == 200 || response.status == 206) && response.session) {
           this.Log.addHeader('Odpověď z API Draka '+ method, 3, 'positive', true);
           this.Log.addCaption('Odpověď z API pro metodu ' + method, true, {'file': 'root', 'func': 'sklikApiCall', 'line': 705});
           this.Log.addJson(response, true);
           this.session = response.session;
           return response;
           //Logout do not return session (just status and statusMessage)
-        } else if (method == 'client.logout') {
+        } else if (method == 'client.logout' && (response.status == 200 || response.status == 206)) {
           return response;
         } else {
-          throw "Have no 200 respose in body, get [" + stat + "]";
+          throw "Sklik API error " + response.status + ": " + response.statusMessage;
         }
       } else {
-        throw "Have no 200 respose in header, get [" + stat + "]";
+        throw "Sklik API HTTP error " + httpStatus + ": " + responseText;
       }
     } catch (exp) {
       this.Log.addHeader('Neočekávaná chyba', 2, 'negative', true);

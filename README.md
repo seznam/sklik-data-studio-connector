@@ -106,7 +106,7 @@ Posledním krokem je nastavení configu. Zde se zadávají všechny individuáln
 
 Token: Konektor se na Sklik napojuje pomocí Sklik API. K autentizaci uživatele slouží Sklik Token (je možné ho získat v rozhraní Sklik v záložce nastavení)
 
-UserId: Dalším povinným prvkem je id uživatele. Pokud svoje id neznáš, můžeš ho zjistit pomocí malé utilitky: https://bit.ly/2uMuKgL
+UserId: Dalším povinným prvkem je id uživatele. Pokud svoje ID neznáte, nasaďte si lokální utilitu z adresáře [`utility`](utility/README.md); načte váš účet i spravované účty přes aktuální API Drak v5.
 
 ID kampaní: Aby se nenačítaly všechny data z celého účtu, je možné omezit přímo na některé kampaně. Je to také dáno proto, že je možné v jednom přehledu mít pouze 5000 záznamů, což u velkých účtů pro dlouhé denní statistiky může být problém.
 
