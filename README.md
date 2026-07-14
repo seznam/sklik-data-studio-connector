@@ -75,6 +75,64 @@ Bannery: Průměrné CPC, PNO (Cost Of Sale(COS)), (Kč) Cena za zobrazeni, (Kč
 This connector is based on Google Apps Script. 
 Tutorial how get your own connector: https://developers.google.com/datastudio/connector/get-started
 
+## Nasazení vlastního konektoru do Looker Studia
+
+Utilita v adresáři [`utility`](utility/README.md) slouží pouze pro zjištění
+`UserId`. Pro vlastní datový zdroj je potřeba samostatný Google Apps Script
+projekt:
+
+1. Otevřete [script.new](https://script.new/) a vytvořte nový Apps Script
+   projekt, například `Sklik Looker Connector`.
+2. Zkopírujte do něj všechny soubory z adresáře [`src`](src). Každý soubor
+   vytvořte jako samostatný soubor Apps Script. Soubor `tests.js` nekopírujte.
+3. V **Project Settings** zapněte zobrazení souboru `appsscript.json` a vložte
+   tento manifest:
+
+```json
+{
+  "timeZone": "Europe/Prague",
+  "runtimeVersion": "V8",
+  "dataStudio": {
+    "name": "Sklik Looker Connector",
+    "company": "Martin Sova",
+    "companyUrl": "https://github.com/msov19/sklik-data-studio-connector",
+    "logoUrl": "https://www.sklik.cz/favicon.ico",
+    "addonUrl": "https://github.com/msov19/sklik-data-studio-connector",
+    "supportUrl": "https://github.com/msov19/sklik-data-studio-connector/issues",
+    "description": "Načítání statistik Sklik API Drak do Looker Studia.",
+    "shortDescription": "Sklik statistiky v Looker Studiu",
+    "authType": ["NONE"],
+    "feeType": ["FREE"],
+    "sources": ["SKLIK"]
+  },
+  "oauthScopes": [
+    "https://www.googleapis.com/auth/script.external_request",
+    "https://www.googleapis.com/auth/documents"
+  ],
+  "urlFetchWhitelist": [
+    "https://api.sklik.cz/drak/"
+  ]
+}
+```
+
+4. Uložte projekt. V Apps Scriptu klikněte **Deploy → Test deployments** a
+   zkopírujte **Head Deployment ID**. Pro konektor nevolte nasazení typu Web
+   app; to je určeno pouze pro pomocnou utilitu.
+5. Do prohlížeče vložte následující adresu a nahraďte `DEPLOYMENT_ID`
+   zkopírovaným ID:
+
+```
+https://lookerstudio.google.com/datasources/create?connectorId=DEPLOYMENT_ID
+```
+
+6. V konfiguraci zdroje vyplňte Sklik API token a `UserId` z utility. Pro první
+   připojení nechte **Logování** a **Rozšířené logování** vypnuté; filtry ID
+   kampaní a sestav lze nechat prázdné.
+
+Token se v této starší architektuře zadává do konfigurace datového zdroje.
+Nesdílejte proto zdroj s uživateli, kterým nechcete umožnit přístup k datům
+Skliku.
+
 # Nastavení konektoru
 Sklik Looker studio connector
 Automatické spojení statistických reportů z reklamního systému Sklik do grafické platformy Google Looker studio, které je určeno k vizualizaci dat pro lepší přehled a orientaci.
