@@ -25,7 +25,10 @@ function getSklikAccounts(token) {
   var login = callSklik_('client.loginByToken', token.trim());
   var accounts;
   try {
-    var client = callSklik_('client.get', { session: login.session });
+    // JSON Drak represents the method arguments as an array. Login is the
+    // exception: it receives the token itself, while client.get receives one
+    // `user` argument containing the session.
+    var client = callSklik_('client.get', [{ session: login.session }]);
     accounts = [{
       userId: client.user.userId,
       username: client.user.username,
@@ -42,7 +45,7 @@ function getSklikAccounts(token) {
   } finally {
     // A failed logout must not hide the successfully fetched account list.
     try {
-      callSklik_('client.logout', { session: login.session });
+      callSklik_('client.logout', [{ session: login.session }]);
     } catch (ignore) {}
   }
 
