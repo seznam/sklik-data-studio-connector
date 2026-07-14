@@ -2,9 +2,18 @@
 This connector imports Sklik reports, through Sklik API DRAK JSON, into Google Looker Studio, a graphical display platform. 
 
 # Version
-Actual version: 5.0.0
+Actual version: 5.1.0
 
 # Changelog
+14.07.2026 (5.0.0 -> 5.1.0)
+
+* [FIX] Opraveno zpracování odpovědi API Drak: konektor nyní parsuje textové tělo odpovědi z `UrlFetchApp` a vyhodnocuje také stav API v JSON odpovědi.
+* [CHANGE] Volání API používají explicitní stabilní endpoint Drak JSON v5.
+* [ADD] Přidána samostatná Apps Script utilita pro bezpečné načtení vlastního i spravovaných Sklik `UserId` účtů (`utility/`).
+* [FIX] Utilita používá správný formát parametrů pro `client.get` a `client.logout`.
+* [FIX] Utilita automaticky třikrát zopakuje dočasné chyby API 429, 502, 503 a 504.
+* [ADD] Doplněn návod k nasazení vlastního konektoru do Looker Studia, včetně manifestu, konfigurace a sdílení mezi Google účty.
+
 25.11.2024 (4.1.0 -> 5.0.0) 
 
 > Změna je spojena pouze s fungování logovacího souboru. Ve verzi 4.1.0 a nižší šlo tento soubor vytvářet a případně jej vyhledávat (aby se přepsal znova). To bylo spojeno s vyššími právy do Google Drive. Google zpřísnil politiku a je velice komplikované získat osvědčení o tom, že konektor tyto práva může mít.
