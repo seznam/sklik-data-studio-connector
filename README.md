@@ -102,9 +102,9 @@ projekt:
   "timeZone": "Europe/Prague",
   "runtimeVersion": "V8",
   "dataStudio": {
-    "name": "Sklik Looker Connector",
+    "name": "Sklik Data Studio Connector",
     "company": "Martin Sova",
-    "companyUrl": "https://github.com/msov19/sklik-data-studio-connector",
+    "companyUrl": "https://www.sova.biz",
     "logoUrl": "https://www.sklik.cz/favicon.ico",
     "addonUrl": "https://github.com/msov19/sklik-data-studio-connector",
     "supportUrl": "https://github.com/msov19/sklik-data-studio-connector/issues",
