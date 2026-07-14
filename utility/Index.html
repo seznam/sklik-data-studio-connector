@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="cs">
+  <head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      body { font: 16px/1.45 Arial, sans-serif; margin: 2rem auto; max-width: 48rem; color: #202124; }
+      label, input, button { display: block; width: 100%; box-sizing: border-box; }
+      input { margin: .4rem 0 1rem; padding: .7rem; }
+      button { background: #0b57d0; border: 0; border-radius: .25rem; color: #fff; cursor: pointer; padding: .7rem 1rem; }
+      button:disabled { opacity: .6; cursor: wait; }
+      table { border-collapse: collapse; margin-top: 1.5rem; width: 100%; }
+      th, td { border-bottom: 1px solid #dadce0; padding: .6rem; text-align: left; }
+      #error { color: #b3261e; margin-top: 1rem; }
+      .note { color: #5f6368; font-size: .9rem; }
+    </style>
+  </head>
+  <body>
+    <h1>Sklik – ID účtů</h1>
+    <p>Zadejte API token a zobrazí se váš účet i účty, ke kterým máte přístup.</p>
+    <p class="note">Token se neukládá; použije se pouze pro tento požadavek.</p>
+    <form id="form">
+      <label for="token">Sklik API token</label>
+      <input id="token" type="password" autocomplete="off" required>
+      <button id="submit" type="submit">Načíst ID účtů</button>
+    </form>
+    <div id="error" role="alert"></div>
+    <div id="result"></div>
+    <script>
+      var form = document.getElementById('form');
+      var token = document.getElementById('token');
+      var submit = document.getElementById('submit');
+      var error = document.getElementById('error');
+      var result = document.getElementById('result');
+
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        error.textContent = '';
+        result.textContent = '';
+        submit.disabled = true;
+        google.script.run
+          .withSuccessHandler(renderAccounts)
+          .withFailureHandler(function (failure) {
+            error.textContent = failure.message || 'ID účtů se nepodařilo načíst.';
+            submit.disabled = false;
+          })
+          .getSklikAccounts(token.value);
+      });
+
+      function renderAccounts(accounts) {
+        token.value = '';
+        submit.disabled = false;
+        var table = '<table><thead><tr><th>ID účtu</th><th>Název</th><th>Přístup</th><th>Stav</th></tr></thead><tbody>';
+        accounts.forEach(function (account) {
+          table += '<tr><td>' + escapeHtml(account.userId) + '</td><td>' + escapeHtml(account.username) +
+            '</td><td>' + escapeHtml(account.access) + '</td><td>' + escapeHtml(account.relationStatus) + '</td></tr>';
+        });
+        result.innerHTML = table + '</tbody></table>';
+      }
+
+      function escapeHtml(value) {
+        return String(value == null ? '' : value).replace(/[&<>'"]/g, function (character) {
+          return {'&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'}[character];
+        });
+      }
+    </script>
+  </body>
+</html>

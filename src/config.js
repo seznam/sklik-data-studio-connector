@@ -41,8 +41,8 @@ function getConfig(request) {
         type: "TEXTINPUT",
         name: "userId",
         displayName: "UserId",
-        text: "Vyplňte prosím ID účtu, který chcete sledovat: Svoje id zjistíš zde: https://bit.ly/2uMuKgL",
-        helpText: "Každý účet má svoje userId, tohle id lze zjistit pomocí malé utilitky: https://bit.ly/2uMuKgL",
+        text: "Vyplňte prosím ID účtu, který chcete sledovat. Návod k lokální utilitě pro načtení ID je v README repozitáře.",
+        helpText: "Každý účet má svoje userId. Použijte aktuální utilitu z adresáře utility v repozitáři konektoru.",
         placeholder: ""
       },
       {

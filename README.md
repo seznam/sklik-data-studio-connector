@@ -2,9 +2,18 @@
 This connector imports Sklik reports, through Sklik API DRAK JSON, into Google Looker Studio, a graphical display platform. 
 
 # Version
-Actual version: 5.0.0
+Actual version: 5.1.0
 
 # Changelog
+14.07.2026 (5.0.0 -> 5.1.0)
+
+* [FIX] Opraveno zpracování odpovědi API Drak: konektor nyní parsuje textové tělo odpovědi z `UrlFetchApp` a vyhodnocuje také stav API v JSON odpovědi.
+* [CHANGE] Volání API používají explicitní stabilní endpoint Drak JSON v5.
+* [ADD] Přidána samostatná Apps Script utilita pro bezpečné načtení vlastního i spravovaných Sklik `UserId` účtů (`utility/`).
+* [FIX] Utilita používá správný formát parametrů pro `client.get` a `client.logout`.
+* [FIX] Utilita automaticky třikrát zopakuje dočasné chyby API 429, 502, 503 a 504.
+* [ADD] Doplněn návod k nasazení vlastního konektoru do Data Studia, včetně manifestu, konfigurace a sdílení mezi Google účty.
+
 25.11.2024 (4.1.0 -> 5.0.0) 
 
 > Změna je spojena pouze s fungování logovacího souboru. Ve verzi 4.1.0 a nižší šlo tento soubor vytvářet a případně jej vyhledávat (aby se přepsal znova). To bylo spojeno s vyššími právy do Google Drive. Google zpřísnil politiku a je velice komplikované získat osvědčení o tom, že konektor tyto práva může mít.
@@ -75,6 +84,64 @@ Bannery: Průměrné CPC, PNO (Cost Of Sale(COS)), (Kč) Cena za zobrazeni, (Kč
 This connector is based on Google Apps Script. 
 Tutorial how get your own connector: https://developers.google.com/datastudio/connector/get-started
 
+## Nasazení vlastního konektoru do Looker Studia
+
+Utilita v adresáři [`utility`](utility/README.md) slouží pouze pro zjištění
+`UserId`. Pro vlastní datový zdroj je potřeba samostatný Google Apps Script
+projekt:
+
+1. Otevřete [script.new](https://script.new/) a vytvořte nový Apps Script
+   projekt, například `Sklik Looker Connector`.
+2. Zkopírujte do něj všechny soubory z adresáře [`src`](src). Každý soubor
+   vytvořte jako samostatný soubor Apps Script. Soubor `tests.js` nekopírujte.
+3. V **Project Settings** zapněte zobrazení souboru `appsscript.json` a vložte
+   tento manifest:
+
+```json
+{
+  "timeZone": "Europe/Prague",
+  "runtimeVersion": "V8",
+  "dataStudio": {
+    "name": "Sklik Data Studio Connector",
+    "company": "Martin Sova",
+    "companyUrl": "https://www.sova.biz",
+    "logoUrl": "https://blog.seznam.cz/wp-content/uploads/2008/02/logo-new-sklik.gif",
+    "addonUrl": "https://github.com/msov19/sklik-data-studio-connector",
+    "supportUrl": "https://github.com/msov19/sklik-data-studio-connector/issues",
+    "description": "Načítání statistik Sklik API Drak do Looker Studia.",
+    "shortDescription": "Sklik statistiky v Looker Studiu",
+    "authType": ["NONE"],
+    "feeType": ["FREE"],
+    "sources": ["SKLIK"]
+  },
+  "oauthScopes": [
+    "https://www.googleapis.com/auth/script.external_request",
+    "https://www.googleapis.com/auth/documents"
+  ],
+  "urlFetchWhitelist": [
+    "https://api.sklik.cz/drak/"
+  ]
+}
+```
+
+4. Uložte projekt. V Apps Scriptu klikněte **Deploy → Test deployments** a
+   zkopírujte **Head Deployment ID**. Pro konektor nevolte nasazení typu Web
+   app; to je určeno pouze pro pomocnou utilitu.
+5. Do prohlížeče vložte následující adresu a nahraďte `DEPLOYMENT_ID`
+   zkopírovaným ID:
+
+```
+https://lookerstudio.google.com/datasources/create?connectorId=DEPLOYMENT_ID
+```
+
+6. V konfiguraci zdroje vyplňte Sklik API token a `UserId` z utility. Pro první
+   připojení nechte **Logování** a **Rozšířené logování** vypnuté; filtry ID
+   kampaní a sestav lze nechat prázdné.
+
+Token se v této starší architektuře zadává do konfigurace datového zdroje.
+Nesdílejte proto zdroj s uživateli, kterým nechcete umožnit přístup k datům
+Skliku.
+
 # Nastavení konektoru
 Sklik Looker studio connector
 Automatické spojení statistických reportů z reklamního systému Sklik do grafické platformy Google Looker studio, které je určeno k vizualizaci dat pro lepší přehled a orientaci.
@@ -106,7 +173,7 @@ Posledním krokem je nastavení configu. Zde se zadávají všechny individuáln
 
 Token: Konektor se na Sklik napojuje pomocí Sklik API. K autentizaci uživatele slouží Sklik Token (je možné ho získat v rozhraní Sklik v záložce nastavení)
 
-UserId: Dalším povinným prvkem je id uživatele. Pokud svoje id neznáš, můžeš ho zjistit pomocí malé utilitky: https://bit.ly/2uMuKgL
+UserId: Dalším povinným prvkem je id uživatele. Pokud svoje ID neznáte, nasaďte si lokální utilitu z adresáře [`utility`](utility/README.md); načte váš účet i spravované účty přes aktuální API Drak v5.
 
 ID kampaní: Aby se nenačítaly všechny data z celého účtu, je možné omezit přímo na některé kampaně. Je to také dáno proto, že je možné v jednom přehledu mít pouze 5000 záznamů, což u velkých účtů pro dlouhé denní statistiky může být problém.
 
