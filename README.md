@@ -12,7 +12,7 @@ Actual version: 5.1.0
 * [ADD] Přidána samostatná Apps Script utilita pro bezpečné načtení vlastního i spravovaných Sklik `UserId` účtů (`utility/`).
 * [FIX] Utilita používá správný formát parametrů pro `client.get` a `client.logout`.
 * [FIX] Utilita automaticky třikrát zopakuje dočasné chyby API 429, 502, 503 a 504.
-* [ADD] Doplněn návod k nasazení vlastního konektoru do Looker Studia, včetně manifestu, konfigurace a sdílení mezi Google účty.
+* [ADD] Doplněn návod k nasazení vlastního konektoru do Data Studia, včetně manifestu, konfigurace a sdílení mezi Google účty.
 
 25.11.2024 (4.1.0 -> 5.0.0) 
 
